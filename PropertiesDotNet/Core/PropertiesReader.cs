@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using PropertiesDotNet.Core.Events;
 
-namespace PropertiesDotNet.Core
+namespace PropertiesDotNet.Core 
 {
     /// <summary>
     /// Represents a ".properties" reader that reads a text document into a stream of <see cref="PropertiesEvent"/>s.
