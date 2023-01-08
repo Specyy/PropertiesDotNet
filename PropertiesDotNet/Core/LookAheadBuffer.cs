@@ -8,6 +8,8 @@ namespace PropertiesDotNet.Core
     /// </summary>
     internal sealed class LookAheadBuffer : IDisposable
     {
+        internal const int DEFAULT_CAPACITY = 1024;
+
         private int _currentIndex;
         private char[] _buffer;
 

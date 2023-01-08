@@ -10,7 +10,7 @@ namespace PropertiesDotNet.Core
         /// <summary>
         /// Whether an <see cref="IPropertiesReader"/> should ignore document comments.
         /// </summary>
-        public virtual bool IgnoreComments { get; set; } = false;
+        public virtual bool IgnoreComments { get; set; } = true;
 
         /// <summary>
         /// Whether an <see cref="IPropertiesReader"/> should error on invalid character escapes. The specification mandates
@@ -84,7 +84,7 @@ namespace PropertiesDotNet.Core
         /// Copies the configuration of the <paramref name="settings"/> into this instance.
         /// </summary>
         /// <param name="settings">The settings to copy.</param>
-        internal void CopyFrom(PropertiesReaderSettings settings)
+        public void CopyFrom(PropertiesReaderSettings settings)
         {
             IgnoreComments = settings.IgnoreComments;
             InvalidEscapes = settings.InvalidEscapes;

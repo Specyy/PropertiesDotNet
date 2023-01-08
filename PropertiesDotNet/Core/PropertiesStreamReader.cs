@@ -5,36 +5,36 @@ using System.Runtime.CompilerServices;
 namespace PropertiesDotNet.Core
 {
     /// <summary>
-    /// Represents a character reader for a ".properties" document, which follows the ".properties" specification.
+    /// Represents a character reader for a ".properties" document, 
+    /// which follows the ".properties" specification.
     /// </summary>
-    public sealed class PropertiesStreamReader : IDisposable
+    internal sealed class PropertiesStreamReader : IDisposable
     {
-        private readonly LookAheadBuffer _buffer;
-        private readonly StreamCursor _cursor;
-
         /// <summary>
         /// Returns the buffer for this reader.
         /// </summary>
-        internal LookAheadBuffer Buffer => _buffer;
+        public LookAheadBuffer Buffer { get; }
 
         /// <summary>
         /// Whether the end of the stream has been reached.
         /// </summary>
-        public bool EndOfStream => _buffer.EndOfStream;
+        public bool EndOfStream => Buffer.EndOfStream;
 
         /// <summary>
         /// Returns the current position of this reader.
         /// </summary>
         public StreamMark CurrentPosition => _cursor.CurrentPosition;
 
+        private readonly StreamCursor _cursor;
+
         /// <summary>
         /// Creates a new <see cref="PropertiesStreamReader"/>.
         /// </summary>
         /// <param name="stream">The stream to buffer.</param>
         /// <param name="bufferCapacity">The capacity for the buffer.</param>
-        public PropertiesStreamReader(TextReader stream, int bufferCapacity = 16)
+        public PropertiesStreamReader(TextReader stream, int bufferCapacity = LookAheadBuffer.DEFAULT_CAPACITY)
         {
-            _buffer = new LookAheadBuffer(stream, bufferCapacity);
+            Buffer = new LookAheadBuffer(stream, bufferCapacity);
             _cursor = new StreamCursor();
         }
 
@@ -43,7 +43,7 @@ namespace PropertiesDotNet.Core
         /// </summary>
         /// <param name="offset">The character offset, from the <see cref="CurrentPosition"/>.</param>
         /// <returns>The character at the given <paramref name="offset"/>.</returns>
-        public char Peek(int offset = 0) => _buffer.Peek(offset);
+        public char Peek(int offset = 0) => Buffer.Peek(offset);
 
         /// <summary>
         /// Reads the character at the current position, then advances the reader's position by 1.
@@ -61,7 +61,7 @@ namespace PropertiesDotNet.Core
                 if (Check(0, '\r'))
                 {
                     // Should be '\r'
-                    var read = _buffer.Read();
+                    var read = Buffer.Read();
 
                     if (Check(0, '\n'))
                         _cursor.AdvanceColumn();
@@ -78,7 +78,7 @@ namespace PropertiesDotNet.Core
                 _cursor.AdvanceColumn();
             }
 
-            return _buffer.Read();
+            return Buffer.Read();
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace PropertiesDotNet.Core
             //selected == '\u0085'; // CR, LF, LS, NEL
         }
 
-        internal void SkipLine()
+        internal void ReadLineEnd()
         {
             // 2 skips on CRLF
             if (Read() == '\r' && Check(0, '\n'))
@@ -120,9 +120,18 @@ namespace PropertiesDotNet.Core
 #if !NET35 && !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        internal void SkipWhiteSpace(int offset = 0)
+        internal void ReadWhiteSpace(int offset = 0)
         {
             while (IsWhiteSpace(offset))
+                Read();
+        }
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        internal void ReadWhiteOrLine(int offset = 0)
+        {
+            while (IsWhiteSpace(offset) || IsNewLine(offset))
                 Read();
         }
 
@@ -156,14 +165,8 @@ namespace PropertiesDotNet.Core
         internal int ToHex()
         {
             var selected = Read();
-
-            if (selected <= '9')
-                return selected - '0';
-
-            if (selected <= 'F')
-                return selected - 'A' + 10;
-
-            return selected - 'a' + 10;
+            return selected <= '9' ? selected - '0' :
+                (selected <= 'F' ? selected - 'A' + 10 : selected - 'a' + 10);
         }
 
         /// <summary>
@@ -175,7 +178,7 @@ namespace PropertiesDotNet.Core
 #if !NET35 && !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        public bool Check(int offset, char check)
+        internal bool Check(int offset, char check)
         {
             return Peek(offset) == check;
         }
@@ -188,7 +191,7 @@ namespace PropertiesDotNet.Core
         /// <param name="checks">The characters to check for.</param>
         /// <returns>Whether the character at the given <paramref name="offset"/> is equal to the any of the given
         /// <paramref name="checks"/>.</returns>
-        public bool Check(int offset = 0, params char[] checks)
+        internal bool Check(int offset, params char[] checks)
         {
             var selected = Peek(offset);
 
@@ -209,16 +212,16 @@ namespace PropertiesDotNet.Core
         /// <param name="value">The string value to check for.</param>
         /// <returns>Whether the characters, starting from the given <paramref name="offset"/> are sequentially
         /// equal the given <paramref name="value"/>.</returns>
-        public bool Check(int offset, string value)
+        internal bool Check(int offset, string value)
         {
             // If there are not enough characters to check for
             // Ensures that buffer is larger or the same length
-            if ((_buffer.Capacity - offset) < value.Length)
+            if ((Buffer.Length - offset) <= value.Length)
                 return false;
 
-            for (var i = offset; i < value.Length; i++)
+            for (int i = 0; i < value.Length; i++)
             {
-                if (Peek(i) != value[i - offset])
+                if (Peek(offset + i) != value[i])
                     return false;
             }
 
@@ -228,7 +231,8 @@ namespace PropertiesDotNet.Core
         /// <inheritdoc/>
         public void Dispose()
         {
-            _buffer.Dispose();
+            Buffer.Dispose();
+            _cursor.Reset();
         }
     }
 }
