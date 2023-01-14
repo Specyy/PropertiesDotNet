@@ -1,10 +1,13 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
+
+using Newtonsoft.Json;
 
 using PropertiesDotNet.Core;
 
@@ -16,76 +19,110 @@ namespace PropertiesDotNet.Test
         /// 
         /// </summary>
         internal const string SOURCE =
-            @"
-# A comment line that starts with '#'.
-# This is a comment line having leading white spaces.
-# A comment line that starts with '#'.
-# This is a comment line having leading white spaces.
-# A comment line that starts with '#'.
-# This is a comment line having leading white spaces.
-# A comment line that starts with '#'.
-# This is a comment line having leading white spaces.
-! A comment line that starts with '#'.
-# This is a comment line having leading white spaces.
-///! A comment line that starts with '!'.
-\
+            @"# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
 key\r\n1=value1
   key2 :       value2
     key3             value3
-! A comment line that starts with '#'.
-# This is a comment line having leading white spaces.
-# A comment line that starts with '#'.
-# This is a comment line having leading white spaces.
-# A comment line that starts with '#'.
-# This is a comment line having leading white spaces.
-# A comment line that starts with '#'.
-# This is a comment line having leading white spaces.
-key\
-  4=value\
-    4
+key\4=value\4
 \u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
 \k\e\y\6=\v\a\lu\e\6
+#\:\ \== \\colon\\space\\equal";
 
-\:\ \== \\colon\\space\\equal";
-
+        internal const string JSON_SOURCE = @"\{""widget"": {
+    ""debug"": ""on"",
+    ""window"": {
+        ""title"": ""Sample Konfabulator Widget"",
+        ""name"": ""main_window"",
+        ""width"": 500,
+        ""height"": 500
+    },
+    ""image"": { 
+        ""src"": ""Images/Sun.png"",
+        ""name"": ""sun1"",
+        ""hOffset"": 250,
+        ""vOffset"": 250,
+        ""alignment"": ""center""
+    },
+    ""text"": {
+        ""data"": ""Click Here"",
+        ""size"": 36,
+        ""style"": ""bold"",
+        ""name"": ""text1"",
+        ""hOffset"": 250,
+        ""vOffset"": 100,
+        ""alignment"": ""center"",
+        ""onMouseUp"": ""sun1.opacity = (sun1.opacity / 100) * 90;""
+    }
+}}";
+        public static readonly Stream SOURCE_STREAM = ToStream(SOURCE);
         static unsafe void Main(string[] args)
         {
-            Console.WriteLine(SOURCE);
+            //Console.WriteLine(SOURCE);
             // Setting for whether to align logical line
             // ^ Beautify?
             //
 
-            IPropertiesReader reader = new PropertiesReader(SOURCE);
-            //reader.Read();
-            //reader.Read();
-            //reader.Read();
-            //reader.Read();
+            //using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
+            //IPropertiesReader reader = new PropertiesReader(stream);
+            ////reader.Read();
+            ////reader.Read();
+            ////reader.Read();
+            ////reader.Read();
 
-            Console.WriteLine("first----------------------------");
+            //Console.WriteLine("first----------------------------");
 
-            while (reader.MoveNext())
-            {
-                switch (reader.Token.Type)
-                {
-                    case PropertiesTokenType.Key:
-                        Console.Write($"\"{reader.Token.Value}\"");
-                        break;
-                    case PropertiesTokenType.Assigner:
-                        Console.Write($"{reader.Token.Value}");
-                        break;
-                    case PropertiesTokenType.Value:
-                        Console.WriteLine($"\"{reader.Token.Value}\"");
-                        break;
-                    case PropertiesTokenType.Comment:
-                        Console.WriteLine($"{((PropertiesReader)reader).CommentHandle} {reader.Token.Value}");
-                        break;
-                }
-            }
+            //while (reader.MoveNext())
+            //{
+            //    var token = reader.Token;
 
-            //BenchmarkRunner.Run<BenchmarkTester>();
+            //    switch (token.Type)
+            //    {
+            //        case PropertiesTokenType.Assigner:
+            //        case PropertiesTokenType.Key:
+            //            Console.Write(token.Value);
+            //            break;
+
+            //        case PropertiesTokenType.Value:
+            //        case PropertiesTokenType.Comment:
+            //            Console.WriteLine(token.Value);
+            //            break;
+            //    }
+            //}
+
+            BenchmarkRunner.Run<BenchmarkTester>();
+
+            //var parser = new StatePropertiesReader(new StringReader(SOURCE));
+            //while (parser.MoveNext())
+            //{
+            //    switch (parser.Token.Type)
+            //    {
+            //        case PropertiesTokenType.Key:
+            //            Console.Write(parser.Token.Value + '=');
+            //            break;
+
+            //        case PropertiesTokenType.Comment:
+            //        case PropertiesTokenType.Value:
+            //            Console.WriteLine(parser.Token.Value);
+            //            break;
+            //    }
+            //}
+
+            
+
             Console.WriteLine("-------------------");
-            //new BenchmarkTester().DynamicCtor();
             Console.Read();
+        }
+
+        public static Stream ToStream( string str)
+        {
+            MemoryStream stream = new MemoryStream();
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(str);
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
         }
 
         public static Func<T> Creator<T>()
@@ -403,5 +440,58 @@ key\
         //    private IObjectProvider dynamicProvder = new DynamicObjectProvider();
         //    private IObjectProvider reflProvder = new ReflectionObjectProvider();
         //    private IObjectProvider exprProvder = new ExpressionObjectProvider();
+
+        //[Benchmark]
+        //public void ReadWithString()
+        //{
+        //    //JsonTextReader reader = new JsonTextReader(new StringReader(Program.JSON_SOURCE));
+        //    //while (reader.Read())
+        //    //{
+        //    //}
+
+        //    using(StringReader reader = new StringReader(Program.SOURCE))
+        //    {
+        //        string s;
+        //        while((s = reader.ReadLine()) != null) {
+        //            for(int i = 0; i < s.Length; i++) { }
+        //        }
+        //    }
+        //}
+
+        //[Benchmark]
+        //public void ReadWithChar()
+        //{
+        //    JsonTextReader reader = new JsonTextReader(new StringReader(Program.JSON_SOURCE));
+        //    while (reader.Read())
+        //    {
+        //    }
+
+        //    using (StringReader reader = new StringReader(Program.SOURCE))
+        //    {
+        //        while (reader.Read() != -1)
+        //        {
+
+        //        }
+        //    }
+        //}
+
+        //[Benchmark]
+        //public void fastJson()
+        //{
+        //    string jsonText = fastJSON.JSON.ToJSON(Program.JSON_SOURCE);
+        //}
+
+        [Benchmark]
+        public void PDN()
+        {
+            //using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
+            //PropertiesReader reader = new PropertiesReader(Program.SOURCE);
+
+            //var parser = new StatePropertiesReader(new StringReader(Program.SOURCE));
+            
+            //while (parser.MoveNext())
+            //{
+            //}
+        }
     }
 }

@@ -11,20 +11,16 @@ namespace PropertiesDotNet.Core
     internal sealed class PropertiesStreamReader : IDisposable
     {
         /// <summary>
-        /// Returns the buffer for this reader.
-        /// </summary>
-        public LookAheadBuffer Buffer { get; }
-
-        /// <summary>
         /// Whether the end of the stream has been reached.
         /// </summary>
-        public bool EndOfStream => Buffer.EndOfStream;
+        public bool EndOfStream => _buffer.EndOfStream;
 
         /// <summary>
         /// Returns the current position of this reader.
         /// </summary>
         public StreamMark CurrentPosition => _cursor.CurrentPosition;
 
+        private LookAheadBuffer _buffer;
         private readonly StreamCursor _cursor;
 
         /// <summary>
@@ -34,7 +30,7 @@ namespace PropertiesDotNet.Core
         /// <param name="bufferCapacity">The capacity for the buffer.</param>
         public PropertiesStreamReader(TextReader stream, int bufferCapacity = LookAheadBuffer.DEFAULT_CAPACITY)
         {
-            Buffer = new LookAheadBuffer(stream, bufferCapacity);
+            _buffer = new LookAheadBuffer(stream, bufferCapacity);
             _cursor = new StreamCursor();
         }
 
@@ -43,7 +39,7 @@ namespace PropertiesDotNet.Core
         /// </summary>
         /// <param name="offset">The character offset, from the <see cref="CurrentPosition"/>.</param>
         /// <returns>The character at the given <paramref name="offset"/>.</returns>
-        public char Peek(int offset = 0) => Buffer.Peek(offset);
+        public char Peek(int offset = 0) => _buffer.Peek(offset);
 
         /// <summary>
         /// Reads the character at the current position, then advances the reader's position by 1.
@@ -61,7 +57,7 @@ namespace PropertiesDotNet.Core
                 if (Check(0, '\r'))
                 {
                     // Should be '\r'
-                    var read = Buffer.Read();
+                    var read = _buffer.Read();
 
                     if (Check(0, '\n'))
                         _cursor.AdvanceColumn();
@@ -73,12 +69,16 @@ namespace PropertiesDotNet.Core
 
                 _cursor.AdvanceLine();
             }
+            else if (Check(0, '\t'))
+            {
+                _cursor.AdvanceColumn(4);
+            }
             else
             {
                 _cursor.AdvanceColumn();
             }
 
-            return Buffer.Read();
+            return _buffer.Read();
         }
 
         /// <summary>
@@ -86,6 +86,9 @@ namespace PropertiesDotNet.Core
         /// </summary>
         /// <param name="offset">The character offset, from the <see cref="CurrentPosition"/>.</param>
         /// <returns>Whether the character at the given <paramref name="offset"/> forms a new line signature.</returns>
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public bool IsNewLine(int offset = 0)
         {
             var selected = Peek(offset);
@@ -109,6 +112,9 @@ namespace PropertiesDotNet.Core
         /// <param name="offset">The character offset, from the <see cref="CurrentPosition"/>.</param>
         /// <returns>Whether the character at the given <paramref name="offset"/> is considered a 
         /// white-space character.</returns>
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public bool IsWhiteSpace(int offset = 0)
         {
             var selected = Peek(offset);
@@ -142,6 +148,9 @@ namespace PropertiesDotNet.Core
         /// <param name="offset">The character offset, from the <see cref="CurrentPosition"/>.</param>
         /// <returns>Whether the character at the given <paramref name="offset"/> is part of the ISO-8859-1
         /// character set.</returns>
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public bool IsLatin1(int offset = 0)
         {
             return Peek(offset) <= 0xFF;
@@ -162,7 +171,7 @@ namespace PropertiesDotNet.Core
 #if !NET35 && !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        internal int ToHex()
+        internal int ReadHex()
         {
             var selected = Read();
             return selected <= '9' ? selected - '0' :
@@ -178,10 +187,7 @@ namespace PropertiesDotNet.Core
 #if !NET35 && !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        internal bool Check(int offset, char check)
-        {
-            return Peek(offset) == check;
-        }
+        internal bool Check(int offset, char check) => Peek(offset) == check;
 
         /// <summary>
         /// Returns whether the character at the given <paramref name="offset"/> is equal to the any of the given
@@ -214,9 +220,9 @@ namespace PropertiesDotNet.Core
         /// equal the given <paramref name="value"/>.</returns>
         internal bool Check(int offset, string value)
         {
-            // If there are not enough characters to check for
+            // If there are not enough characters to check for.
             // Ensures that buffer is larger or the same length
-            if ((Buffer.Length - offset) <= value.Length)
+            if ((_buffer.Length - offset) <= value.Length)
                 return false;
 
             for (int i = 0; i < value.Length; i++)
@@ -231,7 +237,7 @@ namespace PropertiesDotNet.Core
         /// <inheritdoc/>
         public void Dispose()
         {
-            Buffer.Dispose();
+            _buffer.Dispose();
             _cursor.Reset();
         }
     }

@@ -12,10 +12,7 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
     internal sealed class TypeCacheEqualityComparer : IEqualityComparer<Type>, IEqualityComparer<Type[]>
     {
         /// <inheritdoc/>
-        public bool Equals(Type? x, Type? y)
-        {
-            return x?.Equals(y) ?? y is null;
-        }
+        public bool Equals(Type? x, Type? y) => x?.Equals(y) ?? y is null;
 
         /// <inheritdoc/>
         public bool Equals(Type[]? x, Type[]? y)
@@ -29,7 +26,7 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
             if (x.Length != y.Length)
                 return false;
 
-            for (var i = 0; i < x.Length; i++)
+            for (int i = 0; i < x.Length; i++)
             {
                 if (!((x[i]?.Equals(y[i])) ?? y[i] is null))
                     return false;
@@ -49,9 +46,6 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
         }
 
         /// <inheritdoc/>
-        public int GetHashCode(Type[] obj)
-        {
-            return HashCodeHelper.GenerateHashCode(obj);
-        }
+        public int GetHashCode(Type[] obj) => HashCodeHelper.GenerateHashCode(obj);
     }
 }

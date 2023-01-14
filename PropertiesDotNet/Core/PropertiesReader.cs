@@ -7,7 +7,8 @@ namespace PropertiesDotNet.Core
 {
     public sealed class PropertiesReader : IPropertiesReader
     {
-        private static readonly Dictionary<char, char> _escapeCharsToCodes = new Dictionary<char, char>()
+        // Unnecessary allocations but is slower with static
+        private readonly Dictionary<char, char> _escapeCharsToCodes = new Dictionary<char, char>(15)
         {
             {'0', '\0'},
             {'a', '\a'},
@@ -39,7 +40,7 @@ namespace PropertiesDotNet.Core
         private PropertiesReaderSettings _settings;
 
         /// <inheritdoc/>
-        public ref readonly PropertiesToken Token => ref _token;
+        public PropertiesToken Token => _token;
 
         /// <summary>
         /// Represents a marker on the starting position of the current token.
@@ -69,7 +70,7 @@ namespace PropertiesDotNet.Core
         private StreamMark _tokenEnd;
         private char _commentHandle;
         private bool _textLogicalLines;
-
+        private bool _disposed;
         private readonly PropertiesStreamReader _stream;
         private readonly StringBuilder _textPool;
 
@@ -111,11 +112,17 @@ namespace PropertiesDotNet.Core
         {
             if (ReadNextToken())
             {
-                if (Settings.CloseStreamOnEnd && _token.Type == PropertiesTokenType.Error)
+                // TODO: Close on stream end too
+                if (Settings.CloseOnEnd && _token.Type == PropertiesTokenType.Error)
                     _stream.Dispose();
 
-                TokenRead?.Invoke(this, in _token);
+                TokenRead?.Invoke(this, _token);
                 return true;
+            }
+            else
+            {
+                if (Settings.CloseOnEnd && _stream.EndOfStream)
+                    _stream.Dispose();
             }
 
             return false;
@@ -123,19 +130,21 @@ namespace PropertiesDotNet.Core
 
         private bool ReadNextToken()
         {
-            // Stream end check isn't entirely needed
-            if (_token.Type == PropertiesTokenType.Error || _stream.EndOfStream)
+            if (_token.Type == PropertiesTokenType.Error)
                 return false;
 
-            // Check for comment or key or stream end
-            if (_token.Type == PropertiesTokenType.None ||
+            // Check for comment or key or stream start
+            else if (_token.Type == PropertiesTokenType.None ||
                 _token.Type == PropertiesTokenType.Comment ||
                 _token.Type == PropertiesTokenType.Value)
             {
                 // Remove white-space before token
                 _stream.ReadWhiteOrLine();
 
-                if (!_stream.EndOfStream && !ReadComment())
+                if (_stream.EndOfStream)
+                    return false;
+
+                if (!ReadComment())
                     ReadText(true);
             }
 
@@ -166,21 +175,7 @@ namespace PropertiesDotNet.Core
 
             if (Settings.IgnoreComments)
             {
-                // Skip over this and proceeding comments
-                // Use iteration instead of recursion
-                while (_stream.Check(0, '#') || _stream.Check(0, '!'))
-                {
-                    for (; !_stream.EndOfStream; _stream.Read())
-                    {
-                        if (_stream.IsNewLine())
-                        {
-                            _stream.ReadLineEnd();
-                            _stream.ReadWhiteOrLine();
-                            break;
-                        }
-                    }
-                }
-
+                SkipComments();
                 return false;
             }
 
@@ -189,7 +184,7 @@ namespace PropertiesDotNet.Core
             _commentHandle = _stream.Read();
             _textPool.Length = 0;
 
-            _stream.ReadWhiteOrLine();
+            _stream.ReadWhiteSpace();
 
             while (!_stream.IsNewLine() && !_stream.EndOfStream)
                 _textPool.Append(_stream.Read());
@@ -201,6 +196,24 @@ namespace PropertiesDotNet.Core
             _token = new PropertiesToken(PropertiesTokenType.Comment, _textPool.ToString());
 
             return true;
+        }
+
+        private void SkipComments()
+        {
+            // Skip over this and proceeding comments
+            // Use iteration instead of recursion
+            while (_stream.Check(0, '#') || _stream.Check(0, '!'))
+            {
+                for (; !_stream.EndOfStream; _stream.Read())
+                {
+                    if (_stream.IsNewLine())
+                    {
+                        _stream.ReadLineEnd();
+                        _stream.ReadWhiteOrLine();
+                        break;
+                    }
+                }
+            }
         }
 
         private void ReadValueAssigner()
@@ -217,7 +230,7 @@ namespace PropertiesDotNet.Core
                 // Check for escaped character
                 if (_stream.Check(0, '\\'))
                 {
-                    if(!ReadEscaped())
+                    if (!ReadEscaped())
                         return;
                 }
                 // Check for value assignment
@@ -261,20 +274,22 @@ namespace PropertiesDotNet.Core
             // Check for Unicode escape
             else if (IsUnicodeEscape(out byte codeLength))
             {
-                if (!ReadUnicodeEscape(codeLength, out int codePoint))
+                int codePoint = ReadUnicodeEscape(codeLength);
+
+                if (codePoint == -1)
                 {
                     _tokenEnd = _tokenStart = _stream.CurrentPosition;
                     CreateError(
                         $"Invalid Unicode escape sequence at line {_tokenStart.Line} column {_tokenStart.Column}!");
-                    return false;
 
+                    return false;
                 }
 
                 _textPool.Append(char.ConvertFromUtf32(codePoint));
             }
 
             // Check for normal escapes
-            else if (_escapeCharsToCodes.TryGetValue(_stream.Peek(), out var escapeCode))
+            else if (_escapeCharsToCodes.TryGetValue(_stream.Peek(), out char escapeCode))
             {
                 _textPool.Append(escapeCode);
                 _stream.Read();
@@ -346,24 +361,23 @@ namespace PropertiesDotNet.Core
             return false;
         }
 
-        private bool ReadUnicodeEscape(byte codeLength, out int codePoint)
+        private int ReadUnicodeEscape(byte codeLength)
         {
             // Eat 'u', 'U', or 'x'
-            var identifier = _stream.Read();
+            char identifier = _stream.Read();
 
-            codePoint = 0;
+            int codePoint = 0;
 
             for (byte i = 0; i < codeLength; i++)
             {
-                var hex = _stream.ToHex(); // ASCII -> Number value
+                int hex = _stream.ReadHex(); // ASCII -> Number value
 
                 if (hex < 0 || hex > 15)
                 {
                     if (i > 0 && identifier == 'x')
                         break;
 
-                    codePoint = -1;
-                    return false;
+                    return -1;
                 }
 
                 //  F    F    F    F
@@ -373,14 +387,11 @@ namespace PropertiesDotNet.Core
 
                 // A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, 
                 // and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff)
-                if (codePoint <= 0x10FFFF && (codePoint < 0xD800 || codePoint > 0xDFFF))
-                    continue;
-
-                codePoint = -1;
-                return false;
+                if (!(codePoint <= 0x10FFFF && (codePoint < 0xD800 || codePoint > 0xDFFF)))
+                    return -1;
             }
 
-            return true;
+            return codePoint;
         }
 
         private void FinalizeText(bool key)
@@ -388,9 +399,6 @@ namespace PropertiesDotNet.Core
             if (!key)
             {
                 _token = new PropertiesToken(PropertiesTokenType.Value, _textPool.ToString());
-                
-                // Read until next comment/key/stream end
-                _stream.ReadWhiteOrLine();
                 return;
             }
 
@@ -409,9 +417,37 @@ namespace PropertiesDotNet.Core
         private void CreateError(string message)
         {
             if (Settings.ThrowOnError)
+            {
+                if (Settings.CloseOnEnd)
+                    Dispose();
                 throw new PropertiesException(message);
+            }
 
             _token = new PropertiesToken(PropertiesTokenType.Error, message);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                _stream.Dispose();
+            }
+
+            _escapeCharsToCodes.Clear();
+            _textPool.Length = 0;
+            _textLogicalLines = default;
+            _commentHandle = default;
+            _disposed = true;
+        }
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            Dispose(Settings.CloseOnEnd);
+            GC.SuppressFinalize(this);
         }
     }
 }

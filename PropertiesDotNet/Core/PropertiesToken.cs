@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PropertiesDotNet.Core
+﻿namespace PropertiesDotNet.Core
 {
     /// <summary>
     /// Represents a token in a .properties document.
@@ -10,8 +6,8 @@ namespace PropertiesDotNet.Core
     public readonly struct PropertiesToken
     {
         /// <summary>
-        /// The type of this token. A <see cref="PropertiesTokenType.None"/> acts a null value
-        /// when returned by an <see cref="IPropertiesReader"/> that has no tokens left to parse.
+        /// A "null" value. Returned when an <see cref="IPropertiesReader"/> has not yet
+        /// read a token (stream start).
         /// </summary>
         public readonly PropertiesTokenType Type { get; }
 
@@ -24,7 +20,10 @@ namespace PropertiesDotNet.Core
         /// A property returning whether this token is canonical to a ".properties" document (i.e, is
         /// within the specification).
         /// </summary>
-        public readonly bool Canonical => Type != PropertiesTokenType.None && Type != PropertiesTokenType.Error;
+        public readonly bool Canonical => Type == PropertiesTokenType.Key ||
+            Type == PropertiesTokenType.Assigner ||
+            Type == PropertiesTokenType.Value ||
+            Type == PropertiesTokenType.Comment;
 
         /// <summary>
         /// Creates a new .properties document token.

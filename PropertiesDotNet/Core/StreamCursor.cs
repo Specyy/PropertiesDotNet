@@ -111,9 +111,9 @@ namespace PropertiesDotNet.Core
         /// <inheritdoc/>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue(nameof(StreamMark.Line), Line, Line.GetType());
-            info.AddValue(nameof(StreamMark.Column), Column, Column.GetType());
-            info.AddValue(nameof(StreamMark.AbsoluteOffset), AbsoluteOffset, AbsoluteOffset.GetType());
+            info.AddValue(nameof(StreamMark.Line), Line);
+            info.AddValue(nameof(StreamMark.Column), Column);
+            info.AddValue(nameof(StreamMark.AbsoluteOffset), AbsoluteOffset);
         }
 #endif
 

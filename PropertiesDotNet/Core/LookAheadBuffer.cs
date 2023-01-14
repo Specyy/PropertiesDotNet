@@ -54,7 +54,8 @@ namespace PropertiesDotNet.Core
             _buffer = new char[Capacity = capacity];
 
             // Fill buffer
-            ReadBlock();
+            _endOfInput = (Length = Stream.ReadBlock(_buffer, 0, Capacity)) < Capacity;
+            _currentIndex = 0;
         }
 
         /// <summary>
@@ -64,14 +65,14 @@ namespace PropertiesDotNet.Core
         /// <returns>The character at the specified offset from current stream position.</returns>
         public char Peek(int offset)
         {
-            if (offset < 0 || offset >= Capacity)
-                throw new ArgumentOutOfRangeException(nameof(offset),
-                    $"The offset must be greater than 0, but less than {Capacity}!");
+            //if (offset < 0 || offset >= Capacity)
+            //    throw new ArgumentOutOfRangeException(nameof(offset),
+            //        $"The offset must be greater than 0, but less than {Capacity}!");
 
             if (EndOfStream)
                 return default;
 
-            var realOffset = _currentIndex + offset;
+            int realOffset = _currentIndex + offset;
 
             if (realOffset >= Capacity)
                 realOffset -= Capacity;
@@ -93,7 +94,7 @@ namespace PropertiesDotNet.Core
             }
 
             // Save last
-            var current = _buffer[_currentIndex];
+            char current = _buffer[_currentIndex];
 
             // If no more to read, set internal values to default, or '\0'
             if (_endOfInput)
@@ -105,16 +106,16 @@ namespace PropertiesDotNet.Core
             else
             {
                 // Read next
-                int read;
+                int read = Stream.Read();
 
-                if ((read = Stream.Read()) < 0)
+                if (read < 0)
                 {
                     _endOfInput = true;
                     read = default(char);
                     Length--;
                 }
 
-                _buffer[_currentIndex] = (char) read;
+                _buffer[_currentIndex] = (char)read;
             }
 
             // Advance position by 1
@@ -126,22 +127,6 @@ namespace PropertiesDotNet.Core
             return current;
         }
 
-        /// <summary>
-        /// Reads a block of characters, length specified by the <see cref="Capacity"/>.
-        /// </summary>
-        public void ReadBlock()
-        {
-            // Clear buffer on stream end
-            if (Disposed || EndOfStream)
-            {
-                _buffer = null!;
-                return;
-            }
-
-            _endOfInput = (Length = Stream.ReadBlock(_buffer, 0, Capacity)) < Capacity;
-            _currentIndex = 0;
-        }
-
         /// <inheritdoc/>
         public void Dispose()
         {
@@ -149,6 +134,7 @@ namespace PropertiesDotNet.Core
                 return;
 
             _endOfInput = Disposed = true;
+            _buffer = null!;
             Stream.Dispose();
         }
     }

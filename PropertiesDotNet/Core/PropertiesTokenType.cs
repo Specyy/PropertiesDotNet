@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PropertiesDotNet.Core
+﻿namespace PropertiesDotNet.Core
 {
     /// <summary>
     /// Represents the types of tokens in a .properties docuemnt.
@@ -10,8 +6,8 @@ namespace PropertiesDotNet.Core
     public enum PropertiesTokenType : byte
     {
         /// <summary>
-        /// A "null" value. Returned when an <see cref="IPropertiesReader"/> has reached the
-        /// end of the document.
+        /// A "null" value. Returned when an <see cref="IPropertiesReader"/> has not yet
+        /// read a token (stream start).
         /// </summary>
         None = 0,
 
@@ -21,7 +17,8 @@ namespace PropertiesDotNet.Core
         Error,
 
         /// <summary>
-        /// Represents a comment in a .properties document.
+        /// Represents a comment in a .properties document. In a standard ".properties"
+        /// document lines begin with either a "!" or "#".
         /// </summary>
         Comment,
 

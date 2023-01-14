@@ -79,7 +79,7 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
                 Expression[] expressionArgs = new Expression[argTypes.Length];
                 ParameterExpression constantArgs = Expression.Parameter(typeof(object?[]), "args");
 
-                for (var i = 0; i < expressionArgs.Length; i++)
+                for (int i = 0; i < expressionArgs.Length; i++)
                 {
                     Type argType = argTypes[i] ?? throw new ArgumentNullException(nameof(argTypes));
                     Expression providedArg = Expression.ArrayIndex(constantArgs, Expression.Constant(i));
@@ -106,17 +106,11 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
         /// Clears the cached constructors for the specified <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type constructor to clear.</param>
-        public void ClearCache(Type type)
-        {
-            _ctorCache.Remove(type);
-        }
+        public void ClearCache(Type type) => _ctorCache.Remove(type);
 
         /// <summary>
         /// Clears all the cached constructors.
         /// </summary>
-        public void ClearCache()
-        {
-            _ctorCache.Clear();
-        }
+        public void ClearCache() => _ctorCache.Clear();
     }
 }
