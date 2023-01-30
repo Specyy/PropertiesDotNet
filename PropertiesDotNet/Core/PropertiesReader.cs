@@ -1,56 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
+
+using PropertiesDotNet.Utils;
 
 namespace PropertiesDotNet.Core
 {
+    enum ParserState
+    {
+        Start = 0,
+        Comment,
+        Key,
+        Assigner,
+        Value,
+        Error,
+        End
+    }
+
+    /// <summary>
+    /// Token reader for a ".properties" document.
+    /// </summary>
     public sealed class PropertiesReader : IPropertiesReader
     {
-        // Unnecessary allocations but is slower with static
-        private readonly Dictionary<char, char> _escapeCharsToCodes = new Dictionary<char, char>(15)
+        /// <inheritdoc/>
+        public PropertiesReaderSettings Settings
         {
-            {'0', '\0'},
-            {'a', '\a'},
-            {'f', '\f'},
-            {'r', '\r'},
-            {'n', '\n'},
-            {'t', '\t'},
-            {'v', '\v'},
-            {'\\', '\\'},
-            {'"', '\"'},
-            {'\'', '\''},
-            {' ', '\x20'},
-            {'!', '!'},
-            {'#', '#'},
-            {':', ':'},
-            {'=', '='},
-        };
+            get => _settings;
+            set => _settings = value ?? PropertiesReaderSettings.Default;
+        }
+
+        /// <inheritdoc/>
+        public PropertiesToken Token => _token;
 
         /// <inheritdoc/>
         public event TokenRead? TokenRead;
 
         /// <inheritdoc/>
-        public PropertiesReaderSettings Settings
-        {
-            get => _settings;
-            set => _settings = value is null ? _settings : value;
-        }
-
-        private PropertiesReaderSettings _settings;
+        public StreamMark? TokenStart => _tokenStart;
 
         /// <inheritdoc/>
-        public PropertiesToken Token => _token;
+        public StreamMark? TokenEnd => _tokenEnd;
 
-        /// <summary>
-        /// Represents a marker on the starting position of the current token.
-        /// </summary>
-        public ref readonly StreamMark TokenStart => ref _tokenStart;
-
-        /// <summary>
-        /// Represents a marker on the ending position of the current token.
-        /// </summary>
-        public ref readonly StreamMark TokenEnd => ref _tokenEnd;
+        /// <inheritdoc/>
+        public bool HasLineInfo => true;
 
         /// <summary>
         /// Returns whether the current token contains logical lines. This only applies to keys and values.
@@ -61,18 +54,21 @@ namespace PropertiesDotNet.Core
 
         /// <summary>
         /// Returns the comment handle for the current token. This handle is either an
-        /// exclamtion mark (!) or a pound symbol (#) or \0 if the next token is not a comment.
+        /// exclamtion mark (!) or a pound symbol (#) or \0 if the current token is not a comment.
         /// </summary>
         public char CommentHandle => _token.Type == PropertiesTokenType.Comment ? _commentHandle : default;
 
+        private PropertiesReaderSettings _settings;
+        private MarkingReader _stream;
+        private bool _disposed;
         private PropertiesToken _token;
-        private StreamMark _tokenStart;
-        private StreamMark _tokenEnd;
+        private StringBuilder _textPool;
+
+        private ParserState _state;
         private char _commentHandle;
         private bool _textLogicalLines;
-        private bool _disposed;
-        private readonly PropertiesStreamReader _stream;
-        private readonly StringBuilder _textPool;
+        private StreamMark _tokenStart;
+        private StreamMark _tokenEnd;
 
         /// <summary>
         /// Creates a new <see cref="PropertiesReader"/>.
@@ -102,342 +98,419 @@ namespace PropertiesDotNet.Core
         public PropertiesReader(TextReader input, PropertiesReaderSettings? settings = null)
         {
             _settings = settings ?? PropertiesReaderSettings.Default;
-            _stream = new PropertiesStreamReader(input ?? throw new ArgumentNullException(nameof(input)));
-
+            _stream = new MarkingReader(input ?? throw new ArgumentNullException(nameof(input)));
             _textPool = new StringBuilder();
         }
 
         /// <inheritdoc/>
         public bool MoveNext()
         {
-            if (ReadNextToken())
+            if (ReadNext())
             {
-                // TODO: Close on stream end too
-                if (Settings.CloseOnEnd && _token.Type == PropertiesTokenType.Error)
-                    _stream.Dispose();
-
                 TokenRead?.Invoke(this, _token);
                 return true;
-            }
-            else
-            {
-                if (Settings.CloseOnEnd && _stream.EndOfStream)
-                    _stream.Dispose();
             }
 
             return false;
         }
 
-        private bool ReadNextToken()
+        private bool ReadNext()
         {
-            if (_token.Type == PropertiesTokenType.Error)
-                return false;
-
-            // Check for comment or key or stream start
-            else if (_token.Type == PropertiesTokenType.None ||
-                _token.Type == PropertiesTokenType.Comment ||
-                _token.Type == PropertiesTokenType.Value)
+            switch (_state)
             {
-                // Remove white-space before token
-                _stream.ReadWhiteOrLine();
+                case ParserState.Start:
+                    int next = _stream.Peek();
 
-                if (_stream.EndOfStream)
+                    // Remove white-space before token
+                    while (IsWhiteSpace(next) || IsNewLine(next))
+                    {
+                        if (IsNewLine(next))
+                            _stream.ReadLineEnd();
+                        else
+                            _stream.Read();
+                        next = _stream.Peek();
+                    }
+
+                    if (IsCommentHandle(next))
+                    {
+                        if (!Settings.IgnoreComments)
+                        {
+                            _state = ParserState.Comment;
+                            return ReadNext();
+                        }
+
+                        SkipComments();
+                    }
+
+                    _state = _stream.EndOfStream ? ParserState.End : ParserState.Key;
+                    return ReadNext();
+
+                case ParserState.Comment:
+                    ReadComment();
+                    return true;
+
+                case ParserState.Key:
+                    ReadKey();
+                    return true;
+
+                case ParserState.Assigner:
+                    return ReadAssigner();
+
+                case ParserState.Value:
+                    ReadValue();
+
+                    // Ignore return value because we basically only do this for the disposing behaviour
+                    // but we still need to emit this token
+                    if (_state == ParserState.End)
+                        ReadNext();
+
+                    return true;
+
+                case ParserState.Error:
+                    _state = ParserState.End;
+                    return ReadNext();
+
+                default:
+                case ParserState.End:
+                    if (Settings.CloseOnEnd)
+                        Dispose();
                     return false;
-
-                if (!ReadComment())
-                    ReadText(true);
             }
-
-            // Check for assigner
-            // Assigner cannot be on line or stream end
-            else if (_token.Type == PropertiesTokenType.Key &&
-                !_stream.IsNewLine() && !_stream.EndOfStream)
-            {
-                ReadValueAssigner();
-            }
-
-            // Check for value
-            else if (_token.Type == PropertiesTokenType.Assigner ||
-                _token.Type == PropertiesTokenType.Key)
-            {
-                // White-space before value is not included
-                _stream.ReadWhiteSpace();
-                ReadText(false);
-            }
-
-            return true;
-        }
-
-        private bool ReadComment()
-        {
-            if (!_stream.Check(0, '#') && !_stream.Check(0, '!'))
-                return false;
-
-            if (Settings.IgnoreComments)
-            {
-                SkipComments();
-                return false;
-            }
-
-            _tokenStart = _stream.CurrentPosition;
-
-            _commentHandle = _stream.Read();
-            _textPool.Length = 0;
-
-            _stream.ReadWhiteSpace();
-
-            while (!_stream.IsNewLine() && !_stream.EndOfStream)
-                _textPool.Append(_stream.Read());
-
-            _tokenEnd = _stream.CurrentPosition;
-
-            _stream.ReadLineEnd();
-
-            _token = new PropertiesToken(PropertiesTokenType.Comment, _textPool.ToString());
-
-            return true;
         }
 
         private void SkipComments()
         {
             // Skip over this and proceeding comments
             // Use iteration instead of recursion
-            while (_stream.Check(0, '#') || _stream.Check(0, '!'))
+            do
             {
-                for (; !_stream.EndOfStream; _stream.Read())
+                for (_stream.Read(); !_stream.EndOfStream; _stream.Read())
                 {
-                    if (_stream.IsNewLine())
+                    if (IsNewLine(_stream.Peek()))
                     {
                         _stream.ReadLineEnd();
-                        _stream.ReadWhiteOrLine();
+
+                        // Remove white-space before token
+                        while (IsWhiteSpace(_stream.Peek()) || IsNewLine(_stream.Peek()))
+                        {
+                            if (IsNewLine(_stream.Peek()))
+                                _stream.ReadLineEnd();
+                            else
+                                _stream.Read();
+                        }
+
                         break;
                     }
                 }
-            }
+            } while (IsCommentHandle(_stream.Peek()));
         }
 
-        private void ReadValueAssigner()
-            => _token = new PropertiesToken(PropertiesTokenType.Assigner, _stream.Read().ToString());
-
-        private void ReadText(bool key)
+        private void ReadComment()
         {
-            _tokenStart = _stream.CurrentPosition;
-            _textLogicalLines = false;
+            _tokenStart = _stream.Position;
+
+            _commentHandle = (char)_stream.Read();
             _textPool.Length = 0;
 
-            while (!_stream.EndOfStream && !_stream.IsNewLine())
+            // Remove white-space before actual text
+            while (IsWhiteSpace(_stream.Peek()))
+                _stream.Read();
+
+            while (!IsNewLine(_stream.Peek()) && !_stream.EndOfStream)
+                _textPool.Append((char)_stream.Read());
+
+            _tokenEnd = _stream.Position;
+            _stream.ReadLineEnd();
+
+            _state = ParserState.Start;
+            _token = new PropertiesToken(PropertiesTokenType.Comment, _textPool.ToString());
+        }
+
+        private void ReadKey()
+        {
+            _textPool.Length = 0;
+            _tokenStart = _stream.Position;
+            _textLogicalLines = false;
+
+            while (!IsNewLine(_stream.Peek()) && !_stream.EndOfStream)
             {
-                // Check for escaped character
-                if (_stream.Check(0, '\\'))
+                if (_stream.Peek() == '\\')
                 {
-                    if (!ReadEscaped())
+                    if (!HandleEscapeSequence())
                         return;
                 }
-                // Check for value assignment
-                else if (key && (_stream.IsWhiteSpace() || _stream.Check(0, '=') || _stream.Check(0, ':')))
+                else if (IsAssigner(_stream.Peek()))
                 {
-                    break;
+                    _tokenEnd = _stream.Position;
+                    _state = ParserState.Assigner;
+                    _token = new PropertiesToken(PropertiesTokenType.Key, _textPool.ToString());
+                    return;
                 }
-                // Normal character
+                // Enforce ISO-8859-1
+                else if (!Settings.AllCharacters && !IsLatin1(_stream.Peek()))
+                {
+                    _tokenEnd = _tokenStart = _stream.Position;
+                    HandleError(
+                       $"Unrecognized character '{(char)_stream.Peek()}' (U+{(ushort)_stream.Peek()}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
+                    return;
+                }
                 else
                 {
-                    // Enforce ISO-8859-1
-                    if (!Settings.AllCharacters && !_stream.IsLatin1())
-                    {
-                        _tokenEnd = _tokenStart = _stream.CurrentPosition;
-                        CreateError(
-                           $"Unrecognized character '{_stream.Peek()}' (\\u{(ushort)_stream.Peek()}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
-                        return;
-                    }
-
-                    _textPool.Append(_stream.Read());
+                    _textPool.Append((char)_stream.Read());
                 }
             }
 
-            _tokenEnd = _stream.CurrentPosition;
-            FinalizeText(key);
+            _tokenEnd = _stream.Position;
+            _state = ParserState.Value;
+            _token = new PropertiesToken(PropertiesTokenType.Key, _textPool.ToString());
         }
 
-        private bool ReadEscaped()
+        private bool ReadAssigner()
         {
+            _tokenStart = _stream.Position;
+            int lastAssigner = _stream.Read();
+
+            if (IsWhiteSpace(lastAssigner))
+            {
+                // Consume whitespace until last or assigner
+                while (IsWhiteSpace(_stream.Peek()))
+                    _stream.Read();
+
+                // If we thought the assigner was a white-space but we were actually
+                // just skipping the preceding white-space before the real assigner
+                if (IsLiteralAssigner(_stream.Peek()))
+                {
+                    _tokenStart = _stream.Position;
+                    lastAssigner = _stream.Read();
+                }
+                // Key with a bunch of trailing white-spaces but no value
+                else if (IsNewLine(_stream.Peek()) || _stream.EndOfStream)
+                {
+                    _state = ParserState.Value;
+                    return ReadNext();
+                }
+            }
+
+            _tokenEnd = _stream.Position;
+            _state = ParserState.Value;
+            _token = new PropertiesToken(PropertiesTokenType.Assigner, ((char)lastAssigner).ToString());
+            return true;
+        }
+
+        private void ReadValue()
+        {
+            // Remove leading white-space before value
+            while (IsWhiteSpace(_stream.Peek()))
+                _stream.Read();
+
+            _textPool.Length = 0;
+            _tokenStart = _stream.Position;
+            _textLogicalLines = false;
+
+            while (!IsNewLine(_stream.Peek()) && !_stream.EndOfStream)
+            {
+                if (_stream.Peek() == '\\')
+                {
+                    if (!HandleEscapeSequence())
+                        return;
+                }
+                // Enforce ISO-8859-1
+                else if (!Settings.AllCharacters && !IsLatin1(_stream.Peek()))
+                {
+                    _tokenEnd = _tokenStart = _stream.Position;
+                    HandleError(
+                       $"Unrecognized character '{(char)_stream.Peek()}' (U+{(ushort)_stream.Peek()}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
+                    return;
+                }
+                else
+                {
+                    _textPool.Append((char)_stream.Read());
+                }
+            }
+
+            _tokenEnd = _stream.Position;
+            _state = _stream.EndOfStream ? ParserState.End : ParserState.Start;
+            _token = new PropertiesToken(PropertiesTokenType.Value, _textPool.ToString());
+        }
+
+        private bool HandleEscapeSequence()
+        {
+            StreamMark escapeStart = _stream.Position;
+
             // Eat '\\'
             _stream.Read();
 
-            // Don't escape stream end
-            if (_stream.EndOfStream)
+            int escape = _stream.Read();
+
+            switch (escape)
             {
-                _tokenEnd = _tokenStart = _stream.CurrentPosition;
-                CreateError($"Cannot escape stream end at line {_tokenStart.Line} column {_tokenStart.Column}!");
-                return false;
-            }
+                // Normal escapes
+                case '0': _textPool.Append('\0'); break;
+                case 'a': _textPool.Append('\a'); break;
+                case 'f': _textPool.Append('\f'); break;
+                case 'r': _textPool.Append('\r'); break;
+                case 'n': _textPool.Append('\n'); break;
+                case 't': _textPool.Append('\t'); break;
+                case 'v': _textPool.Append('\v'); break;
+                case '\\': _textPool.Append('\\'); break;
+                case '\"': _textPool.Append('\"'); break;
+                case '\'': _textPool.Append('\''); break;
+                case '=': _textPool.Append('='); break;
+                case ':': _textPool.Append(':'); break;
+                case ' ': _textPool.Append('\x20'); break;
 
-            // Check for Unicode escape
-            else if (IsUnicodeEscape(out byte codeLength))
-            {
-                int codePoint = ReadUnicodeEscape(codeLength);
+                // Logical lines
+                // TODO: Maybe switch from this case into the default case and use a IsNewLine(...) check
+                case '\r':
+                case '\n':
+                    _textLogicalLines = true;
 
-                if (codePoint == -1)
-                {
-                    _tokenEnd = _tokenStart = _stream.CurrentPosition;
-                    CreateError(
-                        $"Invalid Unicode escape sequence at line {_tokenStart.Line} column {_tokenStart.Column}!");
+                    // Move back cursor from read since ReadLineEnd() moves for us
+                    if (escape != '\r' || _stream.Peek() != '\n')
+                        _stream.Cursor.AdvanceColumn(-1);
 
-                    return false;
-                }
+                    _stream.ReadLineEnd();
 
-                _textPool.Append(char.ConvertFromUtf32(codePoint));
-            }
+                    // Skip trailing white-space of value or assigner
+                    while (IsWhiteSpace(_stream.Peek()))
+                        _stream.Read();
 
-            // Check for normal escapes
-            else if (_escapeCharsToCodes.TryGetValue(_stream.Peek(), out char escapeCode))
-            {
-                _textPool.Append(escapeCode);
-                _stream.Read();
-            }
+                    break;
 
-            // Check for logical line
-            else if (_stream.IsNewLine())
-            {
-                _textLogicalLines = true;
+                case 'u':
+                    return ParseUnicodeEscape(in escapeStart, (char)escape);
 
-                _stream.ReadLineEnd();
-                _stream.ReadWhiteSpace();
-            }
-
-            // Invalid escape code
-            else if (Settings.InvalidEscapes)
-            {
-                // Read invalid escape silently, as specification states
-                // Enforce ISO-8859-1
-                if (!Settings.AllCharacters && !_stream.IsLatin1())
-                {
-                    _tokenEnd = _tokenStart = _stream.CurrentPosition;
-                    CreateError(
-                        $"Unrecognized character '{_stream.Peek()}' (\\u{(ushort)_stream.Peek()}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
-                    return false;
-                }
-
-                _textPool.Append(_stream.Read());
-            }
-
-            // Error on invalid escape
-            else
-            {
-                _tokenEnd = _tokenStart = _stream.CurrentPosition;
-                CreateError($"Invalid escape code at line {_tokenStart.Line} column {_tokenStart.Column}!");
-                return false;
+                // Invalid escapes or end of stream
+                default:
+                    if ((escape == 'x' || escape == 'U') && Settings.AllUnicodeEscapes)
+                    {
+                        return ParseUnicodeEscape(in escapeStart, (char)escape);
+                    }
+                    else if (_stream.EndOfStream)
+                    {
+                        _textPool.Append('\\');
+                    }
+                    else if (!Settings.InvalidEscapes)
+                    {
+                        _tokenStart = escapeStart;
+                        _tokenEnd = _stream.Position;
+                        HandleError($"Invalid escape code \"\\{(char)escape}\" at line {_tokenStart.Line} column {_tokenStart.Column}!");
+                        return false;
+                    }
+                    else
+                    {
+                        _textPool.Append((char)escape);
+                    }
+                    break;
             }
 
             return true;
         }
 
-        private bool IsUnicodeEscape(out byte codeLength)
+        private bool ParseUnicodeEscape(in StreamMark errEscapeStart, char identifier)
         {
-            // Check for default Unicode escape
-            if (_stream.Check(0, 'u'))
-            {
-                codeLength = 4;
-                return true;
-            }
-
-            if (Settings.AllUnicodeEscapes)
-            {
-                // Check for 1-4 digit escape
-                if (_stream.Check(0, 'x'))
-                {
-                    codeLength = 4;
-                    return true;
-                }
-                // Check for 8 digit escape
-
-                if (_stream.Check(0, 'U'))
-                {
-                    codeLength = 8;
-                    return true;
-                }
-            }
-
-            codeLength = default;
-            return false;
-        }
-
-        private int ReadUnicodeEscape(byte codeLength)
-        {
-            // Eat 'u', 'U', or 'x'
-            char identifier = _stream.Read();
-
             int codePoint = 0;
+
+            // TODO: Maybe make 'u' && 'x' explicit
+            byte codeLength = identifier == 'U' ? (byte)8 : (byte)4;
 
             for (byte i = 0; i < codeLength; i++)
             {
-                int hex = _stream.ReadHex(); // ASCII -> Number value
+                int hex = ToHex(_stream.Read()); // '9' -> 9
 
                 if (hex < 0 || hex > 15)
                 {
                     if (i > 0 && identifier == 'x')
                         break;
 
-                    return -1;
+                    return HandleUnicodeError(in errEscapeStart);
                 }
+                // First 2 must be 00 on valid '\U00xxxxxx'
+                else if (identifier == 'U' && i < 2 && hex != 0)
+                    return HandleUnicodeError(in errEscapeStart);
 
-                //  F    F    F    F
-                // 0000'0000 0000'0000
-                // Shift to appropriate spot - first read = MSB, last read = LSB
                 codePoint = (codePoint << 4) + hex;
 
                 // A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, 
                 // and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff)
                 if (!(codePoint <= 0x10FFFF && (codePoint < 0xD800 || codePoint > 0xDFFF)))
-                    return -1;
+                    return HandleUnicodeError(in errEscapeStart);
             }
 
-            return codePoint;
+            _textPool.Append(char.ConvertFromUtf32(codePoint));
+            return true;
         }
 
-        private void FinalizeText(bool key)
+        private bool HandleUnicodeError(in StreamMark errEscapeStart)
         {
-            if (!key)
-            {
-                _token = new PropertiesToken(PropertiesTokenType.Value, _textPool.ToString());
-                return;
-            }
+            _tokenStart = errEscapeStart;
+            _tokenEnd = _stream.Cursor.CurrentPosition;
 
-            // Skip trailing white-space, but not assigner
-            if (_stream.IsWhiteSpace())
-                _stream.ReadWhiteSpace(1);
+            // TODO: Display sequence in error msg
+            HandleError(
+                $"Invalid Unicode escape sequence at line {_tokenStart.Line} column {_tokenStart.Column}!");
 
-            // Read current if current is ' ' and next is ':' or '=' (since the case might be: "hello = world")
-            if (_stream.IsWhiteSpace() &&
-                (_stream.IsWhiteSpace(1) || _stream.Check(1, '=') || _stream.Check(1, ':')))
-                _stream.Read();
-
-            _token = new PropertiesToken(PropertiesTokenType.Key, _textPool.ToString());
+            return false;
         }
 
-        private void CreateError(string message)
+        private void HandleError(string message)
         {
-            if (Settings.ThrowOnError)
-            {
-                if (Settings.CloseOnEnd)
-                    Dispose();
-                throw new PropertiesException(message);
-            }
+            if (Settings.CloseOnEnd)
+                Dispose();
 
+            _state = ParserState.Error;
             _token = new PropertiesToken(PropertiesTokenType.Error, message);
+
+            if (Settings.ThrowOnError)
+                throw new PropertiesException(message);
         }
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private bool IsWhiteSpace(int c) => c == '\x20' || c == '\t' || c == '\f';
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private bool IsLiteralAssigner(int c) => c == '=' || c == ':';
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private bool IsAssigner(int c) => IsLiteralAssigner(c) || IsWhiteSpace(c);
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private bool IsNewLine(int c) => c == '\r' || c == '\n';
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private bool IsCommentHandle(int c) => c == '#' || c == '!';
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private int ToHex(int c) => c <= '9' ? c - '0' :
+                (c <= 'F' ? c - 'A' + 10 : c - 'a' + 10);
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private bool IsLatin1(int c) => c <= 0xFF;
 
         private void Dispose(bool disposing)
         {
-            if (_disposed)
-                return;
-
             if (disposing)
             {
                 _stream.Dispose();
             }
 
-            _escapeCharsToCodes.Clear();
             _textPool.Length = 0;
+            _textPool = null!;
+            _stream = null!;
             _textLogicalLines = default;
             _commentHandle = default;
             _disposed = true;
@@ -446,6 +519,9 @@ namespace PropertiesDotNet.Core
         /// <inheritdoc/>
         public void Dispose()
         {
+            if (_disposed)
+                return;
+
             Dispose(Settings.CloseOnEnd);
             GC.SuppressFinalize(this);
         }

@@ -1,0 +1,4465 @@
+﻿# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\4=value\4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+\:\ \== \\colon\\space\\equal\\

@@ -18,7 +18,7 @@
 
         /// <summary>
         /// Represents a comment in a .properties document. In a standard ".properties"
-        /// document lines begin with either a "!" or "#".
+        /// document comment indicators begin with either a "!" or "#".
         /// </summary>
         Comment,
 

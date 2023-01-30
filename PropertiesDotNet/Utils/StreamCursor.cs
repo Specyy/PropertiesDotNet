@@ -1,11 +1,12 @@
 ﻿using System;
+using PropertiesDotNet.Core;
 using System.Runtime.CompilerServices;
 
 #if !NETSTANDARD1_3
 using System.Runtime.Serialization;
 #endif
 
-namespace PropertiesDotNet.Core
+namespace PropertiesDotNet.Utils
 {
     /// <summary>
     /// A cursor for marking a reading or writing position.
@@ -27,7 +28,7 @@ namespace PropertiesDotNet.Core
         /// <summary>
         /// The current line.
         /// </summary>
-        public uint Line { get; set; } = 1;
+        public ulong Line { get; set; } = 1;
 
         /// <summary>
         /// The current column.
@@ -54,7 +55,7 @@ namespace PropertiesDotNet.Core
         /// <param name="context">The context.</param>
         public StreamCursor(SerializationInfo info, StreamingContext context)
         {
-            Line = info.GetUInt32(nameof(StreamMark.Line));
+            Line = info.GetUInt64(nameof(StreamMark.Line));
             Column = info.GetUInt32(nameof(StreamMark.Column));
             AbsoluteOffset = info.GetUInt64(nameof(StreamMark.AbsoluteOffset));
         }
@@ -64,7 +65,7 @@ namespace PropertiesDotNet.Core
         /// Advances by the specified amount of characters.
         /// </summary>
         /// <param name="amount">The amount.</param>
-        public void AdvanceColumn(int amount = 1)
+        public void AdvanceColumn(int amount)
         {
             if (Line == 0)
                 Line = 1;

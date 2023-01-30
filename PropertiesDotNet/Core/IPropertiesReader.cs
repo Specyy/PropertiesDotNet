@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PropertiesDotNet.Core
 {
@@ -25,12 +23,27 @@ namespace PropertiesDotNet.Core
         /// <summary>
         /// The settings for this reader.
         /// </summary>
-        PropertiesReaderSettings Settings { get; }
+        PropertiesReaderSettings Settings { get; set; }
 
         /// <summary>
         /// Returns the current token.
         /// </summary>
         PropertiesToken Token { get; }
+
+        /// <summary>
+        /// Represents a marker on the starting position of the current token.
+        /// </summary>
+        public StreamMark? TokenStart { get; }
+
+        /// <summary>
+        /// Represents a marker on the ending position of the current token.
+        /// </summary>
+        public StreamMark? TokenEnd { get; }
+
+        /// <summary>
+        /// Whether this reader preserves line information.
+        /// </summary>
+        bool HasLineInfo { get; }
 
         /// <summary>
         /// Moves to the next token.
