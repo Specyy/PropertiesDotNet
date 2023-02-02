@@ -82,6 +82,13 @@ namespace PropertiesDotNet.Utils
             }
         }
 
+        internal void CopyFrom(in StreamMark mark)
+        {
+            Line = mark.Line;
+            Column = mark.Column;
+            AbsoluteOffset = mark.AbsoluteOffset;
+        }
+
         /// <summary>
         /// Advances to a new line.
         /// </summary>

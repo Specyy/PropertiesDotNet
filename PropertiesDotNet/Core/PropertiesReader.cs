@@ -7,7 +7,7 @@ using PropertiesDotNet.Utils;
 
 namespace PropertiesDotNet.Core
 {
-    enum ParserState
+    enum DocumentState
     {
         Start = 0,
         Comment,
@@ -64,7 +64,7 @@ namespace PropertiesDotNet.Core
         private PropertiesToken _token;
         private StringBuilder _textPool;
 
-        private ParserState _state;
+        private DocumentState _state;
         private char _commentHandle;
         private bool _textLogicalLines;
         private StreamMark _tokenStart;
@@ -105,7 +105,7 @@ namespace PropertiesDotNet.Core
         /// <inheritdoc/>
         public bool MoveNext()
         {
-            if (ReadNext())
+            if (ReadToken())
             {
                 TokenRead?.Invoke(this, _token);
                 return true;
@@ -114,11 +114,11 @@ namespace PropertiesDotNet.Core
             return false;
         }
 
-        private bool ReadNext()
+        private bool ReadToken()
         {
             switch (_state)
             {
-                case ParserState.Start:
+                case DocumentState.Start:
                     int next = _stream.Peek();
 
                     // Remove white-space before token
@@ -135,43 +135,43 @@ namespace PropertiesDotNet.Core
                     {
                         if (!Settings.IgnoreComments)
                         {
-                            _state = ParserState.Comment;
-                            return ReadNext();
+                            _state = DocumentState.Comment;
+                            return ReadToken();
                         }
 
                         SkipComments();
                     }
 
-                    _state = _stream.EndOfStream ? ParserState.End : ParserState.Key;
-                    return ReadNext();
+                    _state = _stream.EndOfStream ? DocumentState.End : DocumentState.Key;
+                    return ReadToken();
 
-                case ParserState.Comment:
+                case DocumentState.Comment:
                     ReadComment();
                     return true;
 
-                case ParserState.Key:
+                case DocumentState.Key:
                     ReadKey();
                     return true;
 
-                case ParserState.Assigner:
+                case DocumentState.Assigner:
                     return ReadAssigner();
 
-                case ParserState.Value:
+                case DocumentState.Value:
                     ReadValue();
 
                     // Ignore return value because we basically only do this for the disposing behaviour
                     // but we still need to emit this token
-                    if (_state == ParserState.End)
-                        ReadNext();
+                    if (_state == DocumentState.End)
+                        ReadToken();
 
                     return true;
 
-                case ParserState.Error:
-                    _state = ParserState.End;
-                    return ReadNext();
+                case DocumentState.Error:
+                    _state = DocumentState.End;
+                    return ReadToken();
 
                 default:
-                case ParserState.End:
+                case DocumentState.End:
                     if (Settings.CloseOnEnd)
                         Dispose();
                     return false;
@@ -222,7 +222,7 @@ namespace PropertiesDotNet.Core
             _tokenEnd = _stream.Position;
             _stream.ReadLineEnd();
 
-            _state = ParserState.Start;
+            _state = DocumentState.Start;
             _token = new PropertiesToken(PropertiesTokenType.Comment, _textPool.ToString());
         }
 
@@ -242,7 +242,7 @@ namespace PropertiesDotNet.Core
                 else if (IsAssigner(_stream.Peek()))
                 {
                     _tokenEnd = _stream.Position;
-                    _state = ParserState.Assigner;
+                    _state = DocumentState.Assigner;
                     _token = new PropertiesToken(PropertiesTokenType.Key, _textPool.ToString());
                     return;
                 }
@@ -251,7 +251,7 @@ namespace PropertiesDotNet.Core
                 {
                     _tokenEnd = _tokenStart = _stream.Position;
                     HandleError(
-                       $"Unrecognized character '{(char)_stream.Peek()}' (U+{(ushort)_stream.Peek()}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
+                       $"Unrecognized character '{(char)_stream.Peek()}' ({(ushort)_stream.Peek()}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
                     return;
                 }
                 else
@@ -261,7 +261,7 @@ namespace PropertiesDotNet.Core
             }
 
             _tokenEnd = _stream.Position;
-            _state = ParserState.Value;
+            _state = DocumentState.Value;
             _token = new PropertiesToken(PropertiesTokenType.Key, _textPool.ToString());
         }
 
@@ -286,13 +286,13 @@ namespace PropertiesDotNet.Core
                 // Key with a bunch of trailing white-spaces but no value
                 else if (IsNewLine(_stream.Peek()) || _stream.EndOfStream)
                 {
-                    _state = ParserState.Value;
-                    return ReadNext();
+                    _state = DocumentState.Value;
+                    return ReadToken();
                 }
             }
 
             _tokenEnd = _stream.Position;
-            _state = ParserState.Value;
+            _state = DocumentState.Value;
             _token = new PropertiesToken(PropertiesTokenType.Assigner, ((char)lastAssigner).ToString());
             return true;
         }
@@ -319,7 +319,7 @@ namespace PropertiesDotNet.Core
                 {
                     _tokenEnd = _tokenStart = _stream.Position;
                     HandleError(
-                       $"Unrecognized character '{(char)_stream.Peek()}' (U+{(ushort)_stream.Peek()}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
+                       $"Unrecognized character '{(char)_stream.Peek()}' ({(ushort)_stream.Peek()}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
                     return;
                 }
                 else
@@ -329,7 +329,7 @@ namespace PropertiesDotNet.Core
             }
 
             _tokenEnd = _stream.Position;
-            _state = _stream.EndOfStream ? ParserState.End : ParserState.Start;
+            _state = _stream.EndOfStream ? DocumentState.End : DocumentState.Start;
             _token = new PropertiesToken(PropertiesTokenType.Value, _textPool.ToString());
         }
 
@@ -444,7 +444,7 @@ namespace PropertiesDotNet.Core
         private bool HandleUnicodeError(in StreamMark errEscapeStart)
         {
             _tokenStart = errEscapeStart;
-            _tokenEnd = _stream.Cursor.CurrentPosition;
+            _tokenEnd = _stream.Position;
 
             // TODO: Display sequence in error msg
             HandleError(
@@ -458,7 +458,7 @@ namespace PropertiesDotNet.Core
             if (Settings.CloseOnEnd)
                 Dispose();
 
-            _state = ParserState.Error;
+            _state = DocumentState.Error;
             _token = new PropertiesToken(PropertiesTokenType.Error, message);
 
             if (Settings.ThrowOnError)

@@ -13,6 +13,7 @@ using Kajabity.Tools.Java;
 using Newtonsoft.Json;
 
 using PropertiesDotNet.Core;
+using PropertiesDotNet.Serialization.ObjectProviders;
 
 namespace PropertiesDotNet.Test
 {
@@ -67,7 +68,7 @@ valueWithEscapes = This is a newline\n and a carriage return\r and a tab\t.
 # In the following example, the value for ""encodedHelloInJapanese"" is ""こんにちは"".
 encodedHelloInJapanese = \u3053\u3093\u306b\u3061\u306f
 # But with more modern file encodings like UTF-8, you can directly use supported characters.
-helloInJapanese = こんにちは";
+#helloInJapanese = こんにちは";
 
         internal const string JSON_SOURCE = @"{""widget"": {
     ""debug"": ""on"",
@@ -107,7 +108,15 @@ helloInJapanese = こんにちは";
             ////reader.Read();
 
             //Console.WriteLine("first----------------------------");
-
+            var provider = new ExpressionObjectProvider();
+            //IPropertiesReader obj = provider.Construct<IPropertiesReader>();
+            var r = provider.Construct<PropertiesReader>(new Type[] { typeof(TextReader), typeof(PropertiesReaderSettings) }, new object[] {new StringReader("hello:world"), null});
+            r.MoveNext();
+            Console.WriteLine(r.Token);
+            r.MoveNext();
+            Console.WriteLine(r.Token);
+            r.MoveNext();
+            Console.WriteLine(r.Token);
             while (reader.MoveNext())
             {
                 var token = reader.Token;
@@ -127,8 +136,30 @@ helloInJapanese = こんにちは";
                         break;
                 }
             }
-            Console.WriteLine();
-            Console.WriteLine();
+
+
+
+            Console.WriteLine("----------------------------------------------------------------------------------------------------");
+            StringBuilder sb = new StringBuilder();
+            var writer = new PropertiesWriter(new StringWriter(sb));
+            writer.TokenWritten += Writer_EventWritten;
+            writer.WriteComment("Chisen");
+            writer.WriteComment("Chisen 2");
+            writer.WriteKey("ChisenはKey");
+            writer.WriteValue("ChisenKeyVal");
+            writer.WriteComment("Chisen Com after val");
+            writer.WriteKey("ChisenSecond");
+            writer.WriteValue("ChisenSecondVal");
+            writer.WriteKey("ChisenSecondAfterKey");
+            writer.WriteValue("ChisenSecondAfterKeyVal");
+            writer.WriteKey(" KeyStartw/whitespace");
+            writer.WriteValue(" valStartw/backwhitespace");
+            writer.WriteKey("#KeyStart#w/backwhitespaceLogical\n!LinesLol", true);
+            writer.WriteValue("KeyStartw/backwhitespaceLogical\n#Lines even more LOL", true);
+            writer.WriteComment("Chisen Com after val");
+            writer.Dispose();
+            Console.WriteLine(sb);
+            Console.WriteLine("----------------------------------------------------------------------------------------------------");
             //var e = fastJSON.JSON.Parse(JSON_SOURCE);
             //BenchmarkRunner.Run<BenchmarkTester>();
 
@@ -249,6 +280,11 @@ helloInJapanese = こんにちは";
             Console.WriteLine(nameof(StreamMark) + sizeof(StreamMark));
             Console.WriteLine(nameof(PropertiesToken) + sizeof(PropertiesToken));
             Console.Read();
+        }
+
+        private static void Writer_EventWritten(IPropertiesWriter writer, PropertiesToken token)
+        {
+            Console.WriteLine($"Wrote: {token}");
         }
 
         public static Stream ToStream( string str)

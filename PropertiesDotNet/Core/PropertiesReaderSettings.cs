@@ -31,7 +31,7 @@ namespace PropertiesDotNet.Core
         public virtual bool AllCharacters { get; set; } = false;
 
         /// <summary>
-        /// Whether a <see cref="PropertiesException"/> should be thrown whenever a <see cref="IPropertiesReader"/> encounters
+        /// Whether a <see cref="PropertiesException"/> should be thrown whenever an <see cref="IPropertiesReader"/> encounters
         /// an error in a ".properties" document, or if an <see cref="PropertiesTokenType.Error"/> should be produced.
         /// </summary>
         public virtual bool ThrowOnError { get; set; } = true;
@@ -84,7 +84,7 @@ namespace PropertiesDotNet.Core
         /// Copies the configuration of the <paramref name="settings"/> into this instance.
         /// </summary>
         /// <param name="settings">The settings to copy.</param>
-        public void CopyFrom(PropertiesReaderSettings settings)
+        public virtual void CopyFrom(PropertiesReaderSettings settings)
         {
             IgnoreComments = settings.IgnoreComments;
             InvalidEscapes = settings.InvalidEscapes;
@@ -95,7 +95,7 @@ namespace PropertiesDotNet.Core
         }
 
         /// <inheritdoc/>
-        public bool Equals(PropertiesReaderSettings? other)
+        public virtual bool Equals(PropertiesReaderSettings? other)
         {
             return 
                 IgnoreComments == other?.IgnoreComments &&

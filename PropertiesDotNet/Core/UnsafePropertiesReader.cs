@@ -55,7 +55,7 @@ namespace PropertiesDotNet.Core
         private PropertiesToken _token;
         private StringBuilder _textPool;
 
-        private ParserState _state;
+        private DocumentState _state;
         private char _commentHandle;
         private bool _textLogicalLines;
         private StreamCursor _cursor;
@@ -92,7 +92,7 @@ namespace PropertiesDotNet.Core
         {
             fixed (char* document = _document)
             {
-                if (ReadNext(document))
+                if (ReadToken(document))
                 {
                     TokenRead?.Invoke(this, _token);
                     return true;
@@ -102,11 +102,11 @@ namespace PropertiesDotNet.Core
             return false;
         }
 
-        private unsafe bool ReadNext(char* document)
+        private unsafe bool ReadToken(char* document)
         {
             switch (_state)
             {
-                case ParserState.Start:
+                case DocumentState.Start:
 
                     // Remove white-space before token
                     while (!EndOfStream && (IsWhiteSpace(document[_index]) || IsNewLine(document[_index])))
@@ -121,42 +121,42 @@ namespace PropertiesDotNet.Core
                     {
                         if (!Settings.IgnoreComments)
                         {
-                            _state = ParserState.Comment;
-                            return ReadNext(document);
+                            _state = DocumentState.Comment;
+                            return ReadToken(document);
                         }
 
                         SkipComments(document);
                     }
 
-                    _state = EndOfStream ? ParserState.End : ParserState.Key;
-                    return ReadNext(document);
+                    _state = EndOfStream ? DocumentState.End : DocumentState.Key;
+                    return ReadToken(document);
 
-                case ParserState.Comment:
+                case DocumentState.Comment:
                     ReadComment(document);
                     return true;
 
-                case ParserState.Key:
+                case DocumentState.Key:
                     ReadKey(document);
                     return true;
 
-                case ParserState.Assigner:
+                case DocumentState.Assigner:
                     return ReadAssigner(document);
 
-                case ParserState.Value:
+                case DocumentState.Value:
                     ReadValue(document);
 
                     // Ignore return value because we basically only do this for the disposing behaviour
-                    if (_state == ParserState.End)
-                        ReadNext(document);
+                    if (_state == DocumentState.End)
+                        ReadToken(document);
 
                     return true;
 
-                case ParserState.Error:
-                    _state = ParserState.End;
-                    return ReadNext(document);
+                case DocumentState.Error:
+                    _state = DocumentState.End;
+                    return ReadToken(document);
 
                 default:
-                case ParserState.End:
+                case DocumentState.End:
                     if (Settings.CloseOnEnd)
                         Dispose();
                     return false;
@@ -208,7 +208,7 @@ namespace PropertiesDotNet.Core
 
             _tokenEnd = _cursor.CurrentPosition;
 
-            _state = ParserState.Start;
+            _state = DocumentState.Start;
             _token = new PropertiesToken(PropertiesTokenType.Comment,
                 new string(document, textStartIndex, _index - textStartIndex));
 
@@ -246,7 +246,7 @@ namespace PropertiesDotNet.Core
                 else if (IsAssigner(document[_index]))
                 {
                     _tokenEnd = _cursor.CurrentPosition;
-                    _state = ParserState.Assigner;
+                    _state = DocumentState.Assigner;
                     // TODO: Allow for use for Span<T> in later .NET versions
                     _token = new PropertiesToken(PropertiesTokenType.Key,
                         escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
@@ -257,7 +257,7 @@ namespace PropertiesDotNet.Core
                 {
                     _tokenEnd = _tokenStart = _cursor.CurrentPosition;
                     HandleError(
-                       $"Unrecognized character '{document[_index]}' (U+{(ushort)document[_index]}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
+                       $"Unrecognized character '{document[_index]}' ({(ushort)document[_index]}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
                     return;
                 }
                 else
@@ -268,7 +268,7 @@ namespace PropertiesDotNet.Core
             }
 
             _tokenEnd = _cursor.CurrentPosition;
-            _state = ParserState.Value;
+            _state = DocumentState.Value;
             // TODO: Allow for use for Span<T> in later .NET versions
             _token = new PropertiesToken(PropertiesTokenType.Key,
                 escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
@@ -297,13 +297,13 @@ namespace PropertiesDotNet.Core
                 // Key with a bunch of trailing white-spaces but no value
                 else if (EndOfStream || IsNewLine(document[_index]))
                 {
-                    _state = ParserState.Value;
-                    return ReadNext(document);
+                    _state = DocumentState.Value;
+                    return ReadToken(document);
                 }
             }
 
             _tokenEnd = _cursor.CurrentPosition;
-            _state = ParserState.Value;
+            _state = DocumentState.Value;
             _token = new PropertiesToken(PropertiesTokenType.Assigner, lastAssigner.ToString());
             return true;
         }
@@ -346,7 +346,7 @@ namespace PropertiesDotNet.Core
                 {
                     _tokenEnd = _tokenStart = _cursor.CurrentPosition;
                     HandleError(
-                       $"Unrecognized character '{document[_index]}' (U+{(ushort)document[_index]}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
+                       $"Unrecognized character '{document[_index]}' ({(ushort)document[_index]}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
                     return;
                 }
                 else
@@ -357,7 +357,7 @@ namespace PropertiesDotNet.Core
             }
 
             _tokenEnd = _cursor.CurrentPosition;
-            _state = EndOfStream ? ParserState.End : ParserState.Start;
+            _state = EndOfStream ? DocumentState.End : DocumentState.Start;
             // TODO: Allow for use for Span<T> in later .NET versions
             _token = new PropertiesToken(PropertiesTokenType.Value,
                 escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
@@ -489,7 +489,7 @@ namespace PropertiesDotNet.Core
             if (Settings.CloseOnEnd)
                 Dispose();
 
-            _state = ParserState.Error;
+            _state = DocumentState.Error;
             _token = new PropertiesToken(PropertiesTokenType.Error, message);
 
             if (Settings.ThrowOnError)

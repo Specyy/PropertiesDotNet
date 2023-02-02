@@ -369,7 +369,6 @@ namespace PropertiesDotNet.Utils
             result = 0;
             var negative = false;
 
-
             for (var i = 0; i < input.Length; i++)
             {
                 var ch = input[i];
