@@ -55,7 +55,7 @@ namespace PropertiesDotNet.Core
         private PropertiesToken _token;
         private StringBuilder _textPool;
 
-        private DocumentState _state;
+        private ParserState _state;
         private char _commentHandle;
         private bool _textLogicalLines;
         private StreamCursor _cursor;
@@ -106,7 +106,7 @@ namespace PropertiesDotNet.Core
         {
             switch (_state)
             {
-                case DocumentState.Start:
+                case ParserState.Start:
 
                     // Remove white-space before token
                     while (!EndOfStream && (IsWhiteSpace(document[_index]) || IsNewLine(document[_index])))
@@ -121,42 +121,42 @@ namespace PropertiesDotNet.Core
                     {
                         if (!Settings.IgnoreComments)
                         {
-                            _state = DocumentState.Comment;
+                            _state = ParserState.Comment;
                             return ReadToken(document);
                         }
 
                         SkipComments(document);
                     }
 
-                    _state = EndOfStream ? DocumentState.End : DocumentState.Key;
+                    _state = EndOfStream ? ParserState.End : ParserState.Key;
                     return ReadToken(document);
 
-                case DocumentState.Comment:
+                case ParserState.Comment:
                     ReadComment(document);
                     return true;
 
-                case DocumentState.Key:
+                case ParserState.Key:
                     ReadKey(document);
                     return true;
 
-                case DocumentState.Assigner:
+                case ParserState.Assigner:
                     return ReadAssigner(document);
 
-                case DocumentState.Value:
+                case ParserState.Value:
                     ReadValue(document);
 
                     // Ignore return value because we basically only do this for the disposing behaviour
-                    if (_state == DocumentState.End)
+                    if (_state == ParserState.End)
                         ReadToken(document);
 
                     return true;
 
-                case DocumentState.Error:
-                    _state = DocumentState.End;
+                case ParserState.Error:
+                    _state = ParserState.End;
                     return ReadToken(document);
 
                 default:
-                case DocumentState.End:
+                case ParserState.End:
                     if (Settings.CloseOnEnd)
                         Dispose();
                     return false;
@@ -208,7 +208,7 @@ namespace PropertiesDotNet.Core
 
             _tokenEnd = _cursor.CurrentPosition;
 
-            _state = DocumentState.Start;
+            _state = ParserState.Start;
             _token = new PropertiesToken(PropertiesTokenType.Comment,
                 new string(document, textStartIndex, _index - textStartIndex));
 
@@ -246,7 +246,7 @@ namespace PropertiesDotNet.Core
                 else if (IsAssigner(document[_index]))
                 {
                     _tokenEnd = _cursor.CurrentPosition;
-                    _state = DocumentState.Assigner;
+                    _state = ParserState.Assigner;
                     // TODO: Allow for use for Span<T> in later .NET versions
                     _token = new PropertiesToken(PropertiesTokenType.Key,
                         escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
@@ -268,7 +268,7 @@ namespace PropertiesDotNet.Core
             }
 
             _tokenEnd = _cursor.CurrentPosition;
-            _state = DocumentState.Value;
+            _state = ParserState.Value;
             // TODO: Allow for use for Span<T> in later .NET versions
             _token = new PropertiesToken(PropertiesTokenType.Key,
                 escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
@@ -297,13 +297,13 @@ namespace PropertiesDotNet.Core
                 // Key with a bunch of trailing white-spaces but no value
                 else if (EndOfStream || IsNewLine(document[_index]))
                 {
-                    _state = DocumentState.Value;
+                    _state = ParserState.Value;
                     return ReadToken(document);
                 }
             }
 
             _tokenEnd = _cursor.CurrentPosition;
-            _state = DocumentState.Value;
+            _state = ParserState.Value;
             _token = new PropertiesToken(PropertiesTokenType.Assigner, lastAssigner.ToString());
             return true;
         }
@@ -357,7 +357,7 @@ namespace PropertiesDotNet.Core
             }
 
             _tokenEnd = _cursor.CurrentPosition;
-            _state = EndOfStream ? DocumentState.End : DocumentState.Start;
+            _state = EndOfStream ? ParserState.End : ParserState.Start;
             // TODO: Allow for use for Span<T> in later .NET versions
             _token = new PropertiesToken(PropertiesTokenType.Value,
                 escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
@@ -489,7 +489,7 @@ namespace PropertiesDotNet.Core
             if (Settings.CloseOnEnd)
                 Dispose();
 
-            _state = DocumentState.Error;
+            _state = ParserState.Error;
             _token = new PropertiesToken(PropertiesTokenType.Error, message);
 
             if (Settings.ThrowOnError)
@@ -501,11 +501,10 @@ namespace PropertiesDotNet.Core
 #endif
         private unsafe void ReadLineEnd(char* document)
         {
-            Read();
-
-            if (document[_index - 1] == '\r' && !EndOfStream && document[_index] == '\n')
+            if (document[_index] == '\r' && _index + 1 < _document.Length && document[_index + 1] == '\n')
                 Read();
 
+            _index++;
             _cursor.AdvanceLine();
         }
 

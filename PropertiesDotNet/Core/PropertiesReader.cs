@@ -7,7 +7,7 @@ using PropertiesDotNet.Utils;
 
 namespace PropertiesDotNet.Core
 {
-    enum DocumentState
+    enum ParserState : byte
     {
         Start = 0,
         Comment,
@@ -64,7 +64,7 @@ namespace PropertiesDotNet.Core
         private PropertiesToken _token;
         private StringBuilder _textPool;
 
-        private DocumentState _state;
+        private ParserState _state;
         private char _commentHandle;
         private bool _textLogicalLines;
         private StreamMark _tokenStart;
@@ -118,7 +118,7 @@ namespace PropertiesDotNet.Core
         {
             switch (_state)
             {
-                case DocumentState.Start:
+                case ParserState.Start:
                     int next = _stream.Peek();
 
                     // Remove white-space before token
@@ -135,43 +135,43 @@ namespace PropertiesDotNet.Core
                     {
                         if (!Settings.IgnoreComments)
                         {
-                            _state = DocumentState.Comment;
+                            _state = ParserState.Comment;
                             return ReadToken();
                         }
 
                         SkipComments();
                     }
 
-                    _state = _stream.EndOfStream ? DocumentState.End : DocumentState.Key;
+                    _state = _stream.EndOfStream ? ParserState.End : ParserState.Key;
                     return ReadToken();
 
-                case DocumentState.Comment:
+                case ParserState.Comment:
                     ReadComment();
                     return true;
 
-                case DocumentState.Key:
+                case ParserState.Key:
                     ReadKey();
                     return true;
 
-                case DocumentState.Assigner:
+                case ParserState.Assigner:
                     return ReadAssigner();
 
-                case DocumentState.Value:
+                case ParserState.Value:
                     ReadValue();
 
                     // Ignore return value because we basically only do this for the disposing behaviour
                     // but we still need to emit this token
-                    if (_state == DocumentState.End)
+                    if (_state == ParserState.End)
                         ReadToken();
 
                     return true;
 
-                case DocumentState.Error:
-                    _state = DocumentState.End;
+                case ParserState.Error:
+                    _state = ParserState.End;
                     return ReadToken();
 
                 default:
-                case DocumentState.End:
+                case ParserState.End:
                     if (Settings.CloseOnEnd)
                         Dispose();
                     return false;
@@ -222,7 +222,7 @@ namespace PropertiesDotNet.Core
             _tokenEnd = _stream.Position;
             _stream.ReadLineEnd();
 
-            _state = DocumentState.Start;
+            _state = ParserState.Start;
             _token = new PropertiesToken(PropertiesTokenType.Comment, _textPool.ToString());
         }
 
@@ -242,7 +242,7 @@ namespace PropertiesDotNet.Core
                 else if (IsAssigner(_stream.Peek()))
                 {
                     _tokenEnd = _stream.Position;
-                    _state = DocumentState.Assigner;
+                    _state = ParserState.Assigner;
                     _token = new PropertiesToken(PropertiesTokenType.Key, _textPool.ToString());
                     return;
                 }
@@ -261,7 +261,7 @@ namespace PropertiesDotNet.Core
             }
 
             _tokenEnd = _stream.Position;
-            _state = DocumentState.Value;
+            _state = ParserState.Value;
             _token = new PropertiesToken(PropertiesTokenType.Key, _textPool.ToString());
         }
 
@@ -286,13 +286,13 @@ namespace PropertiesDotNet.Core
                 // Key with a bunch of trailing white-spaces but no value
                 else if (IsNewLine(_stream.Peek()) || _stream.EndOfStream)
                 {
-                    _state = DocumentState.Value;
+                    _state = ParserState.Value;
                     return ReadToken();
                 }
             }
 
             _tokenEnd = _stream.Position;
-            _state = DocumentState.Value;
+            _state = ParserState.Value;
             _token = new PropertiesToken(PropertiesTokenType.Assigner, ((char)lastAssigner).ToString());
             return true;
         }
@@ -329,7 +329,7 @@ namespace PropertiesDotNet.Core
             }
 
             _tokenEnd = _stream.Position;
-            _state = _stream.EndOfStream ? DocumentState.End : DocumentState.Start;
+            _state = _stream.EndOfStream ? ParserState.End : ParserState.Start;
             _token = new PropertiesToken(PropertiesTokenType.Value, _textPool.ToString());
         }
 
@@ -458,7 +458,7 @@ namespace PropertiesDotNet.Core
             if (Settings.CloseOnEnd)
                 Dispose();
 
-            _state = DocumentState.Error;
+            _state = ParserState.Error;
             _token = new PropertiesToken(PropertiesTokenType.Error, message);
 
             if (Settings.ThrowOnError)
