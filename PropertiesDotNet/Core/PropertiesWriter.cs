@@ -1,13 +1,20 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 using PropertiesDotNet.Utils;
 
 namespace PropertiesDotNet.Core
 {
+    enum WriterState : byte
+    {
+        CommentOrKey,
+        ValueOrAssigner,
+        Value
+    }
+
     /// <summary>
     /// Represents a class that writes <see cref="PropertiesToken"/>s into a stream as text.
     /// </summary>
@@ -21,13 +28,13 @@ namespace PropertiesDotNet.Core
         }
 
         /// <inheritdoc/>
-        public event EventWritten? TokenWritten;
+        public event TokenWritten? TokenWritten;
 
-        private DocumentState _state;
         private PropertiesWriterSettings _settings;
         private bool _disposed;
         private uint _flushCounter;
 
+        private WriterState _state;
         private StringBuilder _textPool;
         private StreamCursor _cursor;
         private TextWriter _stream;
@@ -66,36 +73,18 @@ namespace PropertiesDotNet.Core
         }
 
         /// <inheritdoc/>
-        public bool Write(PropertiesToken token) => WriteToken(token);
-
-        private bool WriteToken(PropertiesToken token)
+        public bool Write(PropertiesToken token) => token.Type switch
         {
-            switch (token.Type)
-            {
-                case PropertiesTokenType.Comment:
-                    return WriteComment(token.Value);
-
-                case PropertiesTokenType.Key:
-                    return WriteKey(token.Value);
-
-                case PropertiesTokenType.Assigner:
-                    return token.Value.Length > 1 ?
-                        (Settings.ThrowOnError ? throw new PropertiesException("Assigner must be '=', ':' or any type of white-space!") : false)
-                        : WriteAssigner(token.Value[0]);
-
-                case PropertiesTokenType.Value:
-                    return WriteValue(token.Value);
-
-                case PropertiesTokenType.Error:
-                    return Settings.ThrowOnError ? throw new PropertiesException("Cannot emit error into properties stream!") : false;
-
-                case PropertiesTokenType.None:
-                    return Settings.ThrowOnError ? throw new PropertiesException("Cannot emit null token into properties stream!") : false;
-
-                default:
-                    return Settings.ThrowOnError ? throw new PropertiesException($"Unknown token type: {token.Type}") : false;
-            }
-        }
+            PropertiesTokenType.Comment => WriteComment(token.Value),
+            PropertiesTokenType.Key => WriteKey(token.Value),
+            PropertiesTokenType.Assigner => token.Value.Length > 1 ?
+                                    (Settings.ThrowOnError ? throw new PropertiesException("Assigner must be '=', ':' or any type of white-space!") : false)
+                                    : WriteAssigner(token.Value[0]),
+            PropertiesTokenType.Value => WriteValue(token.Value),
+            PropertiesTokenType.Error => Settings.ThrowOnError ? throw new PropertiesException("Cannot emit error into properties stream!") : false,
+            PropertiesTokenType.None => Settings.ThrowOnError ? throw new PropertiesException("Cannot emit null token into properties stream!") : false,
+            _ => Settings.ThrowOnError ? throw new PropertiesException($"Unknown token type: {token.Type}") : false,
+        };
 
         /// <summary>
         /// Writes a document comment.
@@ -119,15 +108,19 @@ namespace PropertiesDotNet.Core
             if (handle != '#' && handle != '!')
                 return Settings.ThrowOnError ? throw new PropertiesException("Command handle must be '#' or '!'") : false;
 
-            if (_state != DocumentState.Start && _state != DocumentState.Comment)
-                return Settings.ThrowOnError ? throw new PropertiesException($"Expected {_state} got {nameof(DocumentState.Comment)}!") : false;
+            if (Settings.IgnoreComments)
+                return false;
+
+            if (_state != WriterState.CommentOrKey)
+                return Settings.ThrowOnError ? throw new PropertiesException($"Expected {StateToString(_state)} got {nameof(ParserState.Comment)}!") : false;
 
             WriteInternal(handle);
             WriteInternal(' ');
             WriteInternal(value);
             WriteLineInternal();
+
             TokenWritten?.Invoke(this, new PropertiesToken(PropertiesTokenType.Comment, value));
-            _state = DocumentState.Start;
+            _state = WriterState.CommentOrKey;
             CheckFlush();
             return true;
         }
@@ -141,14 +134,14 @@ namespace PropertiesDotNet.Core
         public bool WriteKey(string key, bool logicalLines = false)
         {
             if (key is null)
-                throw new ArgumentNullException(nameof(key));
+                return Settings.ThrowOnError ? throw new ArgumentNullException(nameof(key)) : false;
 
-            if (_state != DocumentState.Start && _state != DocumentState.Key)
-                return Settings.ThrowOnError ? throw new PropertiesException($"Expected {_state} got {nameof(DocumentState.Key)}!") : false;
+            if (_state != WriterState.CommentOrKey)
+                return Settings.ThrowOnError ? throw new PropertiesException($"Expected {StateToString(_state)} got Key!") : false;
 
             if (WriteText(true, key, logicalLines))
             {
-                _state = DocumentState.Assigner;
+                _state = WriterState.ValueOrAssigner;
                 CheckFlush();
                 return true;
             }
@@ -165,14 +158,14 @@ namespace PropertiesDotNet.Core
         /// thrown.</exception>
         public bool WriteAssigner(char value = '=')
         {
-            if (_state != DocumentState.Value && _state != DocumentState.Assigner)
-                return Settings.ThrowOnError ? throw new PropertiesException($"Expected {_state} got {nameof(DocumentState.Assigner)}!") : false;
+            if (_state != WriterState.ValueOrAssigner)
+                return Settings.ThrowOnError ? throw new PropertiesException($"Expected {StateToString(_state)} got Assigner!") : false;
 
             if (value != '=' && value != ':' && value != ' ' && value != '\t' && value != '\f')
                 return Settings.ThrowOnError ? throw new PropertiesException($"Assigner must be '=', ':' or a white-space!") : false;
 
             WriteInternal(value);
-            _state = DocumentState.Value;
+            _state = WriterState.Value;
             CheckFlush();
             return true;
         }
@@ -185,8 +178,8 @@ namespace PropertiesDotNet.Core
         /// <returns>true if the value could be written; false otherwise.</returns>
         public bool WriteValue(string? value, bool logicalLines = false)
         {
-            if (_state != DocumentState.Value && _state != DocumentState.Assigner)
-                return Settings.ThrowOnError ? throw new PropertiesException($"Expected {_state} got {nameof(DocumentState.Value)}!") : false;
+            if (_state != WriterState.ValueOrAssigner && _state != WriterState.Value)
+                return Settings.ThrowOnError ? throw new PropertiesException($"Expected {StateToString(_state)} got Value!") : false;
 
             if (string.IsNullOrEmpty(value))
                 return true;
@@ -194,7 +187,7 @@ namespace PropertiesDotNet.Core
             if (WriteText(false, value, logicalLines))
             {
                 WriteLineInternal();
-                _state = DocumentState.Start;
+                _state = WriterState.CommentOrKey;
                 CheckFlush();
                 return true;
             }
@@ -208,7 +201,8 @@ namespace PropertiesDotNet.Core
             int fallbackStartIndex = _textPool.Length - 1;
             StreamMark fallback = _cursor.CurrentPosition;
 
-            if (!key && _state == DocumentState.Assigner)
+            if (!key && _state == WriterState.ValueOrAssigner)
+                // TODO: Maybe emit event for default assigner
                 WriteInternal('=');
 
             for (int i = 0; i < text.Length; i++)
@@ -221,13 +215,11 @@ namespace PropertiesDotNet.Core
                     case '\n':
                         if (logicalLines)
                         {
-                            // TODO: Write logical line
                             uint column = _cursor.Column;
 
                             WriteInternal('\\');
                             WriteLineInternal();
 
-                            // TODO: Check if condition works
                             while (_cursor.Column < column)
                                 WriteInternal(' ');
 
@@ -260,9 +252,7 @@ namespace PropertiesDotNet.Core
                     case '#':
                     case '!':
                         if (newLine)
-                        {
                             WriteInternal('\\');
-                        }
 
                         WriteInternal(ch);
                         newLine = false;
@@ -274,6 +264,7 @@ namespace PropertiesDotNet.Core
                             WriteInternal('\\');
 
                         WriteInternal(ch);
+                        newLine = false;
                         break;
 
                     case '\\':
@@ -287,10 +278,13 @@ namespace PropertiesDotNet.Core
                         {
                             WriteInternal(ch);
                         }
-                        else if (!WriteEscaped(text, ref i) && _textPool.Length > 0)
+                        else if (!WriteEscaped(text, ref i))
                         {
-                            _textPool.Remove(fallbackStartIndex, i);
-                            _cursor.CopyFrom(in fallback);
+                            if (_textPool.Length > 0)
+                            {
+                                _textPool.Remove(fallbackStartIndex, i);
+                                _cursor.CopyFrom(in fallback);
+                            }
                             return false;
                         }
 
@@ -299,7 +293,7 @@ namespace PropertiesDotNet.Core
                 }
             }
 
-            int index = fallbackStartIndex + (!key && _state == DocumentState.Assigner ? 2 : 1);
+            int index = fallbackStartIndex + (!key && _state == WriterState.ValueOrAssigner ? 2 : 1);
             char[] chars = new char[_textPool.Length - index];
 
             for (int i = 0; i < chars.Length; i++)
@@ -311,22 +305,21 @@ namespace PropertiesDotNet.Core
 
         private bool WriteEscaped(string key, ref int i)
         {
-            WriteInternal('\\');
-
             // 8-number escape
             if (char.IsHighSurrogate(key[i]))
             {
-                // TODO: check
                 if (!Settings.AllUnicodeEscapes)
                 {
+                    int unicode = char.ConvertToUtf32(key[i], key[i + 1]);
                     return Settings.ThrowOnError ?
-                        throw new PropertiesException($"Cannot create long unicode escape for character '{char.ConvertToUtf32(key[i], key[i + 1])}'!")
+                        throw new PropertiesException($"Cannot create long unicode escape for character \"{char.ConvertFromUtf32(unicode)}\" ({unicode})!")
                         : false;
                 }
-
-                if (i + 1 < key.Length && char.IsLowSurrogate(key[i + 1]))
+                else if (i + 1 < key.Length && char.IsLowSurrogate(key[i + 1]))
                 {
+                    WriteInternal('\\');
                     WriteInternal('U');
+                    // TODO: Test perf
                     WriteInternal(char.ConvertToUtf32(key[i], key[++i]).ToString("X8", CultureInfo.InvariantCulture));
                 }
                 else
@@ -338,8 +331,9 @@ namespace PropertiesDotNet.Core
             // 4-number escape
             else
             {
-                // TODO: Test perf
+                WriteInternal('\\');
                 WriteInternal('u');
+                // TODO: Test perf
                 WriteInternal(((ushort)key[i]).ToString("X4", CultureInfo.InvariantCulture));
             }
 
@@ -374,14 +368,6 @@ namespace PropertiesDotNet.Core
             else _cursor.AdvanceColumn(value == '\t' ? 4 : 1);
         }
 
-        private void WriteInternal(char[] value)
-        {
-            for (int i = 0; i < value.Length; i++)
-            {
-                WriteInternal(value[i]);
-            }
-        }
-
         private void WriteInternal(string? value)
         {
             if (string.IsNullOrEmpty(value))
@@ -393,22 +379,10 @@ namespace PropertiesDotNet.Core
             }
         }
 
-        private void WriteLineInternal(char value)
-        {
-            WriteInternal(value);
-            WriteInternal(Environment.NewLine);
-        }
-
-        private void WriteLineInternal(string? value)
-        {
-            WriteInternal(value);
-            WriteInternal(Environment.NewLine);
-        }
-
-        private void WriteLineInternal()
-        {
-            WriteInternal(Environment.NewLine);
-        }
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void WriteLineInternal() => WriteInternal(Environment.NewLine);
 
         private bool CheckFlush()
         {
@@ -421,6 +395,11 @@ namespace PropertiesDotNet.Core
 
             return false;
         }
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private bool IsLatin1Printable(char ch) => (ch >= '\x20' && ch <= '\x7E') || (ch >= '\xA0' && ch <= '\xFF');
 
         private void Dispose(bool disposing)
         {
@@ -449,6 +428,11 @@ namespace PropertiesDotNet.Core
             GC.SuppressFinalize(this);
         }
 
-        private bool IsLatin1Printable(char ch) => (ch >= '\x20' && ch <= '\x7E') || (ch >= '\xA0' && ch <= '\xFF');
+        private string StateToString(WriterState state) => state switch
+        {
+            WriterState.CommentOrKey => "Comment or Key",
+            WriterState.ValueOrAssigner => "Value or Assigner",
+            _ => state.ToString(),
+        };
     }
 }

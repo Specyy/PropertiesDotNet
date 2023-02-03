@@ -7,7 +7,7 @@ namespace PropertiesDotNet.Core
     /// </summary>
     /// <param name="writer">The writer where the token was written.</param>
     /// <param name="token">The token that was written.</param>
-    public delegate void EventWritten(IPropertiesWriter writer, PropertiesToken token);
+    public delegate void TokenWritten(IPropertiesWriter writer, PropertiesToken token);
 
     /// <summary>
     /// Represents a ".properties" document writer used to write document information, in the form of
@@ -18,7 +18,7 @@ namespace PropertiesDotNet.Core
         /// <summary>
         /// Event raised when a <see cref="PropertiesToken"/> is written into an <see cref="IPropertiesWriter"/>.
         /// </summary>
-        event EventWritten? TokenWritten;
+        event TokenWritten? TokenWritten;
 
         /// <summary>
         /// The settings for this writer.

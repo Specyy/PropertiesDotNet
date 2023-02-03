@@ -13,8 +13,8 @@ namespace PropertiesDotNet.Core
         public virtual bool IgnoreComments { get; set; } = false;
 
         /// <summary>
-        /// Whether an <see cref="IPropertiesWriter"/> should allow all characters, or only characters from the
-        /// "ISO-8859-1" character set.
+        /// Whether an <see cref="IPropertiesWriter"/> should emit non-ISO-8859-1 characters as is or as a
+        /// unicode escape sequence.
         /// </summary>
         public virtual bool AllCharacters { get; set; } = false;
 
@@ -47,7 +47,7 @@ namespace PropertiesDotNet.Core
             set => _flushInterval = value > 0 ? throw new ArgumentException(nameof(value)) : value;
         }
 
-        private uint _flushInterval;
+        private uint _flushInterval = 10;
 
         /// <summary>
         /// Returns a <see cref="PropertiesWriterSettings"/> with the default settings.
@@ -72,8 +72,8 @@ namespace PropertiesDotNet.Core
         public PropertiesWriterSettings(bool ignoreComments = false,
                                         bool allCharacters = false,
                                         bool allUnicodeEscapes = false,
-                                        bool throwOnError = false,
-                                        bool autoFlush = false,
+                                        bool throwOnError = true,
+                                        bool autoFlush = true,
                                         uint flushInterval = 10)
         {
             IgnoreComments = ignoreComments;

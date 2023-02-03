@@ -82,6 +82,9 @@ namespace PropertiesDotNet.Utils
             }
         }
 
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         internal void CopyFrom(in StreamMark mark)
         {
             Line = mark.Line;
