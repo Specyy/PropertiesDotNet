@@ -28,24 +28,6 @@ namespace PropertiesDotNet.Utils
         private readonly List<KeyValuePair<TKey, TValue>> _list;
         private readonly IEqualityComparer<TKey> _comparer;
 
-        public TValue this[TKey key]
-        {
-            get => _dictionary[key];
-            set
-            {
-                if (_dictionary.ContainsKey(key))
-                {
-                    var index = _list.FindIndex(listKey => _comparer.Equals(listKey.Key, key));
-                    _dictionary[key] = value;
-                    _list[index] = new KeyValuePair<TKey, TValue>(key, value);
-                }
-                else
-                {
-                    Add(key, value);
-                }
-            }
-        }
-
         /// <summary>
         /// Gets the keys.
         /// </summary>
@@ -174,10 +156,33 @@ namespace PropertiesDotNet.Utils
         }
 #endif
 
+        public TValue this[TKey key]
+        {
+            get => _dictionary[key];
+            set
+            {
+                if (_dictionary.ContainsKey(key))
+                {
+                    var index = _list.FindIndex(listKey => _comparer.Equals(listKey.Key, key));
+                    _dictionary[key] = value;
+                    _list[index] = new KeyValuePair<TKey, TValue>(key, value);
+                }
+                else
+                {
+                    Add(key, value);
+                }
+            }
+        }
+
         public KeyValuePair<TKey, TValue> this[int index]
         {
             get => _list[index];
-            set => _list[index] = value;
+            set
+            {
+                _dictionary.Remove(_list[index].Key);
+                _dictionary.Add(value.Key, value.Value);
+                _list[index] = value;
+            }
         }
 
         private class KeyCollection : ICollection<TKey>

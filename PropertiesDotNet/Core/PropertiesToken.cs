@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime;
 
 using PropertiesDotNet.Utils;
 
@@ -17,7 +18,7 @@ namespace PropertiesDotNet.Core
         /// <summary>
         /// The textual value of this token.
         /// </summary>
-        public readonly string? Value { get; }
+        public readonly string? Text { get; }
 
         /// <summary>
         /// A property returning whether this token is canonical to a ".properties" document (i.e, is
@@ -36,7 +37,7 @@ namespace PropertiesDotNet.Core
         public PropertiesToken(PropertiesTokenType type, string? value)
         {
             Type = type;
-            Value = value;
+            Text = value;
         }
 
         /// <summary>
@@ -46,7 +47,7 @@ namespace PropertiesDotNet.Core
         /// <returns>true if they are equal; false otherwise.</returns>
         public bool Equals(PropertiesToken other)
         {
-            return Type == other.Type && Value == other.Value;
+            return Type == other.Type && Text == other.Text;
         }
 
         /// <summary>
@@ -66,7 +67,7 @@ namespace PropertiesDotNet.Core
         /// <returns>true if they are equal; false otherwise.</returns>
         public bool Equals(in PropertiesToken other)
         {
-            return Type == other.Type && Value == other.Value;
+            return Type == other.Type && Text == other.Text;
         }
 
         /// <summary>
@@ -103,16 +104,61 @@ namespace PropertiesDotNet.Core
         /// <returns>The this token as a string.</returns>
         public override string ToString()
         {
-            return $"Type: {Type}, Value: {Value}";
+            return $"Type: {Type}, Value: {Text}";
         }
 
         /// <summary>
         /// Returns the hash code for this token.
         /// </summary>
         /// <returns>The hash code for this token.</returns>
-        public override int GetHashCode() => HashCodeHelper.GenerateHashCode(Type, Value);
+        public override int GetHashCode() => HashCodeHelper.GenerateHashCode(Type, Text);
 
         /// <inheritdoc/>
         public override bool Equals(object? obj) => obj is PropertiesToken token && Equals(token);
+
+        /// <summary>
+        /// Creates a new comment token.
+        /// </summary>
+        /// <param name="value">The text content of the comment.</param>
+        /// <returns>A new comment token.</returns>
+        public static PropertiesToken Comment(string? value)
+        {
+            return new PropertiesToken(PropertiesTokenType.Comment, value);
+        }
+
+        /// <summary>
+        /// Creates a new key token.
+        /// </summary>
+        /// <param name="key">The text content of the key.</param>
+        /// <returns>A new key token.</returns>
+        /// <exception cref="ArgumentException">If the key is <see langword="null"/> or empty.</exception>
+        public static PropertiesToken Key(string key)
+        {
+            return new PropertiesToken(PropertiesTokenType.Key, key);
+        }
+
+        /// <summary>
+        /// Creates a new assigner token.
+        /// </summary>
+        /// <param name="assigner">The value of the assigner.</param>
+        /// <returns>A new assigner token.</returns>
+        /// <exception cref="ArgumentException">If the assigner is not '=', ':' or a white-space.</exception>
+        public static PropertiesToken Assigner(char? assigner = '=')
+        {
+            if (assigner != '=' && assigner != ':' && assigner != ' ' && assigner != '\t' && assigner != '\f')
+                throw new ArgumentException($"Assigner must be '=', ':' or a white-space!");
+
+            return new PropertiesToken(PropertiesTokenType.Assigner, assigner.ToString());
+        }
+
+        /// <summary>
+        /// Creates a new value token.
+        /// </summary>
+        /// <param name="value">The text content of the value.</param>
+        /// <returns>A new value token.</returns>
+        public static PropertiesToken Value(string? value)
+        {
+            return new PropertiesToken(PropertiesTokenType.Value, value);
+        }
     }
 }

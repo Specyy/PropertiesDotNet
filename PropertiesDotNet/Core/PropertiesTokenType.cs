@@ -6,7 +6,7 @@
     public enum PropertiesTokenType : byte
     {
         /// <summary>
-        /// A "null" value. Returned when an <see cref="IPropertiesReader"/> has not yet
+        /// A <see langword="null"/> value. Returned when an <see cref="IPropertiesReader"/> has not yet
         /// read a token (stream start).
         /// </summary>
         None = 0,
