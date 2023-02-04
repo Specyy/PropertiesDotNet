@@ -13,6 +13,7 @@ using Kajabity.Tools.Java;
 using Newtonsoft.Json;
 
 using PropertiesDotNet.Core;
+using PropertiesDotNet.ObjectModel;
 using PropertiesDotNet.Serialization.ObjectProviders;
 
 namespace PropertiesDotNet.Test
@@ -20,7 +21,7 @@ namespace PropertiesDotNet.Test
     public class Program
     {
         /// <summary>
-        /// 
+        /// Properties source
         /// </summary>
         internal const string SOURCE =
             @"# You are reading a comment in "".properties"" file.
@@ -35,7 +36,7 @@ empty
 # White space that appears between the key, the value and the delimiter is ignored.
 # This means that the following are equivalent (other than for readability).
 hello=hello
-hello = hello
+#hello = hello
 # Keys with the same name will be overwritten by the key that is the furthest in a file.
 # For example the final value for ""duplicateKey"" will be ""second"".
 duplicateKey = first
@@ -65,10 +66,10 @@ welcome = Welcome to \
 # You can also optionally escape tabs with \t for readability purposes.
 valueWithEscapes = This is a newline\n and a carriage return\r and a tab\t.
 # You can also use Unicode escape characters (maximum of four hexadecimal digits).
-# In the following example, the value for ""encodedHelloInJapanese"" is ""こんにちは"".
+# In the following example, the value for ""encodedHelloInJapanese"" is ""e"".
 encodedHelloInJapanese = \u3053\u3093\u306b\u3061\u306f
 # But with more modern file encodings like UTF-8, you can directly use supported characters.
-#helloInJapanese = こんにちは";
+helloInJapanese = e";
 
         internal const string JSON_SOURCE = @"{""widget"": {
     ""debug"": ""on"",
@@ -98,7 +99,7 @@ encodedHelloInJapanese = \u3053\u3093\u306b\u3061\u306f
             // Setting for whether to align logical line
             // ^ Beautify?
             //
-
+            
             //using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
             IPropertiesReader reader = new PropertiesReader(new StringReader(SOURCE));
             //reader.Settings.AllCharacters = true;
@@ -110,29 +111,31 @@ encodedHelloInJapanese = \u3053\u3093\u306b\u3061\u306f
             //Console.WriteLine("first----------------------------");
             var provider = new ExpressionObjectProvider();
             //IPropertiesReader obj = provider.Construct<IPropertiesReader>();
-            var r = provider.Construct<PropertiesReader>(new Type[] { typeof(TextReader), typeof(PropertiesReaderSettings) }, new object[] {new StringReader("hello:world"), null});
+            var r = provider.Construct<PropertiesReader>(new Type[] { typeof(TextReader), typeof(PropertiesReaderSettings) }, new object[] {new StringReader(SOURCE), null});
             r.MoveNext();
             Console.WriteLine(r.Token);
             r.MoveNext();
             Console.WriteLine(r.Token);
             r.MoveNext();
             Console.WriteLine(r.Token);
+
+            var token = reader.Token;
             while (reader.MoveNext())
             {
-                var token = reader.Token;
+                token = reader.Token;
 
                 switch (token.Type)
                 {
                     case PropertiesTokenType.Assigner:
                     case PropertiesTokenType.Key:
-                        Console.Write(token.Value);
+                        Console.Write(token.Text);
                         break;
 
                     case PropertiesTokenType.Value:
                     case PropertiesTokenType.Comment:
                         if(token.Type == PropertiesTokenType.Comment)
                             Console.Write(((PropertiesReader)reader).CommentHandle + " ");
-                        Console.WriteLine(token.Value);
+                        Console.WriteLine(token.Text);
                         break;
                 }
             }
@@ -145,7 +148,7 @@ encodedHelloInJapanese = \u3053\u3093\u306b\u3061\u306f
             writer.TokenWritten += Writer_EventWritten;
             writer.WriteComment("Chisen");
             writer.WriteComment("Chisen 2");
-            writer.WriteKey("ChisenはKey");
+            writer.WriteKey("ChisenKey");
             writer.WriteValue("ChisenKeyVal");
             writer.WriteComment("Chisen Com after val");
             writer.WriteKey("ChisenSecond");
@@ -154,8 +157,11 @@ encodedHelloInJapanese = \u3053\u3093\u306b\u3061\u306f
             writer.WriteValue("ChisenSecondAfterKeyVal");
             writer.WriteKey(" KeyStartw/whitespace");
             writer.WriteValue(" valStartw/backwhitespace");
+            writer.WriteKey(" #EEEEZZZZZKeyStart#w/backwhitespaceLogical\n!LinesLol", false);
+            writer.WriteValue(" #EEEEKeyStartw/backwhitespaceLogical\n#Lines even more LOL", true);
+            writer.WriteComment("Chisen Com after val");
             writer.WriteKey("#KeyStart#w/backwhitespaceLogical\n!LinesLol", true);
-            writer.WriteValue("KeyStartw/backwhitespaceLogical\n#Lines even more LOL", true);
+            writer.WriteValue("!!###KeyStartw/backwhitespaceLogical\n#Lines even more LOL", true);
             writer.WriteComment("Chisen Com after val");
             writer.Dispose();
             Console.WriteLine(sb);
@@ -170,105 +176,73 @@ encodedHelloInJapanese = \u3053\u3093\u306b\u3061\u306f
             //    switch (parser.Token.Type)
             //    {
             //        case PropertiesTokenType.Assigner:
-            //            Console.Write("\\" + parser.Token.Value);
+            //            Console.Write("\\" + parser.Token.Text);
             //            break;
             //        case PropertiesTokenType.Key:
-            //            Console.Write(parser.Token.Value);
+            //            Console.Write(parser.Token.Text);
 
-            //            if(parser.Token.Value == "key4")
+            //            if(parser.Token.Text == "key4")
             //                Console.Write("  " + parser.TokenStart + " ::::::: " + parser.TokenEnd);
             //            break;
 
             //        case PropertiesTokenType.Comment:
-            //        case PropertiesTokenType.Value:
+            //        case PropertiesTokenType.Text:
             //            if (parser.Token.Type == PropertiesTokenType.Comment)
             //                Console.Write("  " + parser.TokenStart + " ::::::: " + parser.TokenEnd);
-            //            Console.WriteLine("'" + parser.Token.Value + "'");
+            //            Console.WriteLine("'" + parser.Token.Text + "'");
             //            break;
             //    }
             //}
+            var doc = PropertiesDocument.Load(SOURCE);
 
-
-            Console.WriteLine("\n---------------------------------\n");
-            IPropertiesReader sParser = new PropertiesReader(SOURCE);
-            List<StreamMark> lS1 = new List<StreamMark>();
-            var s_token = sParser.Token;
-            List<StreamMark> lE1 = new List<StreamMark>();
-            while (sParser.MoveNext())
+            foreach(var prop in doc)
             {
-                var token = sParser.Token;
-                s_token = token;
-                //switch (sParser.Token.Type)
-                //{
-                //    case PropertiesTokenType.Assigner:
-                //    case PropertiesTokenType.Key:
-                //        Console.Write(token.Value);
-                //        break;
-
-                //    case PropertiesTokenType.Value:
-                //    case PropertiesTokenType.Comment:
-                //        Console.WriteLine(token.Value);
-                //        break;
-                //    default:
-                //        Console.WriteLine(sParser.Token.Type);
-                //        break;
-                //}
-                if (token.Type == PropertiesTokenType.Error)
-                Console.WriteLine("err");
-                lS1.Add(sParser.TokenStart.Value);
-                lE1.Add(sParser.TokenEnd.Value);
-                Console.WriteLine("\t" + $"{sParser.TokenStart?.Line}, {sParser.TokenStart?.Column}"
-                    + "  ----  " + $"{sParser.TokenEnd?.Line}, {sParser.TokenEnd?.Column}");
+                Console.WriteLine(prop);
             }
 
-            Console.WriteLine(sParser.TokenEnd);
             Console.WriteLine();
             Console.WriteLine();
-            Console.WriteLine();
-            Console.WriteLine();
-            sParser = new UnsafePropertiesReader(SOURCE);
-            List<StreamMark> lS2 = new List<StreamMark>();
-            List<StreamMark> lE2 = new List<StreamMark>();
-            while (sParser.MoveNext())
-            {
-                var token = sParser.Token;
-                s_token = token;
-                //switch (sParser.Token.Type)
-                //{
-                //    case PropertiesTokenType.Assigner:
-                //    case PropertiesTokenType.Key:
-                //        Console.Write(token.Value);
-                //        break;
+            doc.Save(Console.Out);
+            Console.WriteLine(Console.OutputEncoding.EncodingName);
+            Console.WriteLine(TimeZoneInfo.Local.DaylightName);
+            Console.WriteLine(TimeZoneInfo.Local.DisplayName);
+            Console.WriteLine(TimeZoneInfo.Local.StandardName);
+            Console.WriteLine("----------------------------------------------------------------------------------------------------");
 
-                //    case PropertiesTokenType.Value:
-                //    case PropertiesTokenType.Comment:
-                //        Console.WriteLine(token.Value);
-                //        break;
-                //    default:
-                //        Console.WriteLine(sParser.Token.Type);
-                //        break;
-                //}
-                if (token.Type == PropertiesTokenType.Error)
-                    Console.WriteLine("err");
-                lS2.Add(sParser.TokenStart.Value);
-                lE2.Add(sParser.TokenEnd.Value);
-                Console.WriteLine("\t" + $"{sParser.TokenStart?.Line}, {sParser.TokenStart?.Column}"
-                    + "  ----  " + $"{sParser.TokenEnd?.Line}, {sParser.TokenEnd?.Column}");
-            }
-            Console.WriteLine(sParser.TokenEnd);
+            Console.WriteLine("Real Length: " + SOURCE.Length);
             Console.WriteLine();
-            for(int i = 0; i < lS1.Count; i++)
+            Console.WriteLine();
+
+            IPropertiesReader parser = new PropertiesReader(new StringReader(SOURCE));
+            PropertiesToken lastToken = default;
+            while (parser.MoveNext())
             {
-                if (lS1[i] != lS2[i])
-                    throw new Exception($"Start: {lS1[i]};;;\t{lS2[i]}");
+                lastToken = parser.Token;
             }
 
-            for (int i = 0; i < lE1.Count; i++)
+            
+            Console.WriteLine("PropertiesReader");
+            Console.WriteLine(lastToken);
+            Console.WriteLine("Start: " + parser.TokenStart);
+            Console.WriteLine("End: " + parser.TokenEnd);
+            Console.WriteLine();
+
+            parser = new UnsafePropertiesReader(SOURCE);
+            while (parser.MoveNext())
             {
-                if (lE1[i] != lE2[i])
-                    throw new Exception($"End: {lE1[i]};;;\t{lE2[i]}");
+                lastToken = parser.Token;
             }
-            // TODO: This does not match AbsoluteOffser :/
+
+            Console.WriteLine("UnsafePropertiesReader");
+            Console.WriteLine(lastToken);
+            Console.WriteLine("Start: " + parser.TokenStart);
+            Console.WriteLine("End: " + parser.TokenEnd);
+            Console.WriteLine();
+
+            // TODO: This does not match
+            // ]arw;\sfl
+            // ]pgfa;d'
+            // Offser :/
             // Normal reader is 1 off but UnsafeReader is like 11 off
             Console.WriteLine("Len: " + SOURCE.Length);
             string c = "\U0010FFFF";
@@ -465,43 +439,43 @@ encodedHelloInJapanese = \u3053\u3093\u306b\u3061\u306f
         //    writer.Write(new PropertyStart());
         //    writer.Write(new Key("key1"));
         //    writer.Write(new ValueAssigner('='));
-        //    writer.Write(new Value(" value1 "));
+        //    writer.Write(new Text(" value1 "));
         //    writer.Write(new PropertyEnd());
 
         //    writer.Write(new PropertyStart());
         //    writer.Write(new Key("key2"));
         //    writer.Write(new ValueAssigner(':'));
-        //    writer.Write(new Value("value2"));
+        //    writer.Write(new Text("value2"));
         //    writer.Write(new PropertyEnd());
 
         //    writer.Write(new PropertyStart());
         //    writer.Write(new Key("!key3"));
         //    writer.Write(new ValueAssigner(' '));
-        //    writer.Write(new Value("value3"));
+        //    writer.Write(new Text("value3"));
         //    writer.Write(new PropertyEnd());
 
         //    writer.Write(new PropertyStart());
         //    writer.Write(new Key("!key!\n!4") { LogicalLines = true });
         //    writer.Write(new ValueAssigner('='));
-        //    writer.Write(new Value(" value\n#4\n ") { LogicalLines = true });
+        //    writer.Write(new Text(" value\n#4\n ") { LogicalLines = true });
         //    writer.Write(new PropertyEnd());
 
         //    writer.Write(new PropertyStart());
         //    writer.Write(new Key(" \u006B\u0065\u00795"));
         //    writer.Write(new ValueAssigner('='));
-        //    writer.Write(new Value(" \u0076\u0061\u006c\u0075\u00655"));
+        //    writer.Write(new Text(" \u0076\u0061\u006c\u0075\u00655"));
         //    writer.Write(new PropertyEnd());
 
         //    writer.Write(new PropertyStart());
         //    writer.Write(new Key("\\k\\e\\y\\6"));
         //    writer.Write(new ValueAssigner('='));
-        //    writer.Write(new Value("\\v\\a\\l\\u\\e\\6"));
+        //    writer.Write(new Text("\\v\\a\\l\\u\\e\\6"));
         //    writer.Write(new PropertyEnd());
 
         //    writer.Write(new PropertyStart());
         //    writer.Write(new Key(": ="));
         //    writer.Write(new ValueAssigner('='));
-        //    writer.Write(new Value("!\\colon\\space\\equal"));
+        //    writer.Write(new Text("!\\colon\\space\\equal"));
         //    writer.Write(new PropertyEnd());
 
         //    writer.Write(new Comment("A comment line that starts with '#'."));
@@ -511,43 +485,43 @@ encodedHelloInJapanese = \u3053\u3093\u306b\u3061\u306f
         //    writer.Write(new PropertyStart());
         //    writer.Write(new Key("key1"));
         //    writer.Write(new ValueAssigner('='));
-        //    writer.Write(new Value(" value1 "));
+        //    writer.Write(new Text(" value1 "));
         //    writer.Write(new PropertyEnd());
 
         //    writer.Write(new PropertyStart());
         //    writer.Write(new Key("key2"));
         //    writer.Write(new ValueAssigner(':'));
-        //    writer.Write(new Value("value2"));
+        //    writer.Write(new Text("value2"));
         //    writer.Write(new PropertyEnd());
 
         //    writer.Write(new PropertyStart());
         //    writer.Write(new Key("!key3"));
         //    writer.Write(new ValueAssigner(' '));
-        //    writer.Write(new Value("value3"));
+        //    writer.Write(new Text("value3"));
         //    writer.Write(new PropertyEnd());
 
         //    writer.Write(new PropertyStart());
         //    writer.Write(new Key("!key!\n!4") { LogicalLines = true });
         //    writer.Write(new ValueAssigner('='));
-        //    writer.Write(new Value(" value\n#4\n ") { LogicalLines = true });
+        //    writer.Write(new Text(" value\n#4\n ") { LogicalLines = true });
         //    writer.Write(new PropertyEnd());
 
         //    writer.Write(new PropertyStart());
         //    writer.Write(new Key(" \u006B\u0065\u00795"));
         //    writer.Write(new ValueAssigner('='));
-        //    writer.Write(new Value(" \u0076\u0061\u006c\u0075\u00655"));
+        //    writer.Write(new Text(" \u0076\u0061\u006c\u0075\u00655"));
         //    writer.Write(new PropertyEnd());
 
         //    writer.Write(new PropertyStart());
         //    writer.Write(new Key("\\k\\e\\y\\6"));
         //    writer.Write(new ValueAssigner('='));
-        //    writer.Write(new Value("\\v\\a\\l\\u\\e\\6"));
+        //    writer.Write(new Text("\\v\\a\\l\\u\\e\\6"));
         //    writer.Write(new PropertyEnd());
 
         //    writer.Write(new PropertyStart());
         //    writer.Write(new Key(": ="));
         //    writer.Write(new ValueAssigner('='));
-        //    writer.Write(new Value("!\\colon\\space\\equal"));
+        //    writer.Write(new Text("!\\colon\\space\\equal"));
         //    writer.Write(new PropertyEnd());
 
         //    writer.Write(new DocumentEnd());
@@ -561,15 +535,15 @@ encodedHelloInJapanese = \u3053\u3093\u306b\u3061\u306f
         //    {
         //        if (e is Core.Events.Key k)
         //        {
-        //            Console.Write($"\"{k.Value}\"");
+        //            Console.Write($"\"{k.Text}\"");
         //        }
         //        else if (e is Core.Events.ValueAssigner v)
         //        {
-        //            Console.Write(v.Value);
+        //            Console.Write(v.Text);
         //        }
-        //        else if (e is Core.Events.Value va)
+        //        else if (e is Core.Events.Text va)
         //        {
-        //            Console.WriteLine($"'{va.Value}'");
+        //            Console.WriteLine($"'{va.Text}'");
         //        }
         //        //else if (e is Core.Events.PropertyStart ps)
         //        //{
@@ -677,6 +651,51 @@ encodedHelloInJapanese = \u3053\u3093\u306b\u3061\u306f
 
         //    }
         //}
+        readonly StringBuilder sb = new StringBuilder();
+
+        [Benchmark]
+        public void PDN_Writer_Token()
+        {
+            sb.Length = 0;
+            var writer = new PropertiesWriter(new StringWriter(sb));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Comment, "Chisen 2"));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Comment, "Chisen"));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Key, "ChisenKey"));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Value, "ChisenKeyVal"));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Comment, "Chisen Com after val"));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Key, "ChisenSecond"));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Value, "ChisenSecondVal"));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Key, "ChisenSecondAfterKey"));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Value, "ChisenSecondAfterKeyVal"));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Key, " KeyStartw/whitespace"));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Value, " valStartw/backwhitespace"));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Key, "#KeyStart#w/backwhitespaceLogical\n!LinesLol"));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Value, "KeyStartw/backwhitespaceLogical\n#Lines even more LOL"));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Comment, "Chisen Com after val"));
+            writer.Dispose();
+        }
+
+        [Benchmark]
+        public void PDN_Writer()
+        {
+            sb.Length = 0;
+            var writer = new PropertiesWriter(new StringWriter(sb));
+            writer.WriteComment("Chisen");
+            writer.WriteComment("Chisen 2");
+            writer.WriteKey("ChisenKey");
+            writer.WriteValue("ChisenKeyVal");
+            writer.WriteComment("Chisen Com after val");
+            writer.WriteKey("ChisenSecond");
+            writer.WriteValue("ChisenSecondVal");
+            writer.WriteKey("ChisenSecondAfterKey");
+            writer.WriteValue("ChisenSecondAfterKeyVal");
+            writer.WriteKey(" KeyStartw/whitespace");
+            writer.WriteValue(" valStartw/backwhitespace");
+            writer.WriteKey("#KeyStart#w/backwhitespaceLogical\n!LinesLol", true);
+            writer.WriteValue("KeyStartw/backwhitespaceLogical\n#Lines even more LOL", true);
+            writer.WriteComment("Chisen Com after val");
+            writer.Dispose();
+        }
 
         [Benchmark]
         public void PDN_Reader()
@@ -685,7 +704,7 @@ encodedHelloInJapanese = \u3053\u3093\u306b\u3061\u306f
             //PropertiesReader reader = new PropertiesReader(Program.SOURCE);
 
             var parser = new PropertiesReader(new StringReader(Program.SOURCE));
-
+            
             while (parser.MoveNext())
             {
             }

@@ -31,10 +31,10 @@ public class ObjectGraph : ObjectGraphNode {
 }
 
 public class ObjectLeaf : ObjectGraphNode {
-    public string Value; // get set?
+    public string Text; // get set?
 
     public ObjectLeaf (string value){
-	Value = value;
+	Text = value;
     }
 }
 
