@@ -31,6 +31,11 @@ namespace PropertiesDotNet.Core
         public virtual bool ThrowOnError { get; set; } = true;
 
         /// <summary>
+        /// Whether an <see cref="IPropertiesWriter"/> should close the underlying stream when it is disposed.
+        /// </summary>
+        public virtual bool CloseOnEnd { get; set; } = true;
+
+        /// <summary>
         /// Whether an <see cref="IPropertiesWriter"/> should automatically flush after 
         /// <see cref="IPropertiesWriter.Write(PropertiesToken)"/> has been called <see cref="FlushInterval"/> number of times.
         /// </summary>
@@ -64,6 +69,7 @@ namespace PropertiesDotNet.Core
         /// rather than only '\u', for larger code-points.</param>
         /// <param name="throwOnError">Whether a <see cref="PropertiesException"/> should be thrown whenever an <see cref="IPropertiesWriter"/> is passed
         /// an incorrect token as an argument, depending on the context.</param>
+        /// <param name="closeOnEnd">Whether an <see cref="IPropertiesWriter"/> should close the underlying stream when it is disposed.</param>
         /// <param name="autoFlush">Whether an <see cref="IPropertiesWriter"/> should automatically flush after 
         /// <see cref="IPropertiesWriter.Write(PropertiesToken)"/> has been called <see cref="FlushInterval"/> number of times.</param>
         /// <param name="flushInterval">The number of <see cref="IPropertiesWriter.Write(PropertiesToken)"/> operations between each 
@@ -73,6 +79,7 @@ namespace PropertiesDotNet.Core
                                         bool allCharacters = false,
                                         bool allUnicodeEscapes = false,
                                         bool throwOnError = true,
+                                        bool closeOnEnd = true,
                                         bool autoFlush = true,
                                         uint flushInterval = 10)
         {
@@ -80,6 +87,7 @@ namespace PropertiesDotNet.Core
             AllCharacters = allCharacters;
             AllUnicodeEscapes = allUnicodeEscapes;
             ThrowOnError = throwOnError;
+            CloseOnEnd = closeOnEnd;
             AutoFlush = autoFlush;
             FlushInterval = flushInterval;
         }
@@ -99,6 +107,7 @@ namespace PropertiesDotNet.Core
             AllCharacters = settings.AllCharacters;
             AllUnicodeEscapes = settings.AllUnicodeEscapes;
             ThrowOnError = settings.ThrowOnError;
+            CloseOnEnd = settings.CloseOnEnd;
             AutoFlush = settings.AutoFlush;
             FlushInterval = settings.FlushInterval;
         }
@@ -111,6 +120,7 @@ namespace PropertiesDotNet.Core
                 AllCharacters == other?.AllCharacters &&
                 AllUnicodeEscapes == other?.AllUnicodeEscapes &&
                 ThrowOnError == other?.ThrowOnError &&
+                CloseOnEnd == other?.CloseOnEnd &&
                 AutoFlush == other?.AutoFlush &&
                 FlushInterval == other?.FlushInterval;
         }

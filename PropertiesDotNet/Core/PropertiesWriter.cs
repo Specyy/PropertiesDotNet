@@ -75,12 +75,12 @@ namespace PropertiesDotNet.Core
         /// <inheritdoc/>
         public bool Write(PropertiesToken token) => token.Type switch
         {
-            PropertiesTokenType.Comment => WriteComment(token.Value),
-            PropertiesTokenType.Key => WriteKey(token.Value),
-            PropertiesTokenType.Assigner => token.Value.Length > 1 ?
+            PropertiesTokenType.Comment => WriteComment(token.Text),
+            PropertiesTokenType.Key => WriteKey(token.Text),
+            PropertiesTokenType.Assigner => token.Text.Length > 1 ?
                                     (Settings.ThrowOnError ? throw new PropertiesException("Assigner must be '=', ':' or any type of white-space!") : false)
-                                    : WriteAssigner(token.Value[0]),
-            PropertiesTokenType.Value => WriteValue(token.Value),
+                                    : WriteAssigner(token.Text[0]),
+            PropertiesTokenType.Value => WriteValue(token.Text),
             PropertiesTokenType.Error => Settings.ThrowOnError ? throw new PropertiesException("Cannot emit error into properties stream!") : false,
             PropertiesTokenType.None => Settings.ThrowOnError ? throw new PropertiesException("Cannot emit null token into properties stream!") : false,
             _ => Settings.ThrowOnError ? throw new PropertiesException($"Unknown token type: {token.Type}") : false,
@@ -119,7 +119,7 @@ namespace PropertiesDotNet.Core
             WriteInternal(value);
             WriteLineInternal();
 
-            TokenWritten?.Invoke(this, new PropertiesToken(PropertiesTokenType.Comment, value));
+            TokenWritten?.Invoke(this, PropertiesToken.Comment(value));
             _state = WriterState.CommentOrKey;
             CheckFlush();
             return true;
@@ -128,8 +128,8 @@ namespace PropertiesDotNet.Core
         /// <summary>
         /// Writes a new key.
         /// </summary>
-        /// <param name="key">The value of the key. This cannot be null.</param>
-        /// <param name="logicalLines">Whether to emit line escapes as logical liens.</param>
+        /// <param name="key">The value of the key. This cannot be <see langword="null"/>.</param>
+        /// <param name="logicalLines">Whether to emit line escapes as logical lines.</param>
         /// <returns>true if the key could be written; false otherwise.</returns>
         public bool WriteKey(string key, bool logicalLines = false)
         {
@@ -152,19 +152,20 @@ namespace PropertiesDotNet.Core
         /// <summary>
         /// Writes a new assigner.
         /// </summary>
-        /// <param name="value">The assigner value.</param>
+        /// <param name="assigner">The assigner value.</param>
         /// <returns>true if the assigner could be written; false otherwise.</returns>
         /// <exception cref="PropertiesException">If the assigner could not be written and errors are configured to be
         /// thrown.</exception>
-        public bool WriteAssigner(char value = '=')
+        public bool WriteAssigner(char assigner = '=')
         {
             if (_state != WriterState.ValueOrAssigner)
                 return Settings.ThrowOnError ? throw new PropertiesException($"Expected {StateToString(_state)} got Assigner!") : false;
 
-            if (value != '=' && value != ':' && value != ' ' && value != '\t' && value != '\f')
+            if (assigner != '=' && assigner != ':' && assigner != ' ' && assigner != '\t' && assigner != '\f')
                 return Settings.ThrowOnError ? throw new PropertiesException($"Assigner must be '=', ':' or a white-space!") : false;
 
-            WriteInternal(value);
+            WriteInternal(assigner);
+            TokenWritten?.Invoke(this, PropertiesToken.Assigner(assigner));
             _state = WriterState.Value;
             CheckFlush();
             return true;
@@ -174,7 +175,7 @@ namespace PropertiesDotNet.Core
         /// Writes a new value.
         /// </summary>
         /// <param name="value">The content of the value.</param>
-        /// <param name="logicalLines">Whether to emit line escapes as logical liens.</param>
+        /// <param name="logicalLines">Whether to emit line escapes as logical lines.</param>
         /// <returns>true if the value could be written; false otherwise.</returns>
         public bool WriteValue(string? value, bool logicalLines = false)
         {
@@ -182,7 +183,11 @@ namespace PropertiesDotNet.Core
                 return Settings.ThrowOnError ? throw new PropertiesException($"Expected {StateToString(_state)} got Value!") : false;
 
             if (string.IsNullOrEmpty(value))
+            {
+                _state = WriterState.CommentOrKey;
+                CheckFlush();
                 return true;
+            }
 
             if (WriteText(false, value, logicalLines))
             {
@@ -199,7 +204,7 @@ namespace PropertiesDotNet.Core
         {
             bool newLine = key;
             int fallbackStartIndex = _textPool.Length - 1;
-            StreamMark fallback = _cursor.CurrentPosition;
+            StreamMark fallback = _cursor.Position;
 
             if (!key && _state == WriterState.ValueOrAssigner)
                 // TODO: Maybe emit event for default assigner
@@ -215,12 +220,13 @@ namespace PropertiesDotNet.Core
                     case '\n':
                         if (logicalLines)
                         {
-                            uint column = _cursor.Column;
-
                             WriteInternal('\\');
+
+                            uint returnColumn = _cursor.Column;
+
                             WriteLineInternal();
 
-                            while (_cursor.Column < column)
+                            while (_cursor.Column < returnColumn)
                                 WriteInternal(' ');
 
                             if (ch == '\r' && i + 1 < text.Length && text[i] == '\n')
@@ -251,7 +257,7 @@ namespace PropertiesDotNet.Core
 
                     case '#':
                     case '!':
-                        if (newLine)
+                        if (key && i == 0)
                             WriteInternal('\\');
 
                         WriteInternal(ch);
@@ -260,6 +266,7 @@ namespace PropertiesDotNet.Core
 
                     case '=':
                     case ':':
+                        // TODO: Check if should not need on logical - change parser if case
                         if (key)
                             WriteInternal('\\');
 
