@@ -136,15 +136,22 @@ namespace PropertiesDotNet.Core
                         if (!Settings.IgnoreComments)
                         {
                             _state = ParserState.Comment;
-                            return ReadToken();
+                            goto case ParserState.Comment;
                         }
 
                         SkipComments();
                     }
 
-                    _state = _stream.EndOfStream ? ParserState.End : ParserState.Key;
-                    return ReadToken();
-
+                    if (_stream.EndOfStream)
+                    {
+                        _state = ParserState.End;
+                        goto case ParserState.End;
+                    }
+                    else
+                    {
+                        _state = ParserState.Key;
+                        goto case ParserState.Key;
+                    }
                 case ParserState.Comment:
                     ReadComment();
                     return true;
@@ -168,7 +175,7 @@ namespace PropertiesDotNet.Core
 
                 case ParserState.Error:
                     _state = ParserState.End;
-                    return ReadToken();
+                    goto case ParserState.End;
 
                 default:
                 case ParserState.End:
@@ -217,13 +224,22 @@ namespace PropertiesDotNet.Core
                 _stream.Read();
 
             while (!IsNewLine(_stream.Peek()) && !_stream.EndOfStream)
+            {
+                if (!Settings.AllCharacters && !IsLatin1(_stream.Peek()))
+                {
+                    _tokenEnd = _tokenStart = _stream.Position;
+                    HandleError(
+                       $"Unrecognized character '{(char)_stream.Peek()}' ({(ushort)_stream.Peek()}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
+                    return;
+                }
                 _textPool.Append((char)_stream.Read());
+            }
 
             _tokenEnd = _stream.Position;
             _stream.ReadLineEnd();
 
             _state = ParserState.Start;
-            _token = new PropertiesToken(PropertiesTokenType.Comment, _textPool.ToString());
+            _token = PropertiesToken.Comment(_textPool.ToString());
         }
 
         private void ReadKey()
@@ -243,7 +259,7 @@ namespace PropertiesDotNet.Core
                 {
                     _tokenEnd = _stream.Position;
                     _state = ParserState.Assigner;
-                    _token = new PropertiesToken(PropertiesTokenType.Key, _textPool.ToString());
+                    _token = PropertiesToken.Key(_textPool.ToString());
                     return;
                 }
                 // Enforce ISO-8859-1
@@ -262,7 +278,7 @@ namespace PropertiesDotNet.Core
 
             _tokenEnd = _stream.Position;
             _state = ParserState.Value;
-            _token = new PropertiesToken(PropertiesTokenType.Key, _textPool.ToString());
+            _token = PropertiesToken.Key(_textPool.ToString());
         }
 
         private bool ReadAssigner()
@@ -330,7 +346,7 @@ namespace PropertiesDotNet.Core
 
             _tokenEnd = _stream.Position;
             _state = _stream.EndOfStream ? ParserState.End : ParserState.Start;
-            _token = new PropertiesToken(PropertiesTokenType.Value, _textPool.ToString());
+            _token = PropertiesToken.Value(_textPool.ToString());
         }
 
         private bool HandleEscapeSequence()

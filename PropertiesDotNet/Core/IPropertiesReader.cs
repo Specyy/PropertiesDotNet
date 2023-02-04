@@ -10,7 +10,7 @@ namespace PropertiesDotNet.Core
     public delegate void TokenRead(IPropertiesReader reader, PropertiesToken token);
 
     /// <summary>
-    /// Represents a .properties document reader. A <see cref="IPropertiesReader"/> reads a .properties
+    /// Represents a ".properties" document reader. An <see cref="IPropertiesReader"/> reads a ".properties"
     /// document in tokens and provides access to them in a stream-like format.
     /// </summary>
     public interface IPropertiesReader : IDisposable

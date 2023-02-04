@@ -38,7 +38,7 @@ namespace PropertiesDotNet.Utils
         /// <summary>
         /// The current position of the cursor, as a <see cref="StreamMark"/>.
         /// </summary>
-        public StreamMark CurrentPosition => new StreamMark(Line, Column, AbsoluteOffset);
+        public StreamMark Position => new StreamMark(Line, Column, AbsoluteOffset);
 
         /// <summary>
         /// Creates a <see cref="StreamCursor"/>.
@@ -135,6 +135,6 @@ namespace PropertiesDotNet.Utils
 #if !NET35 && !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        public override string ToString() => CurrentPosition.ToString();
+        public override string ToString() => Position.ToString();
     }
 }

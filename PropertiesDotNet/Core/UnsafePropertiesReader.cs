@@ -122,14 +122,22 @@ namespace PropertiesDotNet.Core
                         if (!Settings.IgnoreComments)
                         {
                             _state = ParserState.Comment;
-                            return ReadToken(document);
+                            goto case ParserState.Comment;
                         }
 
                         SkipComments(document);
                     }
 
-                    _state = EndOfStream ? ParserState.End : ParserState.Key;
-                    return ReadToken(document);
+                    if (EndOfStream)
+                    {
+                        _state = ParserState.End;
+                        goto case ParserState.End;
+                    }
+                    else
+                    {
+                        _state = ParserState.Key;
+                        goto case ParserState.Key;
+                    }
 
                 case ParserState.Comment:
                     ReadComment(document);
@@ -153,7 +161,7 @@ namespace PropertiesDotNet.Core
 
                 case ParserState.Error:
                     _state = ParserState.End;
-                    return ReadToken(document);
+                    goto case ParserState.End;
 
                 default:
                 case ParserState.End:
@@ -192,7 +200,7 @@ namespace PropertiesDotNet.Core
 
         private unsafe void ReadComment(char* document)
         {
-            _tokenStart = _cursor.CurrentPosition;
+            _tokenStart = _cursor.Position;
 
             _commentHandle = document[_index];
             Read();
@@ -204,9 +212,18 @@ namespace PropertiesDotNet.Core
             int textStartIndex = _index;
 
             while (!EndOfStream && !IsNewLine(document[_index]))
+            {
+                if (!Settings.AllCharacters && !IsLatin1(document[_index]))
+                {
+                    _tokenEnd = _tokenStart = _cursor.Position;
+                    HandleError(
+                       $"Unrecognized character '{document[_index]}' ({(ushort)document[_index]}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
+                    return;
+                }
                 Read();
+            }
 
-            _tokenEnd = _cursor.CurrentPosition;
+            _tokenEnd = _cursor.Position;
 
             _state = ParserState.Start;
             _token = new PropertiesToken(PropertiesTokenType.Comment,
@@ -217,7 +234,7 @@ namespace PropertiesDotNet.Core
 
         private unsafe void ReadKey(char* document)
         {
-            _tokenStart = _cursor.CurrentPosition;
+            _tokenStart = _cursor.Position;
             _textLogicalLines = false;
             // Use pointer sub-string if no escapes
             bool escapes = false;
@@ -245,7 +262,7 @@ namespace PropertiesDotNet.Core
                 }
                 else if (IsAssigner(document[_index]))
                 {
-                    _tokenEnd = _cursor.CurrentPosition;
+                    _tokenEnd = _cursor.Position;
                     _state = ParserState.Assigner;
                     // TODO: Allow for use for Span<T> in later .NET versions
                     _token = new PropertiesToken(PropertiesTokenType.Key,
@@ -255,7 +272,7 @@ namespace PropertiesDotNet.Core
                 // Enforce ISO-8859-1
                 else if (!Settings.AllCharacters && !IsLatin1(document[_index]))
                 {
-                    _tokenEnd = _tokenStart = _cursor.CurrentPosition;
+                    _tokenEnd = _tokenStart = _cursor.Position;
                     HandleError(
                        $"Unrecognized character '{document[_index]}' ({(ushort)document[_index]}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
                     return;
@@ -267,7 +284,7 @@ namespace PropertiesDotNet.Core
                 }
             }
 
-            _tokenEnd = _cursor.CurrentPosition;
+            _tokenEnd = _cursor.Position;
             _state = ParserState.Value;
             // TODO: Allow for use for Span<T> in later .NET versions
             _token = new PropertiesToken(PropertiesTokenType.Key,
@@ -276,7 +293,7 @@ namespace PropertiesDotNet.Core
 
         private unsafe bool ReadAssigner(char* document)
         {
-            _tokenStart = _cursor.CurrentPosition;
+            _tokenStart = _cursor.Position;
             char lastAssigner = document[_index];
             Read();
 
@@ -290,7 +307,7 @@ namespace PropertiesDotNet.Core
                 // just skipping the preceding white-space before the real assigner
                 if (!EndOfStream && IsLiteralAssigner(document[_index]))
                 {
-                    _tokenStart = _cursor.CurrentPosition;
+                    _tokenStart = _cursor.Position;
                     lastAssigner = document[_index];
                     Read();
                 }
@@ -302,7 +319,7 @@ namespace PropertiesDotNet.Core
                 }
             }
 
-            _tokenEnd = _cursor.CurrentPosition;
+            _tokenEnd = _cursor.Position;
             _state = ParserState.Value;
             _token = new PropertiesToken(PropertiesTokenType.Assigner, lastAssigner.ToString());
             return true;
@@ -314,7 +331,7 @@ namespace PropertiesDotNet.Core
             while (!EndOfStream && IsWhiteSpace(document[_index]))
                 Read();
 
-            _tokenStart = _cursor.CurrentPosition;
+            _tokenStart = _cursor.Position;
             _textLogicalLines = false;
             // Use pointer sub-string if no escapes
             bool escapes = false;
@@ -344,7 +361,7 @@ namespace PropertiesDotNet.Core
                 // Enforce ISO-8859-1
                 else if (!Settings.AllCharacters && !IsLatin1(document[_index]))
                 {
-                    _tokenEnd = _tokenStart = _cursor.CurrentPosition;
+                    _tokenEnd = _tokenStart = _cursor.Position;
                     HandleError(
                        $"Unrecognized character '{document[_index]}' ({(ushort)document[_index]}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
                     return;
@@ -356,7 +373,7 @@ namespace PropertiesDotNet.Core
                 }
             }
 
-            _tokenEnd = _cursor.CurrentPosition;
+            _tokenEnd = _cursor.Position;
             _state = EndOfStream ? ParserState.End : ParserState.Start;
             // TODO: Allow for use for Span<T> in later .NET versions
             _token = new PropertiesToken(PropertiesTokenType.Value,
@@ -365,7 +382,7 @@ namespace PropertiesDotNet.Core
 
         private unsafe bool HandleEscapeSequence(char* document)
         {
-            StreamMark escapeStart = _cursor.CurrentPosition;
+            StreamMark escapeStart = _cursor.Position;
 
             // Eat '\\'
             Read();
@@ -424,7 +441,7 @@ namespace PropertiesDotNet.Core
                     else if (!Settings.InvalidEscapes)
                     {
                         _tokenStart = escapeStart;
-                        _tokenEnd = _cursor.CurrentPosition;
+                        _tokenEnd = _cursor.Position;
                         HandleError($"Invalid escape code \"\\{escape}\" at line {_tokenStart.Line} column {_tokenStart.Column}!");
                         return false;
                     }
@@ -475,7 +492,7 @@ namespace PropertiesDotNet.Core
         private bool HandleUnicodeError(in StreamMark errEscapeStart)
         {
             _tokenStart = errEscapeStart;
-            _tokenEnd = _cursor.CurrentPosition;
+            _tokenEnd = _cursor.Position;
 
             // TODO: Display sequence in error msg
             HandleError(

@@ -12,7 +12,7 @@ namespace PropertiesDotNet.Utils
         private bool _disposed;
 
         internal bool EndOfStream => _disposed || _stream.Peek() == -1;
-        internal StreamMark Position => _cursor.CurrentPosition;
+        internal StreamMark Position => _cursor.Position;
         internal StreamCursor Cursor => _cursor;
 
         internal MarkingReader(TextReader stream)
