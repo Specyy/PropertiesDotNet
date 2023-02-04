@@ -413,7 +413,9 @@ namespace PropertiesDotNet.Core
             if (disposing)
             {
                 Flush();
-                _stream.Dispose();
+
+                if (Settings.CloseOnEnd)
+                    _stream.Dispose();
             }
 
             if (_textPool.Length > 0)
