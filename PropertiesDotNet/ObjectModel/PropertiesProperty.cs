@@ -22,12 +22,23 @@ namespace PropertiesDotNet.ObjectModel
         public char Assigner
         {
             get => _assigner;
-            set => _assigner = value == '=' ||
-                value == ':' ||
-                value == ' ' ||
-                value == '\t' ||
-                value == '\f' ?
-                value : throw new ArgumentException("Assigner must be '=', ':' or any type of white-space!");
+            set
+            {
+                switch (value)
+                {
+                    case '=':
+                    case ':':
+                    case ' ':
+                    case '\t':
+                    case '\f':
+                        _assigner = value;
+                        break;
+
+                    default:
+                        _assigner = '=';
+                        throw new ArgumentException("Assigner must be '=', ':' or any type of white-space!");
+                }
+            }
         }
 
         private char _assigner;
@@ -42,10 +53,10 @@ namespace PropertiesDotNet.ObjectModel
         /// </summary>
         /// <param name="key">The key for this property.</param>
         /// <param name="value">The value for this property.</param>
-        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentException">If the key is <see langword="null"/> empty.</exception>
         public PropertiesProperty(string key, string? value) : this(key, '=', value)
         {
-            
+
         }
 
         /// <summary>
@@ -54,7 +65,8 @@ namespace PropertiesDotNet.ObjectModel
         /// <param name="key">The key for this property.</param>
         /// <param name="assigner">The assigner for this property.</param>
         /// <param name="value">The value for this property.</param>
-        /// <exception cref="ArgumentException">If the key is <see langword="null"/> empty.</exception>
+        /// <exception cref="ArgumentException">If the key is <see langword="null"/> empty, or 
+        /// if the assigner is not '=', ':' or any type of white-space. </exception>
         public PropertiesProperty(string key, char assigner, string? value)
         {
             if (string.IsNullOrEmpty(key))
@@ -71,9 +83,9 @@ namespace PropertiesDotNet.ObjectModel
         /// <param name="property">The property to copy.</param>
         public PropertiesProperty(PropertiesProperty property)
         {
-            Value = property.Value;
-            Assigner = property.Assigner;
             Key = property.Key;
+            Assigner = property.Assigner;
+            Value = property.Value;
         }
 
         /// <summary>
@@ -113,7 +125,7 @@ namespace PropertiesDotNet.ObjectModel
         public static implicit operator KeyValuePair<string, string?>(PropertiesProperty property) => new KeyValuePair<string, string?>(property.Key, property.Value);
 
         /// <summary>
-        /// Transforms this key-value pair to a property.
+        /// Transforms this key-value pair into a property.
         /// </summary>
         /// <param name="pair">The key-value pair.</param>
         public static implicit operator PropertiesProperty(KeyValuePair<string, string?> pair) => new PropertiesProperty(pair.Key, pair.Value);

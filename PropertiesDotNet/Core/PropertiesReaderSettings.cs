@@ -22,7 +22,7 @@ namespace PropertiesDotNet.Core
         /// Whether a <see cref="IPropertiesReader"/> should allow all Unicode escape identifiers,
         /// including '\x' and '\U', rather than only '\u'.
         /// </summary>
-        public virtual bool AllUnicodeEscapes { get; set; } = true;
+        public virtual bool AllUnicodeEscapes { get; set; } = false;
 
         /// <summary>
         /// Whether an <see cref="IPropertiesReader"/> should allow all characters, or only characters from the

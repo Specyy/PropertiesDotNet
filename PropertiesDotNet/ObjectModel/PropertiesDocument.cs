@@ -19,7 +19,7 @@ namespace PropertiesDotNet.ObjectModel
         /// <summary>
         /// Returns the number of properties within this document.
         /// </summary>
-        public int Count => _properties.Count;
+        public virtual int Count => _properties.Count;
 
         /// <summary>
         /// Creates a new <see cref="PropertiesDocument"/>.
@@ -36,10 +36,7 @@ namespace PropertiesDotNet.ObjectModel
         public PropertiesDocument(params KeyValuePair<string, string?>[] properties) : this()
         {
             for (var i = 0; i < properties.Length; i++)
-            {
-                ref var property = ref properties[i];
-                AddProperty(property.Key, property.Value);
-            }
+                AddProperty(properties[i]);
         }
 
         /// <summary>
@@ -49,7 +46,7 @@ namespace PropertiesDotNet.ObjectModel
         public PropertiesDocument(IDictionary<string, string?> properties) : this()
         {
             foreach (var property in properties)
-                AddProperty(property.Key, property.Value);
+                AddProperty(property);
         }
 
         /// <summary>
@@ -184,10 +181,9 @@ namespace PropertiesDotNet.ObjectModel
                     case PropertiesTokenType.Key:
                         string key = token.Text!;
 
-                        reader.MoveNext();
-
                         char assigner = '=';
-                        if ((token = reader.Token).Type == PropertiesTokenType.Assigner)
+
+                        if (reader.MoveNext() && (token = reader.Token).Type == PropertiesTokenType.Assigner)
                         {
                             assigner = token.Text[0];
                             reader.MoveNext();
@@ -298,7 +294,7 @@ namespace PropertiesDotNet.ObjectModel
         /// <param name="key">The property key.</param>
         /// <param name="value">The retrieved value.</param>
         /// <returns>true if the property with the specified <paramref name="key"/> was found; otherwise false.</returns>
-        public virtual bool TryGetValue(string key, out string? value)
+        public virtual bool TryGetValue(string key, [MaybeNullWhen(false)] out string? value)
         {
             if (TryGetProperty(key, out var prop))
             {
@@ -315,17 +311,15 @@ namespace PropertiesDotNet.ObjectModel
         /// </summary>
         /// <param name="key">The property key to check for.</param>
         /// <returns>Whether this document contains the specified property.</returns>
-        public virtual bool ContainsKey(string key) => ContainsProperty(key);
+        public virtual bool ContainsKey(string key) => _properties.ContainsKey(key);
 
         /// <summary>
-        /// Checks whether this document contains the specified property.
+        /// Checks whether this document contains the specified property. 
+        /// This is equivalent to <see cref="ContainsKey(string)"/>.
         /// </summary>
         /// <param name="key">The property key to check for.</param>
         /// <returns>Whether this document contains the specified property.</returns>
-        public virtual bool ContainsProperty(string key)
-        {
-            return _properties.ContainsKey(key);
-        }
+        public virtual bool ContainsProperty(string key) => ContainsKey(key);
 
         /// <summary>
         /// Checks whether this document contains the specified property.
