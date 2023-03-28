@@ -292,8 +292,8 @@ namespace PropertiesDotNet.Core
                 while (IsWhiteSpace(_stream.Peek()))
                     _stream.Read();
 
-                // If we thought the assigner was a white-space but we were actually
-                // just skipping the preceding white-space before the real assigner
+                // If we thought the assigner was a white-space but we were really
+                // just skipping the preceding white-space before the actual assigner
                 if (IsLiteralAssigner(_stream.Peek()))
                 {
                     _tokenStart = _stream.Position;
@@ -382,7 +382,7 @@ namespace PropertiesDotNet.Core
                     _textLogicalLines = true;
 
                     // Move back cursor from read since ReadLineEnd() moves for us
-                    if (escape != '\r' || _stream.Peek() != '\n')
+                    if (!(escape == '\r' && _stream.Peek() == '\n'))
                         _stream.Cursor.AdvanceColumn(-1);
 
                     _stream.ReadLineEnd();
@@ -396,13 +396,16 @@ namespace PropertiesDotNet.Core
                 case 'u':
                     return ParseUnicodeEscape(in escapeStart, (char)escape);
 
+                case 'x':
+                case 'U':
+                    if (Settings.AllUnicodeEscapes)
+                        return ParseUnicodeEscape(in escapeStart, (char)escape);
+
+                    goto default;
+
                 // Invalid escapes or end of stream
                 default:
-                    if ((escape == 'x' || escape == 'U') && Settings.AllUnicodeEscapes)
-                    {
-                        return ParseUnicodeEscape(in escapeStart, (char)escape);
-                    }
-                    else if (_stream.EndOfStream)
+                    if (_stream.EndOfStream)
                     {
                         _textPool.Append('\\');
                     }

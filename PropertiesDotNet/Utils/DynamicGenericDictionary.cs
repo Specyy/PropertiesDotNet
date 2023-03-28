@@ -48,11 +48,11 @@ namespace PropertiesDotNet.Utils
         public bool IsReadOnly => _innerDictionary.IsReadOnly;
 
         /// <inheritdoc/>
-        public ICollection Keys => throw new NotSupportedException();
+        public ICollection Keys => new DynamicDictionaryItemCollection<TKey>(_innerDictionary.Keys);
 
         /// <inheritdoc/>
-        public ICollection Values => throw new NotSupportedException();
-
+        public ICollection Values => new DynamicDictionaryItemCollection<TValue>(_innerDictionary.Values);
+        
         /// <inheritdoc/>
         public int Count => _innerDictionary.Count;
 
@@ -97,6 +97,35 @@ namespace PropertiesDotNet.Utils
 
         /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        private class DynamicDictionaryItemCollection<TItem> : ICollection
+        {
+            /// <inheritdoc/>
+            public int Count => _collection.Count;
+
+            /// <inheritdoc/>
+            public bool IsSynchronized => throw new NotSupportedException();
+
+            /// <inheritdoc/>
+            public object SyncRoot => throw new NotSupportedException();
+
+            private readonly ICollection<TItem> _collection;
+
+            /// <summary>
+            /// Creates a new <see cref="DynamicDictionaryItemCollection{TItem}"/>.
+            /// </summary>
+            /// <param name="collection">The inner collection.</param>
+            public DynamicDictionaryItemCollection(ICollection<TItem> collection)
+            {
+                _collection = collection;
+            }
+
+            /// <inheritdoc/>
+            public void CopyTo(Array array, int index) => throw new NotSupportedException();
+
+            /// <inheritdoc/>
+            public IEnumerator GetEnumerator() => _collection.GetEnumerator();
+        }
 
         private class DynamicDictionaryEnumerator : IDictionaryEnumerator
         {

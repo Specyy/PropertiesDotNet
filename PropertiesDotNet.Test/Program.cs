@@ -167,7 +167,7 @@ helloInJapanese = e";
             Console.WriteLine(sb);
             Console.WriteLine("----------------------------------------------------------------------------------------------------");
             //var e = fastJSON.JSON.Parse(JSON_SOURCE);
-            //BenchmarkRunner.Run<BenchmarkTester>();
+            BenchmarkRunner.Run<BenchmarkTester>();
 
             //var parser = new PropertiesReader(new StringReader(SOURCE));
             //while (parser.MoveNext())
@@ -199,6 +199,7 @@ helloInJapanese = e";
             {
                 Console.WriteLine(prop);
             }
+            doc["welcome"] = " hello\\";
 
             Console.WriteLine();
             Console.WriteLine();

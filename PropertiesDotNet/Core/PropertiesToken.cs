@@ -102,10 +102,7 @@ namespace PropertiesDotNet.Core
         /// Returns this token as a string.
         /// </summary>
         /// <returns>The this token as a string.</returns>
-        public override string ToString()
-        {
-            return $"Type: {Type}, Value: {Text}";
-        }
+        public override string ToString() => $"Type: {Type}, Value: {Text}";
 
         /// <summary>
         /// Returns the hash code for this token.
@@ -121,10 +118,7 @@ namespace PropertiesDotNet.Core
         /// </summary>
         /// <param name="value">The text content of the comment.</param>
         /// <returns>A new comment token.</returns>
-        public static PropertiesToken Comment(string? value)
-        {
-            return new PropertiesToken(PropertiesTokenType.Comment, value);
-        }
+        public static PropertiesToken Comment(string? value) => new PropertiesToken(PropertiesTokenType.Comment, value);
 
         /// <summary>
         /// Creates a new key token.
@@ -132,10 +126,7 @@ namespace PropertiesDotNet.Core
         /// <param name="key">The text content of the key.</param>
         /// <returns>A new key token.</returns>
         /// <exception cref="ArgumentException">If the key is <see langword="null"/> or empty.</exception>
-        public static PropertiesToken Key(string key)
-        {
-            return new PropertiesToken(PropertiesTokenType.Key, key);
-        }
+        public static PropertiesToken Key(string key) => new PropertiesToken(PropertiesTokenType.Key, key);
 
         /// <summary>
         /// Creates a new assigner token.
@@ -148,7 +139,7 @@ namespace PropertiesDotNet.Core
             if (assigner != '=' && assigner != ':' && assigner != ' ' && assigner != '\t' && assigner != '\f')
                 throw new ArgumentException($"Assigner must be '=', ':' or a white-space!");
 
-            return new PropertiesToken(PropertiesTokenType.Assigner, assigner.ToString());
+            return new PropertiesToken(PropertiesTokenType.Assigner, assigner!.ToString());
         }
 
         /// <summary>
@@ -156,9 +147,6 @@ namespace PropertiesDotNet.Core
         /// </summary>
         /// <param name="value">The text content of the value.</param>
         /// <returns>A new value token.</returns>
-        public static PropertiesToken Value(string? value)
-        {
-            return new PropertiesToken(PropertiesTokenType.Value, value);
-        }
+        public static PropertiesToken Value(string? value) => new PropertiesToken(PropertiesTokenType.Value, value);
     }
 }

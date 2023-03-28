@@ -10,7 +10,7 @@ using System.Runtime.Serialization;
 namespace PropertiesDotNet.Utils
 {
     /// <summary>
-    /// A generic implementation of <see cref="IDictionary{TKey, TValue}"/> that keeps key insertion order.
+    /// A generic implementation of <see cref="IDictionary{TKey, TValue}"/> that preserves key insertion order.
     /// </summary>
     /// <typeparam name="TKey">The key type.</typeparam>
     /// <typeparam name="TValue">The value type.</typeparam>
@@ -137,6 +137,7 @@ namespace PropertiesDotNet.Utils
             _list.RemoveAt(index);
         }
 
+        /// <inheritdoc/>
         public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value) =>
             _dictionary.TryGetValue(key, out value);
 

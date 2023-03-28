@@ -300,13 +300,16 @@ namespace PropertiesDotNet.Core
                 }
             }
 
-            int index = fallbackStartIndex + (!key && _state == WriterState.ValueOrAssigner ? 2 : 1);
-            char[] chars = new char[_textPool.Length - index];
+            if (!(TokenWritten is null))
+            {
+                int index = fallbackStartIndex + (!key && _state == WriterState.ValueOrAssigner ? 2 : 1);
+                char[] chars = new char[_textPool.Length - index];
 
-            for (int i = 0; i < chars.Length; i++)
-                chars[i] = _textPool[index + i];
+                for (int i = 0; i < chars.Length; i++)
+                    chars[i] = _textPool[index + i];
 
-            TokenWritten?.Invoke(this, new PropertiesToken(key ? PropertiesTokenType.Key : PropertiesTokenType.Value, new string(chars)));
+                TokenWritten(this, new PropertiesToken(key ? PropertiesTokenType.Key : PropertiesTokenType.Value, new string(chars)));
+            }
             return true;
         }
 
@@ -361,18 +364,7 @@ namespace PropertiesDotNet.Core
         private void WriteInternal(char value)
         {
             _textPool.Append(value);
-
-            if (value == '\r' || value == '\n')
-            {
-                if (value == '\n' && _textPool.Length > 0 && _textPool[_textPool.Length - 1] == '\r')
-                {
-                    _cursor.Line--;
-                    _cursor.AbsoluteOffset--;
-                }
-
-                _cursor.AdvanceLine();
-            }
-            else _cursor.AdvanceColumn(value == '\t' ? 4 : 1);
+            _cursor.AdvanceColumn(value == '\t' ? 4 : 1);
         }
 
         private void WriteInternal(string? value)
@@ -380,7 +372,7 @@ namespace PropertiesDotNet.Core
             if (string.IsNullOrEmpty(value))
                 return;
 
-            for (int i = 0; i < value.Length; i++)
+            for (int i = 0; i < value!.Length; i++)
             {
                 WriteInternal(value[i]);
             }
@@ -389,7 +381,16 @@ namespace PropertiesDotNet.Core
 #if !NET35 && !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private void WriteLineInternal() => WriteInternal(Environment.NewLine);
+        private void WriteLineInternal()
+        {
+            _textPool.Append(Environment.NewLine);
+
+            // 2 skips on CRLF
+            if (Environment.NewLine.Length > 1)
+                _cursor.AdvanceColumn(1);
+
+            _cursor.AdvanceLine();
+        }
 
         private bool CheckFlush()
         {

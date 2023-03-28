@@ -78,7 +78,7 @@ namespace PropertiesDotNet.ObjectModel
         }
 
         /// <summary>
-        /// Creates a new properties document property.
+        /// Creates a duplicate properties document property.
         /// </summary>
         /// <param name="property">The property to copy.</param>
         public PropertiesProperty(PropertiesProperty property)

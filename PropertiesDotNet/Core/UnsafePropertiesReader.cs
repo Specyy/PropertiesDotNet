@@ -244,7 +244,7 @@ namespace PropertiesDotNet.Core
             {
                 if (document[_index] == '\\')
                 {
-                    // Forced to use stringbuilder for escapes; can no longer do a simple sub-string
+                    // Forced to use stringbuilder for escapes; can no longer perform a simple sub-string
                     if (!escapes)
                     {
                         escapes = true;
@@ -286,7 +286,7 @@ namespace PropertiesDotNet.Core
 
             _tokenEnd = _cursor.Position;
             _state = ParserState.Value;
-            // TODO: Allow for use for Span<T> in later .NET versions
+            // TODO: Allow for use of Span<T> in later .NET versions
             _token = new PropertiesToken(PropertiesTokenType.Key,
                 escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
         }
@@ -341,7 +341,7 @@ namespace PropertiesDotNet.Core
             {
                 if (document[_index] == '\\')
                 {
-                    // Forced to use stringbuilder for escapes; can no longer do a simple sub-string
+                    // Forced to use stringbuilder for escapes; can no longer perform a simple sub-string
                     if (!escapes)
                     {
                         escapes = true;
@@ -351,7 +351,7 @@ namespace PropertiesDotNet.Core
                         else
                             _textPool.Length = 0;
 
-                        // TODO: Allow for use for Span<T> in later .NET versions
+                        // TODO: Allow for use of Span<T> in later .NET versions
                         _textPool.Append(new string(document, textStartIndex, _index - textStartIndex));
                     }
 
@@ -375,7 +375,7 @@ namespace PropertiesDotNet.Core
 
             _tokenEnd = _cursor.Position;
             _state = EndOfStream ? ParserState.End : ParserState.Start;
-            // TODO: Allow for use for Span<T> in later .NET versions
+            // TODO: Allow for use of Span<T> in later .NET versions
             _token = new PropertiesToken(PropertiesTokenType.Value,
                 escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
         }
@@ -428,13 +428,16 @@ namespace PropertiesDotNet.Core
                 case 'u':
                     return ParseUnicodeEscape(document, in escapeStart, escape);
 
+                case 'x':
+                case 'U':
+                    if (Settings.AllUnicodeEscapes)
+                        return ParseUnicodeEscape(document, in escapeStart, (char)escape);
+
+                    goto default;
+
                 // Invalid escapes or end of stream
                 default:
-                    if ((escape == 'x' || escape == 'U') && Settings.AllUnicodeEscapes)
-                    {
-                        return ParseUnicodeEscape(document, in escapeStart, escape);
-                    }
-                    else if (EndOfStream)
+                    if (EndOfStream)
                     {
                         _textPool.Append('\\');
                     }

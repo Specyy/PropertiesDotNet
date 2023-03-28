@@ -75,7 +75,7 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
         {
             // --- Method Structure ---
             //
-            // T = Constructed/Wanted object
+            // T = Constructed/Desired object
             // P1_T = Type of parameter 1
             // P2_T = Type of parameter 2
             // P{n}_T = Type of parameter n
@@ -104,7 +104,7 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
                 ParameterInfo[] paramInfo = info.GetParameters();
 
                 // Load params
-                for (var i = 0; i < argTypes.Length; i++)
+                for (int i = 0; i < argTypes.Length; i++)
                 {
                     // Ldarg_0 = object?[]? args
                     ilGen.Emit(OpCodes.Ldarg_0);
