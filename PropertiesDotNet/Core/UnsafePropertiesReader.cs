@@ -279,7 +279,8 @@ namespace PropertiesDotNet.Core
                 }
                 else
                 {
-                    _textPool?.Append(document[_index]);
+                    if (escapes)
+                        _textPool.Append(document[_index]);
                     Read();
                 }
             }
@@ -368,7 +369,8 @@ namespace PropertiesDotNet.Core
                 }
                 else
                 {
-                    _textPool?.Append(document[_index]);
+                    if(escapes)
+                        _textPool.Append(document[_index]);
                     Read();
                 }
             }
