@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using PropertiesDotNet.Core;
 using PropertiesDotNet.ObjectModel;
 using PropertiesDotNet.Serialization.ObjectProviders;
+using PropertiesDotNet.Utils;
 
 namespace PropertiesDotNet.Test
 {
@@ -90,171 +91,229 @@ helloInJapanese = e";
         ""title"": ""Sample Konfabulator Widget"",
     }
 }}";
+
+        public const string SIMPLE_DOC = @"# A comment line that starts with '#'.
+   # This is a comment line having leading white spaces.
+! A comment line that starts with '!'.
+
+key\r\n1=value1
+  key2 :       value2
+    key3             value3
+key\
+  4=value\
+    4
+\u006B\u0065\u00795=\u0076\u0061\u006c\u0075\u00655
+\k\e\y\6=\v\a\lu\e\6
+
+\:\ \== \\colon\\space\\equal
+";
         internal const string JSON_SOURCE_2 = @" ";
         public static readonly Stream SOURCE_STREAM = ToStream(SOURCE);
+        public static readonly Stream SIMPLE_DOC_STREAM = ToStream(SIMPLE_DOC);
         static unsafe void Main(string[] args)
         {
 
-            //Console.WriteLine(SOURCE);
-            // Setting for whether to align logical line
-            // ^ Beautify?
-            //
-            
-            //using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
-            IPropertiesReader reader = new PropertiesReader(new StringReader(SOURCE));
-            //reader.Settings.AllCharacters = true;
-            ////reader.Read();
-            ////reader.Read();
-            ////reader.Read();
-            ////reader.Read();
-
-            //Console.WriteLine("first----------------------------");
-            var provider = new ExpressionObjectProvider();
-            //IPropertiesReader obj = provider.Construct<IPropertiesReader>();
-            var r = provider.Construct<PropertiesReader>(new Type[] { typeof(TextReader), typeof(PropertiesReaderSettings) }, new object[] {new StringReader(SOURCE), null});
-            r.MoveNext();
-            Console.WriteLine(r.Token);
-            r.MoveNext();
-            Console.WriteLine(r.Token);
-            r.MoveNext();
-            Console.WriteLine(r.Token);
-
-            var token = reader.Token;
-            while (reader.MoveNext())
+            var re = new UnsafePropertiesReader(SOURCE);
+            while (re.MoveNext())
             {
-                token = reader.Token;
-
-                switch (token.Type)
+                switch (re.Token.Type)
                 {
-                    case PropertiesTokenType.Assigner:
                     case PropertiesTokenType.Key:
-                        Console.Write(token.Text);
+                    case PropertiesTokenType.Assigner:
+                        Console.Write(re.Token.Text);
                         break;
-
                     case PropertiesTokenType.Value:
                     case PropertiesTokenType.Comment:
-                        if(token.Type == PropertiesTokenType.Comment)
-                            Console.Write(((PropertiesReader)reader).CommentHandle + " ");
-                        Console.WriteLine(token.Text);
+                        Console.WriteLine(re.Token.Text);
                         break;
                 }
             }
 
+            ////Console.WriteLine(SOURCE);
+            //// Setting for whether to align logical line
+            //// ^ Beautify?
+            ////
 
+            ////using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
+            //IPropertiesReader reader = new PropertiesReader(new StringReader(SOURCE));
+            ////reader.Settings.AllCharacters = true;
+            //////reader.Read();
+            //////reader.Read();
+            //////reader.Read();
+            //////reader.Read();
 
-            Console.WriteLine("----------------------------------------------------------------------------------------------------");
-            StringBuilder sb = new StringBuilder();
-            var writer = new PropertiesWriter(new StringWriter(sb));
-            writer.TokenWritten += Writer_EventWritten;
-            writer.WriteComment("Chisen");
-            writer.WriteComment("Chisen 2");
-            writer.WriteKey("ChisenKey");
-            writer.WriteValue("ChisenKeyVal");
-            writer.WriteComment("Chisen Com after val");
-            writer.WriteKey("ChisenSecond");
-            writer.WriteValue("ChisenSecondVal");
-            writer.WriteKey("ChisenSecondAfterKey");
-            writer.WriteValue("ChisenSecondAfterKeyVal");
-            writer.WriteKey(" KeyStartw/whitespace");
-            writer.WriteValue(" valStartw/backwhitespace");
-            writer.WriteKey(" #EEEEZZZZZKeyStart#w/backwhitespaceLogical\n!LinesLol", false);
-            writer.WriteValue(" #EEEEKeyStartw/backwhitespaceLogical\n#Lines even more LOL", true);
-            writer.WriteComment("Chisen Com after val");
-            writer.WriteKey("#KeyStart#w/backwhitespaceLogical\n!LinesLol", true);
-            writer.WriteValue("!!###KeyStartw/backwhitespaceLogical\n#Lines even more LOL", true);
-            writer.WriteComment("Chisen Com after val");
-            writer.Dispose();
-            Console.WriteLine(sb);
-            Console.WriteLine("----------------------------------------------------------------------------------------------------");
-            //var e = fastJSON.JSON.Parse(JSON_SOURCE);
-            BenchmarkRunner.Run<BenchmarkTester>();
+            ////Console.WriteLine("first----------------------------");
+            //var provider = new ExpressionObjectProvider();
+            ////IPropertiesReader obj = provider.Construct<IPropertiesReader>();
+            //var r = provider.Construct<PropertiesReader>(new Type[] { typeof(TextReader), typeof(PropertiesReaderSettings) }, new object[] {new StringReader(SOURCE), null});
+            //r.MoveNext();
+            //Console.WriteLine(r.Token);
+            //r.MoveNext();
+            //Console.WriteLine(r.Token);
+            //r.MoveNext();
+            //Console.WriteLine(r.Token);
 
-            //var parser = new PropertiesReader(new StringReader(SOURCE));
-            //while (parser.MoveNext())
+            //var token = reader.Token;
+            //while (reader.MoveNext())
             //{
-            //    //Console.Write(parser.TokenStart + " - " + parser.TokenEnd);
-            //    switch (parser.Token.Type)
+            //    token = reader.Token;
+
+            //    switch (token.Type)
             //    {
             //        case PropertiesTokenType.Assigner:
-            //            Console.Write("\\" + parser.Token.Text);
-            //            break;
             //        case PropertiesTokenType.Key:
-            //            Console.Write(parser.Token.Text);
-
-            //            if(parser.Token.Text == "key4")
-            //                Console.Write("  " + parser.TokenStart + " ::::::: " + parser.TokenEnd);
+            //            Console.Write(token.Text);
             //            break;
 
+            //        case PropertiesTokenType.Value:
             //        case PropertiesTokenType.Comment:
-            //        case PropertiesTokenType.Text:
-            //            if (parser.Token.Type == PropertiesTokenType.Comment)
-            //                Console.Write("  " + parser.TokenStart + " ::::::: " + parser.TokenEnd);
-            //            Console.WriteLine("'" + parser.Token.Text + "'");
+            //            if(token.Type == PropertiesTokenType.Comment)
+            //                Console.Write(((PropertiesReader)reader).CommentHandle + " ");
+            //            Console.WriteLine(token.Text);
             //            break;
             //    }
             //}
-            var doc = PropertiesDocument.Load(SOURCE);
 
-            foreach(var prop in doc)
+
+
+            //Console.WriteLine("----------------------------------------------------------------------------------------------------");
+            //StringBuilder sb = new StringBuilder();
+            //var writer = new PropertiesWriter(new StringWriter(sb));
+            //writer.TokenWritten += Writer_EventWritten;
+            //writer.WriteComment("Chisen");
+            //writer.WriteComment("Chisen 2");
+            //writer.WriteKey("ChisenKey");
+            //writer.WriteValue("ChisenKeyVal");
+            //writer.WriteComment("Chisen Com after val");
+            //writer.WriteKey("ChisenSecond");
+            //writer.WriteValue("ChisenSecondVal");
+            //writer.WriteKey("ChisenSecondAfterKey");
+            //writer.WriteValue("ChisenSecondAfterKeyVal");
+            //writer.WriteKey(" KeyStartw/whitespace");
+            //writer.WriteValue(" valStartw/backwhitespace");
+            //writer.WriteKey(" #EEEEZZZZZKeyStart#w/backwhitespaceLogical\n!LinesLol", false);
+            //writer.WriteValue(" #EEEEKeyStartw/backwhitespaceLogical\n#Lines even more LOL", true);
+            //writer.WriteComment("Chisen Com after val");
+            //writer.WriteKey("#KeyStart#w/backwhitespaceLogical\n!LinesLol", true);
+            //writer.WriteValue("!!###KeyStartw/backwhitespaceLogical\n#Lines even more LOL", true);
+            //writer.WriteComment("Chisen Com after val");
+            //writer.Dispose();
+            //Console.WriteLine(sb);
+            //Console.WriteLine("----------------------------------------------------------------------------------------------------");
+            ////var e = fastJSON.JSON.Parse(JSON_SOURCE);
+            //BenchmarkRunner.Run<BenchmarkTester>();
+            Console.WriteLine("---------------------------------------------");
+            var writer = new PropertiesWriter(Console.Out);
+            writer.TokenWritten += (w, token) =>
             {
-                Console.WriteLine(prop);
-            }
-            doc["welcome"] = " hello\\";
-
-            Console.WriteLine();
-            Console.WriteLine();
-            doc.Save(Console.Out);
-            Console.WriteLine(Console.OutputEncoding.EncodingName);
-            Console.WriteLine(TimeZoneInfo.Local.DaylightName);
-            Console.WriteLine(TimeZoneInfo.Local.DisplayName);
-            Console.WriteLine(TimeZoneInfo.Local.StandardName);
-            Console.WriteLine("----------------------------------------------------------------------------------------------------");
-
-            Console.WriteLine("Real Length: " + SOURCE.Length);
-            Console.WriteLine();
-            Console.WriteLine();
-
-            IPropertiesReader parser = new PropertiesReader(new StringReader(SOURCE));
-            PropertiesToken lastToken = default;
-            while (parser.MoveNext())
-            {
-                lastToken = parser.Token;
-            }
-
+                if (token.Type == PropertiesTokenType.Comment)
+                    Console.WriteLine("'" + token.Text + "'");
+            };
+            writer.Write(new PropertiesToken(PropertiesTokenType.Comment, "Chisen Good morning\r\n\f world! "));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Comment, "\nChisen lol"));
+            writer.Write(new PropertiesToken(PropertiesTokenType.Key, "CHKey"));
+            writer.Flush();
             
-            Console.WriteLine("PropertiesReader");
-            Console.WriteLine(lastToken);
-            Console.WriteLine("Start: " + parser.TokenStart);
-            Console.WriteLine("End: " + parser.TokenEnd);
-            Console.WriteLine();
 
-            parser = new UnsafePropertiesReader(SOURCE);
-            while (parser.MoveNext())
-            {
-                lastToken = parser.Token;
-            }
+            //Console.WriteLine(re.TokenEnd);
 
-            Console.WriteLine("UnsafePropertiesReader");
-            Console.WriteLine(lastToken);
-            Console.WriteLine("Start: " + parser.TokenStart);
-            Console.WriteLine("End: " + parser.TokenEnd);
-            Console.WriteLine();
+            ////var parser = new PropertiesReader(new StringReader(SOURCE));
+            ////while (parser.MoveNext())
+            ////{
+            ////    //Console.Write(parser.TokenStart + " - " + parser.TokenEnd);
+            ////    switch (parser.Token.Type)
+            ////    {
+            ////        case PropertiesTokenType.Assigner:
+            ////            Console.Write("\\" + parser.Token.Text);
+            ////            break;
+            ////        case PropertiesTokenType.Key:
+            ////            Console.Write(parser.Token.Text);
 
-            // TODO: This does not match
-            // ]arw;\sfl
-            // ]pgfa;d'
-            // Offser :/
-            // Normal reader is 1 off but UnsafeReader is like 11 off
-            Console.WriteLine("Len: " + SOURCE.Length);
-            string c = "\U0010FFFF";
-            Console.WriteLine(c.Length);
-            Console.WriteLine(c[0].ToString());
-            Console.WriteLine($"string c = \"\U0010FFFF\";");
-            Console.WriteLine('\a');
-            Console.WriteLine("-------------------");
-            Console.WriteLine(nameof(StreamMark) + sizeof(StreamMark));
-            Console.WriteLine(nameof(PropertiesToken) + sizeof(PropertiesToken));
-            Console.Read();
+            ////            if(parser.Token.Text == "key4")
+            ////                Console.Write("  " + parser.TokenStart + " ::::::: " + parser.TokenEnd);
+            ////            break;
+
+            ////        case PropertiesTokenType.Comment:
+            ////        case PropertiesTokenType.Text:
+            ////            if (parser.Token.Type == PropertiesTokenType.Comment)
+            ////                Console.Write("  " + parser.TokenStart + " ::::::: " + parser.TokenEnd);
+            ////            Console.WriteLine("'" + parser.Token.Text + "'");
+            ////            break;
+            ////    }
+            ////}
+            //var doc = PropertiesDocument.Load(SOURCE);
+
+            ////foreach(var prop in doc)
+            ////{
+            ////    Console.WriteLine(prop);
+            ////}
+            ////doc["welcome"] = " hello\\";
+
+            ////Console.WriteLine();
+            ////Console.WriteLine();
+            ////doc.Save(Console.Out);
+            ////Console.WriteLine(Console.OutputEncoding.EncodingName);
+            ////Console.WriteLine(TimeZoneInfo.Local.DaylightName);
+            ////Console.WriteLine(TimeZoneInfo.Local.DisplayName);
+            ////Console.WriteLine(TimeZoneInfo.Local.StandardName);
+            ////Console.WriteLine("----------------------------------------------------------------------------------------------------");
+
+            ////Console.WriteLine("Real Length: " + SOURCE.Length);
+            ////Console.WriteLine();
+            ////Console.WriteLine();
+
+            //IPropertiesReader parser = new PropertiesReader(new UnsafeStringReader(SOURCE));
+            //PropertiesToken lastToken = default;
+            //while (parser.MoveNext())
+            //{
+            //    lastToken = parser.Token;
+            //    switch (lastToken.Type)
+            //    {
+            //        case PropertiesTokenType.Key:
+            //        case PropertiesTokenType.Assigner:
+            //            Console.Write( lastToken.Text);
+            //            break;
+            //        case PropertiesTokenType.Comment:
+            //        case PropertiesTokenType.Value:
+            //            Console.WriteLine(lastToken.Text);
+            //            break;
+            //    }
+            //}
+
+
+            //Console.WriteLine("PropertiesReader");
+            //Console.WriteLine(lastToken);
+            //Console.WriteLine("Start: " + parser.TokenStart);
+            //Console.WriteLine("End: " + parser.TokenEnd);
+            //Console.WriteLine();
+
+            //parser = new UnsafePropertiesReader(SOURCE);
+            //while (parser.MoveNext())
+            //{
+            //    lastToken = parser.Token;
+            //}
+
+            //Console.WriteLine("UnsafePropertiesReader");
+            //Console.WriteLine(lastToken);
+            //Console.WriteLine("Start: " + parser.TokenStart);
+            //Console.WriteLine("End: " + parser.TokenEnd);
+            //Console.WriteLine();
+
+            //// TODO: This does not match
+            //// ]arw;\sfl
+            //// ]pgfa;d'
+            //// Offser :/
+            //// Normal reader is 1 off but UnsafeReader is like 11 off
+            //Console.WriteLine("Len: " + SOURCE.Length);
+            //string c = "\U0010FFFF";
+            //Console.WriteLine(c.Length);
+            //Console.WriteLine(c[0].ToString());
+            //Console.WriteLine($"string c = \"\U0010FFFF\";");
+            //Console.WriteLine('\a');
+            //Console.WriteLine("-------------------");
+            //Console.WriteLine(nameof(StreamMark) + sizeof(StreamMark));
+            //Console.WriteLine(nameof(PropertiesToken) + sizeof(PropertiesToken));
+            //Console.Read();
         }
 
         private static void Writer_EventWritten(IPropertiesWriter writer, PropertiesToken token)
@@ -692,8 +751,8 @@ helloInJapanese = e";
             writer.WriteValue("ChisenSecondAfterKeyVal");
             writer.WriteKey(" KeyStartw/whitespace");
             writer.WriteValue(" valStartw/backwhitespace");
-            writer.WriteKey("#KeyStart#w/backwhitespaceLogical\n!LinesLol", true);
-            writer.WriteValue("KeyStartw/backwhitespaceLogical\n#Lines even more LOL", true);
+            writer.WriteKey("#KeyStart#w/backwhitespaceLogical\n!LinesLol", false);
+            writer.WriteValue("KeyStartw/backwhitespaceLogical\n#Lines even more LOL", false);
             writer.WriteComment("Chisen Com after val");
             writer.Dispose();
         }
@@ -704,7 +763,7 @@ helloInJapanese = e";
             //using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
             //PropertiesReader reader = new PropertiesReader(Program.SOURCE);
 
-            var parser = new PropertiesReader(new StringReader(Program.SOURCE));
+            var parser = new PropertiesReader(new StringReader(Program.SIMPLE_DOC));
             
             while (parser.MoveNext())
             {
@@ -717,11 +776,27 @@ helloInJapanese = e";
             //using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
             //PropertiesReader reader = new PropertiesReader(Program.SOURCE);
 
-            var parser = new UnsafePropertiesReader(Program.SOURCE);
+            var parser = new UnsafePropertiesReader(Program.SIMPLE_DOC);
 
             while (parser.MoveNext())
             {
             }
+            //PropertiesDocument.Load(Program.SOURCE);
+        }
+
+        [Benchmark]
+        public void PDN_DocReader()
+        {
+            //using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
+            //PropertiesReader reader = new PropertiesReader(Program.SOURCE);
+
+            //var parser = new PropertiesReader(new UnsafeStringReader(Program.SOURCE));
+
+            //while (parser.MoveNext())
+            //{
+            //}
+
+            PropertiesDocument.Load(Program.SIMPLE_DOC);
         }
 
         //[Benchmark]
@@ -757,9 +832,8 @@ helloInJapanese = e";
         {
             //using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
             //PropertiesReader reader = new PropertiesReader(Program.SOURCE);
-            Program.SOURCE_STREAM.Position = 0;
-            new System.Collections.Generic.Dictionary<string, string>();
-            kReader.Parse(Program.SOURCE_STREAM);
+            Program.SIMPLE_DOC_STREAM.Position = 0;
+            kReader.Parse(Program.SIMPLE_DOC_STREAM);
         }
 
         //[Benchmark]

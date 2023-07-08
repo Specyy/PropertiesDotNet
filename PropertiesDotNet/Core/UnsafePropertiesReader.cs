@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Text;
 
 using PropertiesDotNet.Utils;
@@ -7,7 +6,8 @@ using PropertiesDotNet.Utils;
 namespace PropertiesDotNet.Core
 {
     /// <summary>
-    /// A fast ".properties" reader using unsafe string manipulation.
+    /// A fast ".properties" document reader that implements a non-cached, 
+    /// forward-only token generation scheme using unsafe string manipulation.
     /// </summary>
     public sealed class UnsafePropertiesReader : IPropertiesReader
     {
@@ -22,23 +22,16 @@ namespace PropertiesDotNet.Core
         public PropertiesToken Token => _token;
 
         /// <inheritdoc/>
-        public StreamMark? TokenStart => _tokenStart;
+        public StreamMark? TokenStart { get; private set; }
 
         /// <inheritdoc/>
-        public StreamMark? TokenEnd => _tokenEnd;
+        public StreamMark? TokenEnd { get; private set; }
 
         /// <inheritdoc/>
         public bool HasLineInfo => true;
 
         /// <inheritdoc/>
         public event TokenRead? TokenRead;
-
-        /// <summary>
-        /// Returns whether the current token contains logical lines. This only applies to keys and values.
-        /// </summary>
-        public bool LogicalLines =>
-            (_token.Type == PropertiesTokenType.Key || _token.Type == PropertiesTokenType.Value) &&
-            _textLogicalLines;
 
         /// <summary>
         /// Returns the comment handle for the current token. This handle is either an
@@ -49,18 +42,15 @@ namespace PropertiesDotNet.Core
         private bool EndOfStream => _index >= _document.Length;
 
         private PropertiesReaderSettings _settings;
-        private string _document;
+        private readonly string _document;
         private int _index;
         private bool _disposed;
         private PropertiesToken _token;
         private StringBuilder _textPool;
 
-        private ParserState _state;
+        private ReaderState _state;
         private char _commentHandle;
-        private bool _textLogicalLines;
-        private StreamCursor _cursor;
-        private StreamMark _tokenStart;
-        private StreamMark _tokenEnd;
+        private readonly StreamCursor _cursor;
 
         /// <summary>
         /// Creates a new <see cref="UnsafePropertiesReader"/>.
@@ -92,7 +82,7 @@ namespace PropertiesDotNet.Core
         {
             fixed (char* document = _document)
             {
-                if (ReadToken(document))
+                if (ReadToken(document) || _state == ReaderState.Error)
                 {
                     TokenRead?.Invoke(this, _token);
                     return true;
@@ -106,145 +96,107 @@ namespace PropertiesDotNet.Core
         {
             switch (_state)
             {
-                case ParserState.Start:
-
+                case ReaderState.Start:
                     // Remove white-space before token
-                    while (!EndOfStream && (IsWhiteSpace(document[_index]) || IsNewLine(document[_index])))
-                    {
-                        if (IsNewLine(document[_index]))
-                            ReadLineEnd(document);
-                        else
-                            Read();
-                    }
+                    while (!EndOfStream && IsBlank(document[_index]))
+                        Read(document);
 
                     if (!EndOfStream && IsCommentHandle(document[_index]))
                     {
-                        if (!Settings.IgnoreComments)
+                        if (Settings.IgnoreComments)
                         {
-                            _state = ParserState.Comment;
-                            goto case ParserState.Comment;
-                        }
+                            do Read(document);
+                            while (!IsLineEnd(document[_index]));
 
-                        SkipComments(document);
+                            goto case ReaderState.Start;
+                        }
+                        else
+                        {
+                            _state = ReaderState.Comment;
+                            goto case ReaderState.Comment;
+                        }
                     }
 
                     if (EndOfStream)
                     {
-                        _state = ParserState.End;
-                        goto case ParserState.End;
+                        _state = ReaderState.End;
+                        goto case ReaderState.End;
                     }
                     else
                     {
-                        _state = ParserState.Key;
-                        goto case ParserState.Key;
+                        _state = ReaderState.Key;
+                        goto case ReaderState.Key;
                     }
+                case ReaderState.Comment:
+                    return ReadComment(document);
 
-                case ParserState.Comment:
-                    ReadComment(document);
-                    return true;
+                case ReaderState.Key:
+                case ReaderState.Value:
+                    return ReadText(document);
 
-                case ParserState.Key:
-                    ReadKey(document);
-                    return true;
-
-                case ParserState.Assigner:
+                case ReaderState.Assigner:
                     return ReadAssigner(document);
 
-                case ParserState.Value:
-                    ReadValue(document);
-
-                    // Ignore return value because we basically only do this for the disposing behaviour
-                    if (_state == ParserState.End)
-                        ReadToken(document);
-
-                    return true;
-
-                case ParserState.Error:
-                    _state = ParserState.End;
-                    goto case ParserState.End;
+                case ReaderState.Error:
+                    _state = ReaderState.End;
+                    goto case ReaderState.End;
 
                 default:
-                case ParserState.End:
+                case ReaderState.End:
                     if (Settings.CloseOnEnd)
                         Dispose();
                     return false;
             }
         }
 
-        private unsafe void SkipComments(char* document)
+        private unsafe bool ReadComment(char* document)
         {
-            // Skip over this and proceeding comments
-            // Use iteration instead of recursion
-            do
-            {
-                for (Read(); !EndOfStream; Read())
-                {
-                    if (IsNewLine(document[_index]))
-                    {
-                        ReadLineEnd(document);
-
-                        // Remove white-space before token
-                        while (!EndOfStream && (IsWhiteSpace(document[_index]) || IsNewLine(document[_index])))
-                        {
-                            if (IsNewLine(document[_index]))
-                                ReadLineEnd(document);
-                            else
-                                Read();
-                        }
-
-                        break;
-                    }
-                }
-            } while (IsCommentHandle(document[_index]));
-        }
-
-        private unsafe void ReadComment(char* document)
-        {
-            _tokenStart = _cursor.Position;
+            TokenStart = _cursor.Position;
 
             _commentHandle = document[_index];
-            Read();
+            Read(document);
 
             // Remove white-space before actual text
             while (!EndOfStream && IsWhiteSpace(document[_index]))
-                Read();
+                Read(document);
 
             int textStartIndex = _index;
 
-            while (!EndOfStream && !IsNewLine(document[_index]))
+            while (!IsLineEnd(document[_index]))
             {
                 if (!Settings.AllCharacters && !IsLatin1(document[_index]))
                 {
-                    _tokenEnd = _tokenStart = _cursor.Position;
-                    HandleError(
-                       $"Unrecognized character '{document[_index]}' ({(ushort)document[_index]}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
-                    return;
+                    TokenStart = TokenEnd = _cursor.Position;
+                    CreateError($"Unrecognized character '{document[_index]}' ({(ushort)document[_index]}) at line {TokenStart?.Line} column {TokenStart?.Column}!");
+                    return false;
                 }
-                Read();
+
+                Read(document);
             }
 
-            _tokenEnd = _cursor.Position;
-
-            _state = ParserState.Start;
-            _token = new PropertiesToken(PropertiesTokenType.Comment,
-                new string(document, textStartIndex, _index - textStartIndex));
-
-            ReadLineEnd(document);
+            TokenEnd = _cursor.Position;
+            _token = PropertiesToken.Comment(new string(document, textStartIndex, _index - textStartIndex));
+            _state = ReaderState.Start;
+            return true;
         }
 
-        private unsafe void ReadKey(char* document)
+        private unsafe bool ReadText(char* document)
         {
-            _tokenStart = _cursor.Position;
-            _textLogicalLines = false;
+            // Remove leading white-space before value
+            while (!EndOfStream && IsWhiteSpace(document[_index]))
+                Read(document);
+
+            TokenStart = _cursor.Position;
+
             // Use pointer sub-string if no escapes
             bool escapes = false;
             int textStartIndex = _index;
 
-            while (!EndOfStream && !IsNewLine(document[_index]))
+            while (!IsLineEnd(document[_index]))
             {
                 if (document[_index] == '\\')
                 {
-                    // Forced to use stringbuilder for escapes; can no longer perform a simple sub-string
+                    // Forced to use stringbuilder for escapes; can no longer do a simple sub-string
                     if (!escapes)
                     {
                         escapes = true;
@@ -257,140 +209,93 @@ namespace PropertiesDotNet.Core
                         _textPool.Append(new string(document, textStartIndex, _index - textStartIndex));
                     }
 
-                    if (!HandleEscapeSequence(document))
-                        return;
+                    if (!ReadEscape(document))
+                        return false;
                 }
-                else if (IsAssigner(document[_index]))
+                else if (_state == ReaderState.Key && IsAssigner(document[_index]))
                 {
-                    _tokenEnd = _cursor.Position;
-                    _state = ParserState.Assigner;
+                    TokenEnd = _cursor.Position;
                     // TODO: Allow for use for Span<T> in later .NET versions
-                    _token = new PropertiesToken(PropertiesTokenType.Key,
-                        escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
-                    return;
+                    _token = PropertiesToken.Key(escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
+                    _state = ReaderState.Assigner;
+                    return true;
                 }
                 // Enforce ISO-8859-1
                 else if (!Settings.AllCharacters && !IsLatin1(document[_index]))
                 {
-                    _tokenEnd = _tokenStart = _cursor.Position;
-                    HandleError(
-                       $"Unrecognized character '{document[_index]}' ({(ushort)document[_index]}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
-                    return;
+                    TokenStart = TokenEnd = _cursor.Position;
+                    CreateError($"Unrecognized character '{document[_index]}' ({(ushort)document[_index]}) at line {TokenStart?.Line} column {TokenStart?.Column}!");
+                    return false;
                 }
                 else
                 {
                     if (escapes)
                         _textPool.Append(document[_index]);
-                    Read();
+                    Read(document);
                 }
             }
 
-            _tokenEnd = _cursor.Position;
-            _state = ParserState.Value;
-            // TODO: Allow for use of Span<T> in later .NET versions
-            _token = new PropertiesToken(PropertiesTokenType.Key,
-                escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
+            TokenEnd = _cursor.Position;
+
+            if (_state == ReaderState.Key)
+            {
+                // TODO: Allow for use for Span<T> in later .NET versions
+                _token = PropertiesToken.Key(escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
+                _state = ReaderState.Value;
+            }
+            else
+            {
+                _state = EndOfStream ? ReaderState.End : ReaderState.Start;
+                // TODO: Allow for use for Span<T> in later .NET versions
+                _token = PropertiesToken.Value(escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
+            }
+
+            return true;
         }
 
         private unsafe bool ReadAssigner(char* document)
         {
-            _tokenStart = _cursor.Position;
+            TokenStart = _cursor.Position;
             char lastAssigner = document[_index];
-            Read();
+            Read(document);
 
             if (IsWhiteSpace(lastAssigner))
             {
                 // Consume whitespace until last or assigner
                 while (!EndOfStream && IsWhiteSpace(document[_index]))
-                    Read();
+                    Read(document);
 
                 // If we thought the assigner was a white-space but we were actually
                 // just skipping the preceding white-space before the real assigner
                 if (!EndOfStream && IsLiteralAssigner(document[_index]))
                 {
-                    _tokenStart = _cursor.Position;
+                    TokenStart = _cursor.Position;
                     lastAssigner = document[_index];
-                    Read();
+                    Read(document);
                 }
                 // Key with a bunch of trailing white-spaces but no value
-                else if (EndOfStream || IsNewLine(document[_index]))
+                else if (IsLineEnd(document[_index]))
                 {
-                    _state = ParserState.Value;
+                    _state = ReaderState.Value;
                     return ReadToken(document);
                 }
             }
 
-            _tokenEnd = _cursor.Position;
-            _state = ParserState.Value;
+            TokenEnd = _cursor.Position;
+            _state = ReaderState.Value;
             _token = new PropertiesToken(PropertiesTokenType.Assigner, lastAssigner.ToString());
             return true;
         }
 
-        private unsafe void ReadValue(char* document)
-        {
-            // Remove leading white-space before value
-            while (!EndOfStream && IsWhiteSpace(document[_index]))
-                Read();
-
-            _tokenStart = _cursor.Position;
-            _textLogicalLines = false;
-            // Use pointer sub-string if no escapes
-            bool escapes = false;
-            int textStartIndex = _index;
-
-            while (!EndOfStream && !IsNewLine(document[_index]))
-            {
-                if (document[_index] == '\\')
-                {
-                    // Forced to use stringbuilder for escapes; can no longer perform a simple sub-string
-                    if (!escapes)
-                    {
-                        escapes = true;
-
-                        if (_textPool is null)
-                            _textPool = new StringBuilder();
-                        else
-                            _textPool.Length = 0;
-
-                        // TODO: Allow for use of Span<T> in later .NET versions
-                        _textPool.Append(new string(document, textStartIndex, _index - textStartIndex));
-                    }
-
-                    if (!HandleEscapeSequence(document))
-                        return;
-                }
-                // Enforce ISO-8859-1
-                else if (!Settings.AllCharacters && !IsLatin1(document[_index]))
-                {
-                    _tokenEnd = _tokenStart = _cursor.Position;
-                    HandleError(
-                       $"Unrecognized character '{document[_index]}' ({(ushort)document[_index]}) at line {_tokenStart.Line} column {_tokenStart.Column}!");
-                    return;
-                }
-                else
-                {
-                    if(escapes)
-                        _textPool.Append(document[_index]);
-                    Read();
-                }
-            }
-
-            _tokenEnd = _cursor.Position;
-            _state = EndOfStream ? ParserState.End : ParserState.Start;
-            // TODO: Allow for use of Span<T> in later .NET versions
-            _token = new PropertiesToken(PropertiesTokenType.Value,
-                escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
-        }
-
-        private unsafe bool HandleEscapeSequence(char* document)
+        private unsafe bool ReadEscape(char* document)
         {
             StreamMark escapeStart = _cursor.Position;
 
             // Eat '\\'
-            Read();
+            Read(document);
 
             char escape = document[_index];
-            Read();
+            Read(document);
 
             switch (escape)
             {
@@ -413,27 +318,17 @@ namespace PropertiesDotNet.Core
                 // TODO: Maybe switch from this case into the default case and use a IsNewLine(...) check
                 case '\r':
                 case '\n':
-                    _textLogicalLines = true;
-
-                    // Move back cursor from read since ReadLineEnd() moves for us
-                    if (escape != '\r' || document[_index] != '\n')
-                        _cursor.AdvanceColumn(-1);
-
-                    ReadLineEnd(document);
-
-                    // Skip trailing white-space of value or assigner
                     while (!EndOfStream && IsWhiteSpace(document[_index]))
-                        Read();
-
+                        Read(document);
                     break;
 
                 case 'u':
-                    return ParseUnicodeEscape(document, in escapeStart, escape);
+                    return ReadUnicodeEscape(document, in escapeStart, escape);
 
                 case 'x':
                 case 'U':
                     if (Settings.AllUnicodeEscapes)
-                        return ParseUnicodeEscape(document, in escapeStart, (char)escape);
+                        return ReadUnicodeEscape(document, in escapeStart, escape);
 
                     goto default;
 
@@ -445,9 +340,9 @@ namespace PropertiesDotNet.Core
                     }
                     else if (!Settings.InvalidEscapes)
                     {
-                        _tokenStart = escapeStart;
-                        _tokenEnd = _cursor.Position;
-                        HandleError($"Invalid escape code \"\\{escape}\" at line {_tokenStart.Line} column {_tokenStart.Column}!");
+                        TokenStart = escapeStart;
+                        TokenEnd = _cursor.Position;
+                        CreateError($"Invalid escape code \"\\{escape}\" at line {escapeStart.Line} column {escapeStart.Column}!");
                         return false;
                     }
                     else
@@ -460,89 +355,119 @@ namespace PropertiesDotNet.Core
             return true;
         }
 
-        private unsafe bool ParseUnicodeEscape(char* document, in StreamMark errEscapeStart, char identifier)
+        private unsafe bool ReadUnicodeEscape(char* document, in StreamMark errEscapeStart, char identifier)
         {
             int codePoint = 0;
+            int codeLength = identifier == 'U' ? (byte)8 : (byte)4;
 
-            // TODO: Maybe make 'u' && 'x' explicit
-            byte codeLength = identifier == 'U' ? (byte)8 : (byte)4;
-
-            for (byte i = 0; i < codeLength; i++, Read())
+            for (int i = 0; i < codeLength; i++)
             {
                 int hex = ToHex(document[_index]); // '9' -> 9
+                Read(document);
 
                 if (hex < 0 || hex > 15)
                 {
                     if (i > 0 && identifier == 'x')
                         break;
 
-                    return HandleUnicodeError(in errEscapeStart);
+                    return CreateUnicodeError(in errEscapeStart);
                 }
                 // First 2 must be 00 on valid '\U00xxxxxx'
                 else if (identifier == 'U' && i < 2 && hex != 0)
-                    return HandleUnicodeError(in errEscapeStart);
+                    return CreateUnicodeError(in errEscapeStart);
 
                 codePoint = (codePoint << 4) + hex;
 
                 // A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, 
                 // and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff)
                 if (!(codePoint <= 0x10FFFF && (codePoint < 0xD800 || codePoint > 0xDFFF)))
-                    return HandleUnicodeError(in errEscapeStart);
+                    return CreateUnicodeError(in errEscapeStart);
             }
 
             _textPool.Append(char.ConvertFromUtf32(codePoint));
             return true;
         }
 
-        private bool HandleUnicodeError(in StreamMark errEscapeStart)
+        private bool CreateUnicodeError(in StreamMark errEscapeStart)
         {
-            _tokenStart = errEscapeStart;
-            _tokenEnd = _cursor.Position;
+            TokenStart = errEscapeStart;
+            TokenEnd = _cursor.Position;
 
             // TODO: Display sequence in error msg
-            HandleError(
-                $"Invalid Unicode escape sequence at line {_tokenStart.Line} column {_tokenStart.Column}!");
-
+            CreateError($"Invalid Unicode escape sequence at line {errEscapeStart.Line} column {errEscapeStart.Column}!");
             return false;
         }
 
-        private void HandleError(string message)
+        private void CreateError(string message)
         {
             if (Settings.CloseOnEnd)
                 Dispose();
 
-            _state = ParserState.Error;
+            _state = ReaderState.Error;
             _token = new PropertiesToken(PropertiesTokenType.Error, message);
 
             if (Settings.ThrowOnError)
                 throw new PropertiesException(message);
         }
 
-#if !NET35 && !NET40
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private unsafe void ReadLineEnd(char* document)
+        private unsafe void Read(char* document)
         {
-            if (document[_index] == '\r' && _index + 1 < _document.Length && document[_index + 1] == '\n')
-                Read();
+            char read = document[_index++];
 
-            _index++;
-            _cursor.AdvanceLine();
+            if (IsNewLine(read))
+            {
+                // 2 skips on CRLF
+                if (read == '\r' && _index < _document.Length && document[_index] == '\n')
+                {
+                    _index++;
+                    _cursor.AdvanceColumn(1);
+                }
+
+                _cursor.AdvanceLine();
+            }
+            else if (read == '\t')
+            {
+                _cursor.Column += 4;
+                _cursor.AbsoluteOffset++;
+            }
+            else
+            {
+                _cursor.AdvanceColumn(1);
+            }
         }
 
-#if !NET35 && !NET40
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private void Read()
+        /// <inheritdoc/>
+        public void Dispose()
         {
-            _cursor.AdvanceColumn(1);
-            _index++;
+            if (_disposed)
+                return;
+
+            if (_textPool != null)
+                _textPool.Length = 0;
+
+            _disposed = true;
         }
 
+        #region Character analyzing
 #if !NET35 && !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private bool IsWhiteSpace(char c) => c == '\x20' || c == '\t' || c == '\f';
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private bool IsNewLine(char c) => c == '\r' || c == '\n';
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private bool IsBlank(char c) => IsWhiteSpace(c) || IsNewLine(c);
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private bool IsLineEnd(char c) => IsNewLine(c) || EndOfStream;
 
 #if !NET35 && !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -553,11 +478,6 @@ namespace PropertiesDotNet.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private bool IsAssigner(char c) => IsLiteralAssigner(c) || IsWhiteSpace(c);
-
-#if !NET35 && !NET40
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-        private bool IsNewLine(char c) => c == '\r' || c == '\n';
 
 #if !NET35 && !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -573,33 +493,7 @@ namespace PropertiesDotNet.Core
 #if !NET35 && !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private bool IsLatin1(char c) => c <= 0xFF;
-
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _document = null!;
-            }
-
-            if (_textPool != null)
-                _textPool.Length = 0;
-            _textPool = null!;
-            _document = null!;
-            _cursor = null!;
-            _textLogicalLines = default;
-            _commentHandle = default;
-            _disposed = true;
-        }
-
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            if (_disposed)
-                return;
-
-            Dispose(Settings.CloseOnEnd);
-            GC.SuppressFinalize(this);
-        }
+        private bool IsLatin1(char c) => c <= 0xFF && c >= 0;
+        #endregion
     }
 }

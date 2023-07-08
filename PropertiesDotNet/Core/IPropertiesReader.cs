@@ -33,12 +33,12 @@ namespace PropertiesDotNet.Core
         /// <summary>
         /// Represents a marker on the starting position of the current token.
         /// </summary>
-        public StreamMark? TokenStart { get; }
+        StreamMark? TokenStart { get; }
 
         /// <summary>
         /// Represents a marker on the ending position of the current token.
         /// </summary>
-        public StreamMark? TokenEnd { get; }
+        StreamMark? TokenEnd { get; }
 
         /// <summary>
         /// Whether this reader preserves line information.

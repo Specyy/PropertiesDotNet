@@ -112,16 +112,88 @@ namespace PropertiesDotNet.Core
                 return false;
 
             if (_state != WriterState.CommentOrKey)
-                return Settings.ThrowOnError ? throw new PropertiesException($"Expected {StateToString(_state)} got {nameof(ParserState.Comment)}!") : false;
+                return Settings.ThrowOnError ? throw new PropertiesException($"Expected {StateToString(_state)} got {nameof(ReaderState.Comment)}!") : false;
 
+            int fallbackStartIndex = _textPool.Length - 1;
+            StreamMark fallbackMark = _cursor.Position;
             WriteInternal(handle);
             WriteInternal(' ');
-            WriteInternal(value);
+
+            if (!WriteCommentInternal(value, fallbackStartIndex, in fallbackMark))
+                return false;
+
             WriteLineInternal();
 
-            TokenWritten?.Invoke(this, PropertiesToken.Comment(value));
             _state = WriterState.CommentOrKey;
             CheckFlush();
+            return true;
+        }
+
+        private bool WriteCommentInternal(string value, int fallbackStartIndex, in StreamMark fallbackMark)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                char ch = value[i];
+                switch (ch)
+                {
+                    case '\r':
+                        WriteInternal('\\');
+                        WriteInternal('r');
+                        break;
+                    case '\n':
+                        WriteInternal('\\');
+                        WriteInternal('n');
+                        break;
+                    case '\t':
+                        WriteInternal('\\');
+                        WriteInternal('t');
+                        break;
+                    case '\f':
+                        WriteInternal('\\');
+                        WriteInternal('f');
+                        break;
+                    case '\a':
+                        WriteInternal('\\');
+                        WriteInternal('a');
+                        break;
+                    case '\v':
+                        WriteInternal('\\');
+                        WriteInternal('v');
+                        break;
+                    case '\0':
+                        WriteInternal('\\');
+                        WriteInternal('0');
+                        break;
+                    default:
+                        if (IsLatin1Printable(ch) || Settings.AllCharacters)
+                        {
+                            WriteInternal(ch);
+                        }
+                        else if (!WriteEscaped(value, ref i))
+                        {
+                            if (_textPool.Length > 0)
+                            {
+                                _textPool.Remove(fallbackStartIndex, i);
+                                _cursor.CopyFrom(in fallbackMark);
+                            }
+                            return false;
+                        }
+                        break;
+                }
+            }
+
+            if (!(TokenWritten is null))
+            {
+                // 2 = handle and white-space
+                int index = fallbackStartIndex + 1 + 2;
+                char[] chars = new char[_textPool.Length - index];
+
+                for (int i = 0; i < chars.Length; i++)
+                    chars[i] = _textPool[index + i];
+
+                TokenWritten(this, PropertiesToken.Comment(new string(chars)));
+            }
+
             return true;
         }
 
@@ -241,7 +313,6 @@ namespace PropertiesDotNet.Core
                             newLine = false;
                         }
                         break;
-
                     case '\t':
                     case ' ':
                     case '\f':
@@ -253,6 +324,19 @@ namespace PropertiesDotNet.Core
                         else WriteInternal(ch);
 
                         newLine = false;
+                        break;
+
+                    case '\a':
+                        WriteInternal('\\');
+                        WriteInternal('a');
+                        break;
+                    case '\v':
+                        WriteInternal('\\');
+                        WriteInternal('v');
+                        break;
+                    case '\0':
+                        WriteInternal('\\');
+                        WriteInternal('0');
                         break;
 
                     case '#':
@@ -313,24 +397,24 @@ namespace PropertiesDotNet.Core
             return true;
         }
 
-        private bool WriteEscaped(string key, ref int i)
+        private bool WriteEscaped(string text, ref int i)
         {
             // 8-number escape
-            if (char.IsHighSurrogate(key[i]))
+            if (char.IsHighSurrogate(text[i]))
             {
                 if (!Settings.AllUnicodeEscapes)
                 {
-                    int unicode = char.ConvertToUtf32(key[i], key[i + 1]);
+                    int unicode = char.ConvertToUtf32(text[i], text[i + 1]);
                     return Settings.ThrowOnError ?
                         throw new PropertiesException($"Cannot create long unicode escape for character \"{char.ConvertFromUtf32(unicode)}\" ({unicode})!")
                         : false;
                 }
-                else if (i + 1 < key.Length && char.IsLowSurrogate(key[i + 1]))
+                else if (i + 1 < text.Length && char.IsLowSurrogate(text[i + 1]))
                 {
                     WriteInternal('\\');
                     WriteInternal('U');
                     // TODO: Test perf
-                    WriteInternal(char.ConvertToUtf32(key[i], key[++i]).ToString("X8", CultureInfo.InvariantCulture));
+                    WriteInternal(char.ConvertToUtf32(text[i], text[++i]).ToString("X8", CultureInfo.InvariantCulture));
                 }
                 else
                 {
@@ -344,7 +428,7 @@ namespace PropertiesDotNet.Core
                 WriteInternal('\\');
                 WriteInternal('u');
                 // TODO: Test perf
-                WriteInternal(((ushort)key[i]).ToString("X4", CultureInfo.InvariantCulture));
+                WriteInternal(((ushort)text[i]).ToString("X4", CultureInfo.InvariantCulture));
             }
 
             return true;
@@ -387,7 +471,7 @@ namespace PropertiesDotNet.Core
 
             // 2 skips on CRLF
             if (Environment.NewLine.Length > 1)
-                _cursor.AdvanceColumn(1);
+                _cursor.AdvanceColumn(Environment.NewLine.Length - 1);
 
             _cursor.AdvanceLine();
         }
