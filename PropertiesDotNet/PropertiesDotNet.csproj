@@ -23,6 +23,10 @@
 		<DefineConstants>TRACE;$(FrameworkSymbols)</DefineConstants>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+	</PropertyGroup>
+
 	<!-- Disable uncaught nullable warnings from BCL when not compiling .NET Standard 2.1/.NET Core 3.0 -->
 	<PropertyGroup Condition="'$(TargetFramework)' != 'netstandard2.1'  Or  '$(TargetFramework)' != 'netcoreapp3.0'">
 		<NoWarn>$(NoWarn);8600;8601;8602;8603;8604</NoWarn>

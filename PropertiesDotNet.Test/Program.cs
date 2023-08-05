@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Xml;
 
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
@@ -14,7 +16,9 @@ using Newtonsoft.Json;
 
 using PropertiesDotNet.Core;
 using PropertiesDotNet.ObjectModel;
+using PropertiesDotNet.Serialization;
 using PropertiesDotNet.Serialization.ObjectProviders;
+using PropertiesDotNet.Serialization.PropertiesTree;
 using PropertiesDotNet.Utils;
 
 namespace PropertiesDotNet.Test
@@ -92,7 +96,7 @@ helloInJapanese = e";
     }
 }}";
 
-        public const string SIMPLE_DOC = @"# A comment line that starts with '#'.
+        public const string SIMPLE_SOURCE = @"# A comment line that starts with '#'.
    # This is a comment line having leading white spaces.
 ! A comment line that starts with '!'.
 
@@ -108,8 +112,109 @@ key\
 \:\ \== \\colon\\space\\equal
 ";
         internal const string JSON_SOURCE_2 = @" ";
+        internal const string SERI_SOURCE = @"hello.world.bye = 5
+age= 9999
+world.me = text
+hello.baby.'. = wow.e
+hello.baby.zook = sad_face
+
+
+world.age = 27
+
+world.third = 3
+#cmt
+world.list1[0] = 3
+world.list1[1] = 3
+world.list1[2] = 3
+world.list1[3] = 3
+world.list2.0 = 3
+world.list2.1 = 3
+world.list2.2 = 3
+world.list2.3 = -53e2$";
+
+        internal const string OTHER_SERI_SOURCE = @"Age = 5
+Name = Timmy
+friends = ['Johnny', 'Theodore']
+Parents.mom=elsa
+Parents.dad=brayden";
+
+        private class CustomReader : IPropertiesReader
+        {
+            public PropertiesReaderSettings Settings { get; set; }
+            public PropertiesToken Token => _innerReader.Token;
+            public StreamMark? TokenStart { get; }
+            public StreamMark? TokenEnd { get; }
+            public bool HasLineInfo { get; }
+
+            public event TokenRead TokenRead;
+
+            private readonly IPropertiesReader _innerReader;
+
+            public CustomReader(string doc) : this(new PropertiesReader(doc))
+            {
+
+            }
+
+            public CustomReader(IPropertiesReader innerReader)
+            {
+                _innerReader = innerReader;
+            }
+
+            public bool MoveNext()
+            {
+                while (_innerReader.MoveNext())
+                {
+                    var token = _innerReader.Token;
+
+                    switch (token.Type)
+                    {
+                        case PropertiesTokenType.Key:
+                            if (!token.Text.Contains("list2"))
+                            {
+                                if (_innerReader.MoveNext() && _innerReader.Token.Type == PropertiesTokenType.Assigner)
+                                    _innerReader.MoveNext();
+                                break;
+                            }
+
+                            return true;
+                        case PropertiesTokenType.Assigner:
+                        case PropertiesTokenType.Value:
+                            return true;
+                        default:
+                            continue;
+                    }
+                }
+
+                return false;
+            }
+
+            public void Dispose()
+            {
+                _innerReader.Dispose();
+            }
+        }
+
+        private class Player
+        {
+            public string Name { get; set; }
+            public int Age;
+            public string Friends { get; set; }
+            public Dictionary<string, string> Parents { get; set; }
+
+            public override string ToString()
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine($"Name: {Name}");
+                sb.AppendLine($"Age: ({Age.GetType().Name}) {Age}");
+                sb.AppendLine($"Friends: {Friends}");
+                sb.AppendLine($"Len: {Parents.Count}");
+                WriteTree(Parents);
+                return sb.ToString();
+            }
+        }
+
         public static readonly Stream SOURCE_STREAM = ToStream(SOURCE);
-        public static readonly Stream SIMPLE_DOC_STREAM = ToStream(SIMPLE_DOC);
+        public static readonly Stream SIMPLE_DOC_STREAM = ToStream(SIMPLE_SOURCE);
         static unsafe void Main(string[] args)
         {
 
@@ -134,13 +239,6 @@ key\
             //// ^ Beautify?
             ////
 
-            ////using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
-            //IPropertiesReader reader = new PropertiesReader(new StringReader(SOURCE));
-            ////reader.Settings.AllCharacters = true;
-            //////reader.Read();
-            //////reader.Read();
-            //////reader.Read();
-            //////reader.Read();
 
             ////Console.WriteLine("first----------------------------");
             //var provider = new ExpressionObjectProvider();
@@ -209,12 +307,40 @@ key\
                 if (token.Type == PropertiesTokenType.Comment)
                     Console.WriteLine("'" + token.Text + "'");
             };
-            writer.Write(new PropertiesToken(PropertiesTokenType.Comment, "Chisen Good morning\r\n\f world! "));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Comment, "\nChisen lol"));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Key, "CHKey"));
+            writer.Write(PropertiesToken.Comment("Chisen Good morning\r\n\f world! "));
+            writer.Write(PropertiesToken.Comment("\nChisen lol"));
+            writer.Write(PropertiesToken.Key("CHKey"));
             writer.Flush();
-            
 
+            Console.WriteLine("---------------=-=-=-=-=-=-=-=-=-=-=-=-=-------------------");
+
+            var value = PropertiesSerializer.Deserialize<Dictionary<string, object>>(SERI_SOURCE);
+            WriteTree(value);
+            foreach (var node in value)
+            {
+                Console.WriteLine($"{node.Key} ++--++ {node.Value}");
+            }
+            var realValue = PropertiesSerializer.Deserialize<Dictionary<string, Dictionary<string, Dictionary<int, decimal>>>>(new CustomReader(SERI_SOURCE));
+            WriteTree(realValue);
+
+            var newValue = PropertiesSerializer.Deserialize<Dictionary<string, object>>(OTHER_SERI_SOURCE);
+            WriteTree(newValue);
+
+            var player = PropertiesSerializer.Deserialize<Player>(OTHER_SERI_SOURCE);
+            Console.WriteLine(player);
+
+            //var tree = composer.ReadTree(PropertiesDocument.Load(new PropertiesReader(SERI_SOURCE)));
+
+            //WriteTree(tree);
+
+            // PropertiesObject
+            // PropertiesPrimitive
+            // 
+            // IPrimitiveSerializer/Converter
+            // object? Deserialze(string source)
+            //
+            // IObjectSerializer/Converter
+            // object? Deserialize(serializer, pObject, 
             //Console.WriteLine(re.TokenEnd);
 
             ////var parser = new PropertiesReader(new StringReader(SOURCE));
@@ -316,12 +442,56 @@ key\
             //Console.Read();
         }
 
-        private static void Writer_EventWritten(IPropertiesWriter writer, PropertiesToken token)
+        private static void WriteTree(PropertiesTreeNode node, int depth = 0)
         {
-            Console.WriteLine($"Wrote: {token}");
+            for (int i = 0; i < depth; i++)
+                Console.Write("  ");
+
+            if (node is PropertiesObject objNode)
+            {
+                Console.WriteLine(objNode.Name ?? "<root>");
+                depth++;
+                foreach (var item in objNode)
+                {
+                    WriteTree(item, depth);
+                }
+            }
+            else
+            {
+                var prop = node as PropertiesPrimitive;
+                Console.WriteLine(prop.Name + "=" + prop.Value);
+            }
         }
 
-        public static Stream ToStream( string str)
+        private static void WriteTree(IDictionary node, int depth = 0)
+        {
+            foreach (DictionaryEntry item in node)
+            {
+                for (int i = 0; i < depth; i++)
+                    Console.Write("  ");
+
+                if (depth > 0)
+                    Console.Write("- ");
+
+                Console.Write($"({item.Key.GetType().Name}) {item.Key}" );
+                if (item.Value is IDictionary dic)
+                {
+                    Console.WriteLine();
+                    WriteTree(dic, depth + 1);
+                }
+                else
+                {
+                    Console.WriteLine($"= ({item.Value.GetType().Name}) {item.Value}");
+                }
+            }
+        }
+
+        private static void Writer_EventWritten(IPropertiesWriter writer, PropertiesTokenType tokenType, string? tokenValue)
+        {
+            Console.WriteLine($"Wrote: {tokenType}");
+        }
+
+        public static Stream ToStream(string str)
         {
             MemoryStream stream = new MemoryStream();
             StreamWriter writer = new StreamWriter(stream);
@@ -687,84 +857,82 @@ key\
         //    fastJSON.JSON.Parse(Program.JSON_SOURCE);
         //}
 
-        //[Benchmark]
-        //public void WithString()
-        //{
-        //    //using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
-        //    //PropertiesReader reader = new PropertiesReader(Program.SOURCE);
+        [Benchmark]
+        public void WithString()
+        {
+            //PropertiesReader reader = new PropertiesReader(Program.SOURCE);
 
-        //    using (StreamReader reader = new StreamReader(File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\text.txt")))
-        //    {
-        //        while (reader.ReadLine() != null) ;
-        //    }
-        //}
+            using (var reader = new StringReader(Program.SOURCE))
+            {
+                while (reader.ReadLine() != null) ;
+            }
 
-        //[Benchmark]
-        //public void WithChar()
-        //{
-        //    //using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
-        //    //PropertiesReader reader = new PropertiesReader(Program.SOURCE);
+        }
 
-        //    using (StreamReader reader = new StreamReader(File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\text.txt")))
-        //    {
-        //        while (reader.Read() != -1) ;
+        [Benchmark]
+        public void WithChar()
+        {
+            //PropertiesReader reader = new PropertiesReader(Program.SOURCE);
 
-        //    }
-        //}
+            using (var reader = new StringReader(Program.SOURCE))
+            {
+                while (reader.Read() != -1) ;
+
+            }
+        }
         readonly StringBuilder sb = new StringBuilder();
 
-        [Benchmark]
-        public void PDN_Writer_Token()
-        {
-            sb.Length = 0;
-            var writer = new PropertiesWriter(new StringWriter(sb));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Comment, "Chisen 2"));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Comment, "Chisen"));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Key, "ChisenKey"));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Value, "ChisenKeyVal"));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Comment, "Chisen Com after val"));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Key, "ChisenSecond"));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Value, "ChisenSecondVal"));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Key, "ChisenSecondAfterKey"));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Value, "ChisenSecondAfterKeyVal"));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Key, " KeyStartw/whitespace"));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Value, " valStartw/backwhitespace"));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Key, "#KeyStart#w/backwhitespaceLogical\n!LinesLol"));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Value, "KeyStartw/backwhitespaceLogical\n#Lines even more LOL"));
-            writer.Write(new PropertiesToken(PropertiesTokenType.Comment, "Chisen Com after val"));
-            writer.Dispose();
-        }
+        //[Benchmark]
+        //public void PDN_Writer_Token()
+        //{
+        //    sb.Length = 0;
+        //    var writer = new PropertiesWriter(new StringWriter(sb));
+        //    writer.Write(PropertiesTokenType.Comment, "Chisen 2");
+        //    writer.Write(PropertiesTokenType.Comment, "Chisen");
+        //    writer.Write(PropertiesTokenType.Key, "ChisenKey");
+        //    writer.Write(PropertiesTokenType.Value, "ChisenKeyVal");
+        //    writer.Write(PropertiesTokenType.Comment, "Chisen Com after val");
+        //    writer.Write(PropertiesTokenType.Key, "ChisenSecond");
+        //    writer.Write(PropertiesTokenType.Value, "ChisenSecondVal");
+        //    writer.Write(PropertiesTokenType.Key, "ChisenSecondAfterKey");
+        //    writer.Write(PropertiesTokenType.Value, "ChisenSecondAfterKeyVal");
+        //    writer.Write(PropertiesTokenType.Key, " KeyStartw/whitespace");
+        //    writer.Write(PropertiesTokenType.Value, " valStartw/backwhitespace");
+        //    writer.Write(PropertiesTokenType.Key, "#KeyStart#w/backwhitespaceLogical\n!LinesLol");
+        //    writer.Write(PropertiesTokenType.Value, "KeyStartw/backwhitespaceLogical\n#Lines even more LOL");
+        //    writer.Write(PropertiesTokenType.Comment, "Chisen Com after val");
+        //    writer.Dispose();
+        //}
 
-        [Benchmark]
-        public void PDN_Writer()
-        {
-            sb.Length = 0;
-            var writer = new PropertiesWriter(new StringWriter(sb));
-            writer.WriteComment("Chisen");
-            writer.WriteComment("Chisen 2");
-            writer.WriteKey("ChisenKey");
-            writer.WriteValue("ChisenKeyVal");
-            writer.WriteComment("Chisen Com after val");
-            writer.WriteKey("ChisenSecond");
-            writer.WriteValue("ChisenSecondVal");
-            writer.WriteKey("ChisenSecondAfterKey");
-            writer.WriteValue("ChisenSecondAfterKeyVal");
-            writer.WriteKey(" KeyStartw/whitespace");
-            writer.WriteValue(" valStartw/backwhitespace");
-            writer.WriteKey("#KeyStart#w/backwhitespaceLogical\n!LinesLol", false);
-            writer.WriteValue("KeyStartw/backwhitespaceLogical\n#Lines even more LOL", false);
-            writer.WriteComment("Chisen Com after val");
-            writer.Dispose();
-        }
+        //[Benchmark]
+        //public void PDN_Writer()
+        //{
+        //    sb.Length = 0;
+        //    var writer = new PropertiesWriter(new StringWriter(sb));
+        //    writer.WriteComment("Chisen");
+        //    writer.WriteComment("Chisen 2");
+        //    writer.WriteKey("ChisenKey");
+        //    writer.WriteValue("ChisenKeyVal");
+        //    writer.WriteComment("Chisen Com after val");
+        //    writer.WriteKey("ChisenSecond");
+        //    writer.WriteValue("ChisenSecondVal");
+        //    writer.WriteKey("ChisenSecondAfterKey");
+        //    writer.WriteValue("ChisenSecondAfterKeyVal");
+        //    writer.WriteKey(" KeyStartw/whitespace");
+        //    writer.WriteValue(" valStartw/backwhitespace");
+        //    writer.WriteKey("#KeyStart#w/backwhitespaceLogical\n!LinesLol", false);
+        //    writer.WriteValue("KeyStartw/backwhitespaceLogical\n#Lines even more LOL", false);
+        //    writer.WriteComment("Chisen Com after val");
+        //    writer.Dispose();
+        //}
 
         [Benchmark]
         public void PDN_Reader()
         {
-            //using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
             //PropertiesReader reader = new PropertiesReader(Program.SOURCE);
 
-            var parser = new PropertiesReader(new StringReader(Program.SIMPLE_DOC));
-            
+            var parser = new PropertiesReader(new StringReader(Program.SIMPLE_SOURCE));
+
             while (parser.MoveNext())
             {
             }
@@ -773,10 +941,9 @@ key\
         [Benchmark]
         public void PDN_UnsafeReader()
         {
-            //using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
             //PropertiesReader reader = new PropertiesReader(Program.SOURCE);
 
-            var parser = new UnsafePropertiesReader(Program.SIMPLE_DOC);
+            var parser = new UnsafePropertiesReader(Program.SIMPLE_SOURCE);
 
             while (parser.MoveNext())
             {
@@ -787,7 +954,6 @@ key\
         [Benchmark]
         public void PDN_DocReader()
         {
-            //using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
             //PropertiesReader reader = new PropertiesReader(Program.SOURCE);
 
             //var parser = new PropertiesReader(new UnsafeStringReader(Program.SOURCE));
@@ -796,7 +962,7 @@ key\
             //{
             //}
 
-            PropertiesDocument.Load(Program.SIMPLE_DOC);
+            PropertiesDocument.Load(Program.SIMPLE_SOURCE);
         }
 
         //[Benchmark]
@@ -815,7 +981,6 @@ key\
         //[Benchmark]
         //public void PDN_StateReader()
         //{
-        //    //using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
         //    //PropertiesReader reader = new PropertiesReader(Program.SOURCE);
 
         //    var parser = new PropertiesStateReader(new StringReader(Program.SOURCE));
@@ -825,12 +990,11 @@ key\
         //    }
         //}
         private static readonly Dictionary<string, string> _dic = new System.Collections.Generic.Dictionary<string, string>();
-        private readonly JavaPropertyReader kReader = 
+        private readonly JavaPropertyReader kReader =
             new JavaPropertyReader(_dic);
         [Benchmark]
         public void Kajibity()
         {
-            //using FileStream stream = File.OpenRead("C:\\Users\\alvyn\\source\\git-repos\\PropertiesDotNet\\PropertiesDotNet.Test\\myprop.txt");
             //PropertiesReader reader = new PropertiesReader(Program.SOURCE);
             Program.SIMPLE_DOC_STREAM.Position = 0;
             kReader.Parse(Program.SIMPLE_DOC_STREAM);
