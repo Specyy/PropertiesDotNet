@@ -12,19 +12,19 @@ namespace PropertiesDotNet.ObjectModel
         /// <summary>
         /// The key for this property. This cannot be <see langword="null"/> or empty.
         /// </summary>
-        public string Key { get; protected set; }
+        public virtual string Key { get; protected set; }
 
         /// <summary>
         /// A list of the comments that will be emitted above this property when it is saved within a stream.
         /// This is <see cref="Nullable{T}"/> in order to save memory.
         /// </summary>
-        public List<string>? Comments { get; set; }
+        public virtual List<string>? Comments { get; set; }
 
         /// <summary>
         /// The value assigner for this property. This must be '=', ':' or any type of white-space.
         /// </summary>
         /// <exception cref="ArgumentException">If the value is not '=', ':' or any type of white-space.</exception>
-        public char Assigner
+        public virtual char Assigner
         {
             get => _assigner;
             set
@@ -50,7 +50,7 @@ namespace PropertiesDotNet.ObjectModel
         /// <summary>
         /// The value of this property. This can be <see langword="null"/>.
         /// </summary>
-        public string? Value { get; set; }
+        public virtual string? Value { get; set; }
 
         /// <summary>
         /// Creates a new properties document property.
@@ -120,7 +120,7 @@ namespace PropertiesDotNet.ObjectModel
         /// </summary>
         /// <param name="other">The other </param>
         /// <returns>true if this property has the same key and value as specified; false otherwise.</returns>
-        public bool Equals(PropertiesProperty? other)
+        public virtual bool Equals(PropertiesProperty? other)
         {
             if (!Equals(other?.Key, other?.Value))
                 return false;
@@ -143,7 +143,7 @@ namespace PropertiesDotNet.ObjectModel
         /// <param name="key">The key to check.</param>
         /// <param name="value">The value to check.</param>
         /// <returns>true if this property has the same key and value as specified; false otherwise.</returns>
-        public bool Equals(string key, string? value) => Key == key && Value == value;
+        public virtual bool Equals(string key, string? value) => Key == key && Value == value;
 
         /// <inheritdoc/>
         public override bool Equals(object? obj)
