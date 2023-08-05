@@ -16,11 +16,15 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
         private readonly IEqualityComparer<Type[]> _equalityComparer = new TypeCacheEqualityComparer();
         private readonly Dictionary<Type, Dictionary<Type[], ObjectConstructor>> _ctorCache;
 
+        /// <inheritdoc/>
+        public BindingFlags ConstructorFlags { get; set; }
+
         /// <summary>
         /// Creates a new <see cref="ExpressionObjectProvider"/>.
         /// </summary>
         public ExpressionObjectProvider()
         {
+            ConstructorFlags = BindingFlags.Instance | BindingFlags.Public;
             _ctorCache = new Dictionary<Type, Dictionary<Type[], ObjectConstructor>>((IEqualityComparer<Type>)_equalityComparer);
         }
 
@@ -71,10 +75,8 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
             }
             else
             {
-                const BindingFlags visibilityFlags = BindingFlags.Public | BindingFlags.Instance;
-
-                ConstructorInfo info = type.GetConstructor(visibilityFlags, argTypes) ??
-                    throw new PropertiesException("Could not find constructor with the given argument types!");
+                ConstructorInfo info = type.GetConstructor(ConstructorFlags, argTypes) ??
+                    throw new PropertiesException($"Could not find constructor for type {type.FullName} with the given argument types!");
 
                 Expression[] expressionArgs = new Expression[argTypes.Length];
                 ParameterExpression constantArgs = Expression.Parameter(typeof(object?[]), "args");

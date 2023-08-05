@@ -17,11 +17,15 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
         private readonly IEqualityComparer<Type[]> _equalityComparer = new TypeCacheEqualityComparer();
         private readonly Dictionary<Type, Dictionary<Type[], ObjectConstructor>> _ctorCache;
 
+        /// <inheritdoc/>
+        public BindingFlags ConstructorFlags { get; set; }
+
         /// <summary>
         /// Creates a new <see cref="DynamicObjectProvider"/>.
         /// </summary>
         public DynamicObjectProvider()
         {
+            ConstructorFlags = BindingFlags.Instance | BindingFlags.Public;
             _ctorCache = new Dictionary<Type, Dictionary<Type[], ObjectConstructor>>((IEqualityComparer<Type>)_equalityComparer);
         }
 
@@ -62,9 +66,8 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
                 _ctorCache.Add(type, available = new Dictionary<Type[], ObjectConstructor>(_equalityComparer));
 
             DynamicMethod method = new DynamicMethod(CONSTRUCTOR_NAME, typeof(object), new[] { typeof(object?[]) });
-            ILGenerator ilGen = method.GetILGenerator();
 
-            EmitConstructorInstructions(ilGen, type, argTypes);
+            EmitConstructorInstructions(method.GetILGenerator(), type, argTypes);
 
             ObjectConstructor ctor = (ObjectConstructor)method.CreateDelegate(typeof(ObjectConstructor));
             available.Add(argTypes, ctor);
@@ -96,10 +99,8 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
             }
             else
             {
-                const BindingFlags visibilityFlags = BindingFlags.Public | BindingFlags.Instance;
-
-                ConstructorInfo info = type.GetConstructor(visibilityFlags, argTypes) ??
-                    throw new PropertiesException("Could not find constructor with the given argument types!");
+                ConstructorInfo info = type.GetConstructor(ConstructorFlags, argTypes) ??
+                    throw new PropertiesException($"Could not find constructor for type {type.FullName} with the given argument types!");
 
                 ParameterInfo[] paramInfo = info.GetParameters();
 
