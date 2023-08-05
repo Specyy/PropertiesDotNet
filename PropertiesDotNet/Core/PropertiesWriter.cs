@@ -83,7 +83,8 @@ namespace PropertiesDotNet.Core
             PropertiesTokenType.Value => WriteValue(token.Text),
             PropertiesTokenType.Error => Settings.ThrowOnError ? throw new PropertiesException("Cannot emit error into properties stream!") : false,
             PropertiesTokenType.None => Settings.ThrowOnError ? throw new PropertiesException("Cannot emit null token into properties stream!") : false,
-            _ => Settings.ThrowOnError ? throw new PropertiesException($"Unknown token type: {token.Type}") : false,
+            // Should never happen
+            _ => Settings.ThrowOnError ? throw new PropertiesException($"Unknown token type: {token.Type}!") : false,
         };
 
         /// <summary>
@@ -191,7 +192,7 @@ namespace PropertiesDotNet.Core
                 for (int i = 0; i < chars.Length; i++)
                     chars[i] = _textPool[index + i];
 
-                TokenWritten(this, PropertiesToken.Comment(new string(chars)));
+                TokenWritten(this, new PropertiesToken(PropertiesTokenType.Comment, new string(chars)));
             }
 
             return true;
@@ -237,7 +238,7 @@ namespace PropertiesDotNet.Core
                 return Settings.ThrowOnError ? throw new PropertiesException($"Assigner must be '=', ':' or a white-space!") : false;
 
             WriteInternal(assigner);
-            TokenWritten?.Invoke(this, PropertiesToken.Assigner(assigner));
+            TokenWritten?.Invoke(this, new PropertiesToken(PropertiesTokenType.Assigner, assigner.ToString()));
             _state = WriterState.Value;
             CheckFlush();
             return true;
@@ -270,6 +271,35 @@ namespace PropertiesDotNet.Core
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Writes a new property.
+        /// </summary>
+        /// <param name="key">The key for the property</param>
+        /// <param name="value">The value of the property.</param>
+        /// <returns>true if the property could be written; false otherwise.</returns>
+        public bool WriteProperty(string key, string value) => WriteProperty(key, '=', value);
+
+        /// <summary>
+        /// Writes a new property.
+        /// </summary>
+        /// <param name="key">The key for the property</param>
+        /// <param name="assigner">The assignement character used for this property.</param>
+        /// <param name="value">The value of the property.</param>
+        /// <returns>true if the property could be written; false otherwise.</returns>
+        public bool WriteProperty(string key, char assigner, string value)
+        {
+            if (!WriteKey(key))
+                return false;
+
+            if (!WriteAssigner(assigner))
+            {
+                WriteValue(value);
+                return false;
+            }
+
+            return WriteValue(value);
         }
 
         private bool WriteText(bool key, string text, bool logicalLines)
@@ -397,24 +427,24 @@ namespace PropertiesDotNet.Core
             return true;
         }
 
-        private bool WriteEscaped(string text, ref int i)
+        private bool WriteEscaped(string text, ref int index)
         {
             // 8-number escape
-            if (char.IsHighSurrogate(text[i]))
+            if (char.IsHighSurrogate(text[index]))
             {
                 if (!Settings.AllUnicodeEscapes)
                 {
-                    int unicode = char.ConvertToUtf32(text[i], text[i + 1]);
+                    int unicode = char.ConvertToUtf32(text[index], text[index + 1]);
                     return Settings.ThrowOnError ?
                         throw new PropertiesException($"Cannot create long unicode escape for character \"{char.ConvertFromUtf32(unicode)}\" ({unicode})!")
                         : false;
                 }
-                else if (i + 1 < text.Length && char.IsLowSurrogate(text[i + 1]))
+                else if (index + 1 < text.Length && char.IsLowSurrogate(text[index + 1]))
                 {
                     WriteInternal('\\');
                     WriteInternal('U');
                     // TODO: Test perf
-                    WriteInternal(char.ConvertToUtf32(text[i], text[++i]).ToString("X8", CultureInfo.InvariantCulture));
+                    WriteInternal(char.ConvertToUtf32(text[index], text[++index]).ToString("X8", CultureInfo.InvariantCulture));
                 }
                 else
                 {
@@ -428,7 +458,7 @@ namespace PropertiesDotNet.Core
                 WriteInternal('\\');
                 WriteInternal('u');
                 // TODO: Test perf
-                WriteInternal(((ushort)text[i]).ToString("X4", CultureInfo.InvariantCulture));
+                WriteInternal(((ushort)text[index]).ToString("X4", CultureInfo.InvariantCulture));
             }
 
             return true;
@@ -493,33 +523,19 @@ namespace PropertiesDotNet.Core
 #endif
         private bool IsLatin1Printable(char ch) => (ch >= '\x20' && ch <= '\x7E') || (ch >= '\xA0' && ch <= '\xFF');
 
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                Flush();
-
-                if (Settings.CloseOnEnd)
-                    _stream.Dispose();
-            }
-
-            if (_textPool.Length > 0)
-                _textPool.Length = 0;
-
-            _textPool = null!;
-            _cursor = null!;
-            _stream = null!;
-            _disposed = true;
-        }
-
         /// <inheritdoc/>
         public void Dispose()
         {
             if (_disposed)
                 return;
 
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            Flush();
+
+            if (Settings.CloseOnEnd)
+                _stream.Dispose();
+
+            _textPool.Length = 0;
+            _disposed = true;
         }
 
         private string StateToString(WriterState state) => state switch

@@ -9,7 +9,7 @@ namespace PropertiesDotNet.Core
 {
     enum ReaderState : byte
     {
-        Start = 0,
+        Start,
         Comment,
         Key,
         Assigner,
@@ -31,10 +31,10 @@ namespace PropertiesDotNet.Core
         }
 
         /// <inheritdoc/>
-        public PropertiesToken Token => _token;
+        public event TokenRead? TokenRead;
 
         /// <inheritdoc/>
-        public event TokenRead? TokenRead;
+        public PropertiesToken Token { get; private set; }
 
         /// <inheritdoc/>
         public StreamMark? TokenStart { get; private set; }
@@ -49,7 +49,7 @@ namespace PropertiesDotNet.Core
         /// Returns the comment handle for the current token. This handle is either an
         /// exclamtion mark (!) or a pound symbol (#) or \0 if the current token is not a comment.
         /// </summary>
-        public char CommentHandle => _token.Type == PropertiesTokenType.Comment ? _commentHandle : default;
+        public char CommentHandle => Token.Type == PropertiesTokenType.Comment ? _commentHandle : default;
 
         private bool EndOfStream => _stream.Peek() == -1;
 
@@ -59,7 +59,6 @@ namespace PropertiesDotNet.Core
         private bool _disposed;
 
         private PropertiesReaderSettings _settings;
-        private PropertiesToken _token;
         private ReaderState _state;
         private char _commentHandle;
 
@@ -101,7 +100,7 @@ namespace PropertiesDotNet.Core
         {
             if (ReadToken() || _state == ReaderState.Error)
             {
-                TokenRead?.Invoke(this, _token);
+                TokenRead?.Invoke(this, Token);
                 return true;
             }
 
@@ -126,11 +125,9 @@ namespace PropertiesDotNet.Core
 
                             goto case ReaderState.Start;
                         }
-                        else
-                        {
-                            _state = ReaderState.Comment;
-                            goto case ReaderState.Comment;
-                        }
+
+                        _state = ReaderState.Comment;
+                        goto case ReaderState.Comment;
                     }
 
                     if (EndOfStream)
@@ -187,7 +184,7 @@ namespace PropertiesDotNet.Core
             }
 
             TokenEnd = _cursor.Position;
-            _token = PropertiesToken.Comment(_textPool.ToString());
+            Token = new PropertiesToken(PropertiesTokenType.Comment, _textPool.ToString());
             _state = ReaderState.Start;
             return true;
         }
@@ -212,7 +209,7 @@ namespace PropertiesDotNet.Core
                 else if (_state == ReaderState.Key && IsAssigner(_stream.Peek()))
                 {
                     TokenEnd = _cursor.Position;
-                    _token = PropertiesToken.Key(_textPool.ToString());
+                    Token = new PropertiesToken(PropertiesTokenType.Key, _textPool.ToString());
                     _state = ReaderState.Assigner;
                     return true;
                 }
@@ -233,13 +230,13 @@ namespace PropertiesDotNet.Core
 
             if (_state == ReaderState.Key)
             {
-                _token = PropertiesToken.Key(_textPool.ToString());
+                Token = new PropertiesToken(PropertiesTokenType.Key, _textPool.ToString());
                 _state = ReaderState.Value;
             }
             else
             {
                 _state = EndOfStream ? ReaderState.End : ReaderState.Start;
-                _token = PropertiesToken.Value(_textPool.ToString());
+                Token = new PropertiesToken(PropertiesTokenType.Value, _textPool.ToString());
 
                 if (_state == ReaderState.End)
                     ReadToken();
@@ -275,7 +272,7 @@ namespace PropertiesDotNet.Core
             }
 
             TokenEnd = _cursor.Position;
-            _token = new PropertiesToken(PropertiesTokenType.Assigner, ((char)lastAssigner).ToString());
+            Token = new PropertiesToken(PropertiesTokenType.Assigner, ((char)lastAssigner).ToString());
             _state = ReaderState.Value;
             return true;
         }
@@ -394,7 +391,7 @@ namespace PropertiesDotNet.Core
                 Dispose();
 
             _state = ReaderState.Error;
-            _token = new PropertiesToken(PropertiesTokenType.Error, message);
+            Token = new PropertiesToken(PropertiesTokenType.Error, message);
 
             if (Settings.ThrowOnError)
                 throw new PropertiesException(message);

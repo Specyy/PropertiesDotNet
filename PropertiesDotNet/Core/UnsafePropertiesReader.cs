@@ -19,8 +19,11 @@ namespace PropertiesDotNet.Core
         }
 
         /// <inheritdoc/>
-        public PropertiesToken Token => _token;
+        public event TokenRead? TokenRead;
 
+        /// <inheritdoc/>
+        public PropertiesToken Token { get; private set; }
+        
         /// <inheritdoc/>
         public StreamMark? TokenStart { get; private set; }
 
@@ -30,14 +33,11 @@ namespace PropertiesDotNet.Core
         /// <inheritdoc/>
         public bool HasLineInfo => true;
 
-        /// <inheritdoc/>
-        public event TokenRead? TokenRead;
-
         /// <summary>
         /// Returns the comment handle for the current token. This handle is either an
         /// exclamtion mark (!) or a pound symbol (#) or \0 if the current token is not a comment.
         /// </summary>
-        public char CommentHandle => _token.Type == PropertiesTokenType.Comment ? _commentHandle : default;
+        public char CommentHandle => Token.Type == PropertiesTokenType.Comment ? _commentHandle : default;
 
         private bool EndOfStream => _index >= _document.Length;
 
@@ -45,7 +45,6 @@ namespace PropertiesDotNet.Core
         private readonly string _document;
         private int _index;
         private bool _disposed;
-        private PropertiesToken _token;
         private StringBuilder _textPool;
 
         private ReaderState _state;
@@ -84,7 +83,7 @@ namespace PropertiesDotNet.Core
             {
                 if (ReadToken(document) || _state == ReaderState.Error)
                 {
-                    TokenRead?.Invoke(this, _token);
+                    TokenRead?.Invoke(this, Token);
                     return true;
                 }
             }
@@ -110,11 +109,9 @@ namespace PropertiesDotNet.Core
 
                             goto case ReaderState.Start;
                         }
-                        else
-                        {
-                            _state = ReaderState.Comment;
-                            goto case ReaderState.Comment;
-                        }
+
+                        _state = ReaderState.Comment;
+                        goto case ReaderState.Comment;
                     }
 
                     if (EndOfStream)
@@ -122,11 +119,9 @@ namespace PropertiesDotNet.Core
                         _state = ReaderState.End;
                         goto case ReaderState.End;
                     }
-                    else
-                    {
-                        _state = ReaderState.Key;
-                        goto case ReaderState.Key;
-                    }
+                    
+                    _state = ReaderState.Key;
+                    goto case ReaderState.Key;
                 case ReaderState.Comment:
                     return ReadComment(document);
 
@@ -175,7 +170,7 @@ namespace PropertiesDotNet.Core
             }
 
             TokenEnd = _cursor.Position;
-            _token = PropertiesToken.Comment(new string(document, textStartIndex, _index - textStartIndex));
+            Token = new PropertiesToken(PropertiesTokenType.Comment, new string(document, textStartIndex, _index - textStartIndex));
             _state = ReaderState.Start;
             return true;
         }
@@ -216,7 +211,8 @@ namespace PropertiesDotNet.Core
                 {
                     TokenEnd = _cursor.Position;
                     // TODO: Allow for use for Span<T> in later .NET versions
-                    _token = PropertiesToken.Key(escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
+                    Token = new PropertiesToken(PropertiesTokenType.Key,
+                        escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
                     _state = ReaderState.Assigner;
                     return true;
                 }
@@ -240,14 +236,19 @@ namespace PropertiesDotNet.Core
             if (_state == ReaderState.Key)
             {
                 // TODO: Allow for use for Span<T> in later .NET versions
-                _token = PropertiesToken.Key(escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
+                Token = new PropertiesToken(PropertiesTokenType.Key,
+                        escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
                 _state = ReaderState.Value;
             }
             else
             {
                 _state = EndOfStream ? ReaderState.End : ReaderState.Start;
                 // TODO: Allow for use for Span<T> in later .NET versions
-                _token = PropertiesToken.Value(escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
+                Token = new PropertiesToken(PropertiesTokenType.Value,
+                        escapes ? _textPool.ToString() : new string(document, textStartIndex, _index - textStartIndex));
+
+                if (_state == ReaderState.End)
+                    ReadToken(document);
             }
 
             return true;
@@ -283,7 +284,7 @@ namespace PropertiesDotNet.Core
 
             TokenEnd = _cursor.Position;
             _state = ReaderState.Value;
-            _token = new PropertiesToken(PropertiesTokenType.Assigner, lastAssigner.ToString());
+            Token = new PropertiesToken(PropertiesTokenType.Assigner, lastAssigner.ToString());
             return true;
         }
 
@@ -404,7 +405,7 @@ namespace PropertiesDotNet.Core
                 Dispose();
 
             _state = ReaderState.Error;
-            _token = new PropertiesToken(PropertiesTokenType.Error, message);
+            Token = new PropertiesToken(PropertiesTokenType.Error, message);
 
             if (Settings.ThrowOnError)
                 throw new PropertiesException(message);
