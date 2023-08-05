@@ -314,22 +314,11 @@ namespace PropertiesDotNet.ObjectModel
         public virtual bool ContainsKey(string key) => _properties.ContainsKey(key);
 
         /// <summary>
-        /// Checks whether this document contains the specified property. 
-        /// This is equivalent to <see cref="ContainsKey(string)"/>.
-        /// </summary>
-        /// <param name="key">The property key to check for.</param>
-        /// <returns>Whether this document contains the specified property.</returns>
-        public virtual bool ContainsProperty(string key) => ContainsKey(key);
-
-        /// <summary>
         /// Checks whether this document contains the specified property.
         /// </summary>
         /// <param name="property">The property to check for.</param>
         /// <returns>Whether this document contains the specified property.</returns>
-        public virtual bool ContainsProperty(PropertiesProperty property)
-        {
-            return ContainsProperty(property.Key);
-        }
+        public virtual bool ContainsProperty(PropertiesProperty property) => ContainsKey(property.Key);
 
         /// <summary>
         /// Gets or sets the specified property.
@@ -352,10 +341,7 @@ namespace PropertiesDotNet.ObjectModel
         public virtual PropertiesProperty this[int index]
         {
             get => _properties[index].Value;
-            set
-            {
-                _properties[index] = new KeyValuePair<string, PropertiesProperty>(value.Key, value);
-            }
+            set => _properties[index] = new KeyValuePair<string, PropertiesProperty>(value.Key, value);
         }
 
         /// <summary>
@@ -365,7 +351,7 @@ namespace PropertiesDotNet.ObjectModel
         /// <param name="timestamp">Whether to output a timestamp at the begining of the document.</param>
         public virtual void Save(string path, bool timestamp = true)
         {
-            using var fileStream = File.OpenRead(path);
+            using var fileStream = File.OpenWrite(path);
             Save(fileStream);
         }
 
@@ -401,17 +387,23 @@ namespace PropertiesDotNet.ObjectModel
             if (timestamp)
             {
                 // TODO: Output timezone abbreviation
-                writer.Write(PropertiesToken.Comment(DateTime.Now.ToString($"ddd MMM dd HH:mm:ss '{TimeZoneInfo.Local.DisplayName.Substring(1, 9)}' yyyy")));
+                writer.Write(new PropertiesToken(PropertiesTokenType.Comment, DateTime.Now.ToString($"ddd MMM dd HH:mm:ss '{TimeZoneInfo.Local.DisplayName.Substring(1, 9)}' yyyy")));
             }
 
             for (int i = 0; i < _properties.Count; i++)
             {
                 PropertiesProperty prop = _properties[i].Value;
 
-                writer.Write(PropertiesToken.Key(prop.Key));
-                writer.Write(PropertiesToken.Assigner(prop.Assigner));
-                writer.Write(PropertiesToken.Value(prop.Value));
+                for (int j = 0; j < prop.Comments?.Count; j++)
+                    // TODO: Allow customization of handle
+                    writer.Write(new PropertiesToken(PropertiesTokenType.Comment, prop.Comments[j]));
+
+                writer.Write(new PropertiesToken(PropertiesTokenType.Key, prop.Key));
+                writer.Write(new PropertiesToken(PropertiesTokenType.Assigner, prop.Assigner.ToString()));
+                writer.Write(new PropertiesToken(PropertiesTokenType.Value, prop.Value));
             }
+
+            writer.Flush();
         }
 
         /// <inheritdoc/>
