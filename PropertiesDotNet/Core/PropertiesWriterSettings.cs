@@ -1,5 +1,7 @@
 ﻿using System;
 
+using PropertiesDotNet.Utils;
+
 namespace PropertiesDotNet.Core
 {
     /// <summary>
@@ -124,5 +126,12 @@ namespace PropertiesDotNet.Core
                 AutoFlush == other?.AutoFlush &&
                 FlushInterval == other?.FlushInterval;
         }
+
+        /// <inheritdoc/>
+        public override bool Equals(object? obj) => Equals(obj as PropertiesWriterSettings);
+
+        /// <inheritdoc/>
+        public override int GetHashCode() => HashCodeHelper.GenerateHashCode(FlushInterval, (uint)HashCodeHelper.GenerateHashCode(IgnoreComments, 
+            AllCharacters, AllUnicodeEscapes, ThrowOnError, CloseOnEnd, AutoFlush));
     }
 }

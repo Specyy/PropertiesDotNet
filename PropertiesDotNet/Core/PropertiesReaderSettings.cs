@@ -1,5 +1,7 @@
 ﻿using System;
 
+using PropertiesDotNet.Utils;
+
 namespace PropertiesDotNet.Core
 {
     /// <summary>
@@ -59,8 +61,8 @@ namespace PropertiesDotNet.Core
         /// "ISO-8859-1" character set.</param>
         /// <param name="throwOnError">Whether a <see cref="PropertiesException"/> should be thrown whenever a <see cref="IPropertiesReader"/> encounters
         /// an error in a ".properties" document, or if an <see cref="PropertiesTokenType.Error"/> should be produced.</param>
-        /// <param name="closeOnEnd">Whether an <see cref="IPropertiesReader"/> should close the underlying stream when a <see cref="Events.DocumentEnd"/>
-        /// is produced.</param>
+        /// <param name="closeOnEnd">Whether an <see cref="IPropertiesReader"/> should close the underlying stream when a <see cref="PropertiesTokenType.Error"/>
+        /// is produced or the end of the document is reached.</param>
         public PropertiesReaderSettings(bool ignoreComments = false,
                                         bool invalidEscapes = true,
                                         bool allUnicodeEscapes = false,
@@ -79,7 +81,7 @@ namespace PropertiesDotNet.Core
         private PropertiesReaderSettings()
         {
         }
-        
+
         /// <summary>
         /// Copies the configuration of the <paramref name="settings"/> into this instance.
         /// </summary>
@@ -97,7 +99,7 @@ namespace PropertiesDotNet.Core
         /// <inheritdoc/>
         public virtual bool Equals(PropertiesReaderSettings? other)
         {
-            return 
+            return
                 IgnoreComments == other?.IgnoreComments &&
                 InvalidEscapes == other?.InvalidEscapes &&
                 AllUnicodeEscapes == other?.AllUnicodeEscapes &&
@@ -105,5 +107,12 @@ namespace PropertiesDotNet.Core
                 ThrowOnError == other?.ThrowOnError &&
                 CloseOnEnd == other?.CloseOnEnd;
         }
+
+        /// <inheritdoc/>
+        public override bool Equals(object? obj) => Equals(obj as PropertiesReaderSettings);
+
+        /// <inheritdoc/>
+        public override int GetHashCode() => HashCodeHelper.GenerateHashCode(IgnoreComments,
+            AllCharacters, AllUnicodeEscapes, ThrowOnError, CloseOnEnd);
     }
 }

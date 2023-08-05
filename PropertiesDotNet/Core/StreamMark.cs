@@ -215,7 +215,7 @@ namespace PropertiesDotNet.Core
         /// Returns the hash code for this mark.
         /// </summary>
         /// <returns>The hash code for this mark.</returns>
-        public override int GetHashCode() => HashCodeHelper.GenerateHashCode(Line, Column);
+        public override int GetHashCode() => HashCodeHelper.GenerateHashCode(AbsoluteOffset, Line, Column);
 
         /// <inheritdoc/>
         public override bool Equals(object? obj) => obj is StreamMark mark && Equals(mark);

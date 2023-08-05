@@ -12,29 +12,29 @@
         None = 0,
 
         /// <summary>
-        /// Represents an error in a .properties document. This token is not canonical.
+        /// Represents an error in a ".properties" document. This token is not canonical.
         /// </summary>
         Error,
 
         /// <summary>
-        /// Represents a comment in a .properties document. In a standard ".properties"
+        /// Represents a comment in a ".properties" document. In a standard ".properties"
         /// document comment indicators begin with either a "!" or "#".
         /// </summary>
         Comment,
 
         /// <summary>
-        /// Represents a key in a .properties document.
+        /// Represents a key in a ".properties" document.
         /// </summary>
         Key,
 
         /// <summary>
-        /// Represents a value assigner in a .properties document. This can either be a 
+        /// Represents a value assigner in a ".properties" document. This can either be a 
         /// ":" (colon), "=" (equals), or any type of whitespace.
         /// </summary>
         Assigner,
 
         /// <summary>
-        /// Represents a value in a .properties document.
+        /// Represents a value in a ".properties" document.
         /// </summary>
         Value
     }
