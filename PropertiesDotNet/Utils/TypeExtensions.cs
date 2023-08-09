@@ -149,7 +149,7 @@ namespace PropertiesDotNet.Utils
         public static TypeCode GetTypeCode(Type? type)
         {
 #if !NETSTANDARD1_3
-            
+
             return Type.GetTypeCode(type);
 #else
             if (type.IsEnum())
@@ -377,9 +377,6 @@ namespace PropertiesDotNet.Utils
 
             // Default to the Convert class
             return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
-
-
-            // https://github.com/aaubry/YamlDotNet/blob/0bf02fd092a97f49069945177ac8bd16efac84ce/YamlDotNet/Serialization/Utilities/TypeConverter.cs#L129
         }
     }
 }

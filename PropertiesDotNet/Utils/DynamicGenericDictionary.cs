@@ -13,11 +13,6 @@ namespace PropertiesDotNet.Utils
         private readonly IDictionary<TKey, TValue> _innerDictionary;
 
         /// <summary>
-        /// Returns the inner dictionary.
-        /// </summary>
-        public IDictionary<TKey, TValue> InnerDictionary => _innerDictionary;
-
-        /// <summary>
         /// Creates a new <see cref="DynamicGenericDictionary{TKey, TValue}"/>.
         /// </summary>
         public DynamicGenericDictionary() : this(new Dictionary<TKey, TValue>())

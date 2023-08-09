@@ -26,31 +26,10 @@ namespace PropertiesDotNet.Serialization.Converters
         /// <inheritdoc/>
         public object? Deserialize(PropertiesSerializer serializer, Type type, PropertiesObject tree)
         {
-            GetDictionaryTypes(type, out Type keyType, out Type valueType);
-            object? value = serializer.ObjectProvider.Construct(type);
-            IDictionary dictionary = value as IDictionary ?? (IDictionary)serializer.ObjectProvider.Construct(typeof(DynamicGenericDictionary<,>).MakeGenericType(keyType, valueType), new[] { value });
+            GetDictionaryTypes(serializer, type, out Type keyType, out Type valueType);
+            object? rawValue = serializer.ObjectProvider.Construct(type);
+            IDictionary dictionary = rawValue as IDictionary ?? (IDictionary)serializer.ObjectProvider.Construct(typeof(DynamicGenericDictionary<,>).MakeGenericType(keyType, valueType), new[] { rawValue });
 
-            return DeserializeDictionary(serializer, keyType, valueType, dictionary, tree);
-        }
-
-        private void GetDictionaryTypes(Type type, out Type keyType, out Type valueType)
-        {
-            var dictionaryInterface = TypeExtensions.GetGenericInterface(type, typeof(IDictionary<,>));
-
-            if (dictionaryInterface is null)
-            {
-                keyType = typeof(object);
-                valueType = typeof(object);
-            }
-            else
-            {
-                keyType = dictionaryInterface.GetGenericArguments()[0];
-                valueType = dictionaryInterface.GetGenericArguments()[1];
-            }
-        }
-
-        private IDictionary DeserializeDictionary(PropertiesSerializer serializer, Type keyType, Type valueType, IDictionary dictionary, PropertiesObject tree)
-        {
             foreach (var node in tree)
             {
                 // Key must be primitive
@@ -75,10 +54,26 @@ namespace PropertiesDotNet.Serialization.Converters
             return dictionary;
         }
 
+        private void GetDictionaryTypes(PropertiesSerializer serializer, Type type, out Type keyType, out Type valueType)
+        {
+            var dictionaryInterface = TypeExtensions.GetGenericInterface(type, typeof(IDictionary<,>));
+
+            if (dictionaryInterface is null)
+            {
+                keyType = serializer.DefaultPrimitiveType;
+                valueType = serializer.DefaultObjectType;
+            }
+            else
+            {
+                keyType = dictionaryInterface.GetGenericArguments()[0];
+                valueType = dictionaryInterface.GetGenericArguments()[1];
+            }
+        }
+
         /// <inheritdoc/>
         public void Serialize(PropertiesSerializer serializer, Type type, object? value, PropertiesObject tree)
         {
-            GetDictionaryTypes(type, out Type keyType, out Type valueType);
+            GetDictionaryTypes(serializer, type, out Type keyType, out Type valueType);
             IDictionary dictionary = value as IDictionary ?? (IDictionary)serializer.ObjectProvider.Construct(typeof(DynamicGenericDictionary<,>).MakeGenericType(keyType, valueType), new[] { value });
 
             foreach (DictionaryEntry entry in dictionary)

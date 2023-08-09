@@ -164,7 +164,7 @@ namespace PropertiesDotNet.Utils
             {
                 if (_dictionary.ContainsKey(key))
                 {
-                    var index = _list.FindIndex(listKey => _comparer.Equals(listKey.Key, key));
+                    int index = _list.FindIndex(listKey => _comparer.Equals(listKey.Key, key));
                     _dictionary[key] = value;
                     _list[index] = new KeyValuePair<TKey, TValue>(key, value);
                 }

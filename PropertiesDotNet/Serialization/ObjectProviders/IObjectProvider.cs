@@ -17,7 +17,7 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
     public interface IObjectProvider
     {
         /// <summary>
-        /// The binding flags for constructors
+        /// The binding flags for constructors.
         /// </summary>
         BindingFlags ConstructorFlags { get; set; }
 
@@ -47,7 +47,7 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
         {
             Type[] argTypes = new Type[args?.Length ?? 0];
 
-            for (var i = 0; i < argTypes.Length; i++)
+            for (int i = 0; i < argTypes.Length; i++)
             {
                 argTypes[i] = args[i]?.GetType() ?? typeof(object);
             }
