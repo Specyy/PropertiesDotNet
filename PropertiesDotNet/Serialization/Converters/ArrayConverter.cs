@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using PropertiesDotNet.Serialization.PropertiesTree;
 using PropertiesDotNet.Utils;

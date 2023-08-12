@@ -95,6 +95,7 @@ namespace PropertiesDotNet.Serialization.Converters
 
                 if (serializer.IsPrimitive(item?.GetType() ?? itemType))
                 {
+                    // TODO: if itemType is primitive, serialize into inline array
                     tree.AddPrimitive(index, serializer.SerializePrimitive(item?.GetType() ?? itemType, item));
                 }
                 else

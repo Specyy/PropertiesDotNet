@@ -21,7 +21,8 @@ namespace PropertiesDotNet.Serialization
     public delegate void TypeSerialized(PropertiesSerializer serializer, Type type, object? value);
 
     /// <summary>
-    /// Represents a serializer and deserializer that transforms .NET objects into ".properties" objects and documents.
+    /// Represents a serializer and deserializer that transforms .NET objects into ".properties" objects and documents
+    /// and vice-versa.
     /// </summary>
     public class PropertiesSerializer
     {
@@ -125,7 +126,9 @@ namespace PropertiesDotNet.Serialization
                 PrimitiveConverters = new LinkedList<IPropertiesPrimitiveConverter>()
             };
 
-            Converters.AddFirst(new DictionaryConverter());
+            Converters.AddLast(new DictionaryConverter());
+            Converters.AddLast(new ArrayConverter());
+            Converters.AddLast(new CollectionConverter());
             Converters.AddLast(new ObjectConverter());
             PrimitiveConverters.AddFirst(new SystemTypeConverter());
         }
@@ -174,7 +177,7 @@ namespace PropertiesDotNet.Serialization
         /// <param name="input">The reader to read the content from.</param>
         /// <typeparam name="T">The type to deserialize as.</typeparam>
         /// <returns>The deserialized instance.</returns>
-        public static T Deserialize<T>(IPropertiesReader input) where T : notnull
+        public static T Deserialize<T>(IPropertiesReader input)
         {
             var serializer = new PropertiesSerializer();
             return serializer.DeserializeObject<T>(input);
@@ -184,8 +187,9 @@ namespace PropertiesDotNet.Serialization
         /// Deserializes the value from the given <paramref name="input"/>.
         /// </summary>
         /// <param name="input">The stream to read from.</param>
+        /// <typeparam name="T">The type to deserialize the <paramref name="input"/> as.</typeparam>
         /// <returns>The deserialized instance.</returns>
-        public static T Deserialize<T>(TextReader input) where T : notnull
+        public static T Deserialize<T>(TextReader input)
         {
             var serializer = new PropertiesSerializer();
             return serializer.DeserializeObject<T>(input);
@@ -195,8 +199,9 @@ namespace PropertiesDotNet.Serialization
         /// Deserializes the value from the given <paramref name="input"/>.
         /// </summary>
         /// <param name="input">The stream to read from.</param>
+        /// <typeparam name="T">The type to deserialize the <paramref name="input"/> as.</typeparam>
         /// <returns>The deserialized instance.</returns>
-        public static T Deserialize<T>(string input) where T : notnull
+        public static T Deserialize<T>(string input)
         {
             var serializer = new PropertiesSerializer();
             return serializer.DeserializeObject<T>(input);
@@ -213,6 +218,93 @@ namespace PropertiesDotNet.Serialization
         {
             var serializer = new PropertiesSerializer();
             serializer.SerializeObject(output, value, type);
+        }
+
+        /// <summary>
+        /// Serializes the object value.
+        /// </summary>
+        /// <param name="output">The stream to output to.</param>
+        /// <param name="value">The value to serialize.</param>
+        /// <param name="type">The type to serialize the value as. A null value indicates that the <paramref name="value"/>'s
+        /// type will be used.</param>
+        public static void Serialize(TextWriter output, object? value, Type? type = null)
+        {
+            using var writer = new PropertiesWriter(output);
+            Serialize(writer, value, type);
+        }
+
+        /// <summary>
+        /// Serializes the object value.
+        /// </summary>
+        /// <param name="output">The output.</param>
+        /// <param name="value">The value to serialize.</param>
+        /// <param name="type">The type to serialize the value as. A null value indicates that the <paramref name="value"/>'s
+        /// type will be used.</param>
+        public static void Serialize(StringBuilder output, object? value, Type? type = null)
+        {
+            using var writer = new PropertiesWriter(output);
+            Serialize(writer, value, type);
+        }
+
+        /// <summary>
+        /// Serializes the object value.
+        /// </summary>
+        /// <param name="output">The stream to output to.</param>
+        /// <param name="value">The value to serialize.</param>
+        /// <param name="type">The type to serialize the value as. A null value indicates that the <paramref name="value"/>'s
+        /// type will be used.</param>
+        public static void Serialize(Stream output, object? value, Type? type = null)
+        {
+            using var writer = new PropertiesWriter(output);
+            Serialize(writer, value, type);
+        }
+
+        /// <summary>
+        /// Serializes the object value.
+        /// </summary>
+        /// <param name="output">The writer to output the value.</param>
+        /// <param name="value">The value to serialize.</param>
+        /// <typeparam name="T">The type to serialize the value as. A null value indicates that the <paramref name="value"/>'s
+        /// type will be used.</typeparam>
+        public static void Serialize<T>(IPropertiesWriter output, object? value)
+        {
+            Serialize(output, value, typeof(T));
+        }
+
+        /// <summary>
+        /// Serializes the object value.
+        /// </summary>
+        /// <param name="output">The stream to output to.</param>
+        /// <param name="value">The value to serialize.</param>
+        /// <typeparam name="T">The type to serialize the value as. A null value indicates that the <paramref name="value"/>'s
+        /// type will be used.</typeparam>
+        public static void Serialize<T>(TextWriter output, object? value)
+        {
+            Serialize(output, value, typeof(T));
+        }
+
+        /// <summary>
+        /// Serializes the object value.
+        /// </summary>
+        /// <param name="output">The output.</param>
+        /// <param name="value">The value to serialize.</param>
+        /// <typeparam name="T">The type to serialize the value as. A null value indicates that the <paramref name="value"/>'s
+        /// type will be used.</typeparam>
+        public static void Serialize<T>(StringBuilder output, object? value)
+        {
+            Serialize(output, value, typeof(T));
+        }
+
+        /// <summary>
+        /// Serializes the object value.
+        /// </summary>
+        /// <param name="output">The stream to output to.</param>
+        /// <param name="value">The value to serialize.</param>
+        /// <typeparam name="T">The type to serialize the value as. A null value indicates that the <paramref name="value"/>'s
+        /// type will be used.</typeparam>
+        public static void Serialize<T>(Stream output, T value)
+        {
+            Serialize(output, value, typeof(T));
         }
 
         /// <summary>
@@ -248,16 +340,17 @@ namespace PropertiesDotNet.Serialization
         /// <returns>The deserialized instance.</returns>
         public virtual object? DeserializeObject(string input, Type? type = null)
         {
-            return DeserializeObject(new StringReader(input), type);
+            using var reader = new PropertiesReader(new StringReader(input));
+            return DeserializeObject(reader, type);
         }
 
         /// <summary>
         /// Deserializes a value from the given <paramref name="input"/>.
         /// </summary>
         /// <param name="input">The reader to read the content from.</param>
-        /// <typeparam name="T">The type to deserialize as.</typeparam>
+        /// <typeparam name="T">The type to deserialize the <paramref name="input"/> as.</typeparam>
         /// <returns>The deserialized instance.</returns>
-        public virtual T DeserializeObject<T>(IPropertiesReader input) where T : notnull
+        public virtual T DeserializeObject<T>(IPropertiesReader input)
         {
             return (T)DeserializeObject(input, typeof(T))!;
         }
@@ -266,8 +359,9 @@ namespace PropertiesDotNet.Serialization
         /// Deserializes the value from the given <paramref name="input"/>.
         /// </summary>
         /// <param name="input">The stream to read from.</param>
+        /// <typeparam name="T">The type to deserialize the <paramref name="input"/> as.</typeparam>
         /// <returns>The deserialized instance.</returns>
-        public virtual T DeserializeObject<T>(TextReader input) where T : notnull
+        public virtual T DeserializeObject<T>(TextReader input)
         {
             using var reader = new PropertiesReader(input);
             return DeserializeObject<T>(reader);
@@ -278,9 +372,10 @@ namespace PropertiesDotNet.Serialization
         /// </summary>
         /// <param name="input">The stream to read from.</param>
         /// <returns>The deserialized instance.</returns>
-        public virtual T DeserializeObject<T>(string input) where T : notnull
+        public virtual T DeserializeObject<T>(string input)
         {
-            return DeserializeObject<T>(new StringReader(input));
+            using var reader = new PropertiesReader(input);
+            return DeserializeObject<T>(reader);
         }
 
         /// <summary>
@@ -304,7 +399,8 @@ namespace PropertiesDotNet.Serialization
         /// type will be used.</param>
         public virtual void SerializeObject(TextWriter output, object? value, Type? type = null)
         {
-            SerializeObject(new PropertiesWriter(output), value, type);
+            using var writer = new PropertiesWriter(output);
+            SerializeObject(writer, value, type);
         }
 
         /// <summary>
@@ -316,7 +412,8 @@ namespace PropertiesDotNet.Serialization
         /// type will be used.</param>
         public virtual void SerializeObject(StringBuilder output, object? value, Type? type = null)
         {
-            SerializeObject(new StringWriter(output), value, type);
+            using var writer = new PropertiesWriter(output);
+            SerializeObject(writer, value, type);
         }
 
         /// <summary>
@@ -423,7 +520,7 @@ namespace PropertiesDotNet.Serialization
         }
 
         /// <summary>
-        /// Returns whether or not an <see cref="IPropertiesPrimitiveConverter"/> is registered for the given type.
+        /// Returns whether an <see cref="IPropertiesPrimitiveConverter"/> is registered for the given type.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>true if an <see cref="IPropertiesPrimitiveConverter"/> is registered for the given type; false otherwise.</returns>
@@ -437,6 +534,20 @@ namespace PropertiesDotNet.Serialization
         }
 
         /// <summary>
+        /// Deserializes the primitive <paramref name="value"/> as the given <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="value">The primitive value to deserialize.</param>
+        /// <typeparam name="T">The type to deserialize the <paramref name="value"/> as.</typeparam>
+        /// <returns>The deserialized value.</returns>
+        /// <exception cref="ArgumentNullException">If both the <paramref name="value"/> and <typeparamref name="T"/> are null.</exception>
+        /// <exception cref="PropertiesException">If a deserialization exception occurs or if no 
+        /// <see cref="IPropertiesPrimitiveConverter"/> could deserialize the primitive <paramref name="value"/> as the <typeparamref name="T"/>.</exception>
+        public T DeserializePrimitive<T>(string? value)
+        {
+            return (T)DeserializePrimitive(typeof(T), value);
+        }
+
+        /// <summary>
         /// Deserializes the primitive <paramref name="value"/> as the given <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type to deserialize the <paramref name="value"/> as.</param>
@@ -447,9 +558,7 @@ namespace PropertiesDotNet.Serialization
         /// <see cref="IPropertiesPrimitiveConverter"/> could deserialize the primitive <paramref name="value"/> as the <paramref name="type"/>.</exception>
         public object? DeserializePrimitive(Type? type, string? value)
         {
-            type ??= value?.GetType() ?? DefaultPrimitiveType;
-
-            if (type == typeof(object))
+            if (type is null || type == typeof(object))
                 type = DefaultPrimitiveType;
 
             try
@@ -458,7 +567,7 @@ namespace PropertiesDotNet.Serialization
                 {
                     if (converter.Accepts(type))
                     {
-                        object? primitive = converter.Deserialize(this, type, value);
+                        object? primitive = TypeExtensions.ConvertType(converter.Deserialize(this, type, value), type, ObjectProvider);
                         TypeDeserialized?.Invoke(this, type, primitive);
                         return primitive;
                     }
@@ -477,6 +586,17 @@ namespace PropertiesDotNet.Serialization
         }
 
         /// <summary>
+        /// Serializes the primitive <paramref name="value"/> as the given <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="value">The primitive value to serialize.</param>
+        /// <typeparam name="T">The type to serialize the <paramref name="value"/> as.</typeparam>
+        /// <returns>The serialized value.</returns>
+        /// <exception cref="ArgumentNullException">If both the <paramref name="value"/> and <typeparamref name="T"/> are null.</exception>
+        /// <exception cref="PropertiesException">If a serialization exception occurs or if no 
+        /// <see cref="IPropertiesPrimitiveConverter"/> could serialize the primitive <paramref name="value"/> as the <typeparamref name="T"/>.</exception>
+        public string? SerializePrimitive<T>(T value) => SerializePrimitive(typeof(T), (T)value);
+
+        /// <summary>
         /// Serializes the primitive <paramref name="value"/> as the given <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type to serialize the <paramref name="value"/> as.</param>
@@ -485,12 +605,10 @@ namespace PropertiesDotNet.Serialization
         /// <exception cref="ArgumentNullException">If both the <paramref name="value"/> and <paramref name="type"/> are null.</exception>
         /// <exception cref="PropertiesException">If a serialization exception occurs or if no 
         /// <see cref="IPropertiesPrimitiveConverter"/> could serialize the primitive <paramref name="value"/> as the <paramref name="type"/>.</exception>
-        public string? SerializePrimitive(Type type, object? value)
+        public string? SerializePrimitive(Type? type, object? value)
         {
-            type ??= value?.GetType() ?? DefaultPrimitiveType;
-
-            if (type == typeof(object))
-                type = DefaultPrimitiveType;
+            if (type is null || type == typeof(object))
+                type = value?.GetType() ?? DefaultPrimitiveType;
 
             try
             {
@@ -499,7 +617,7 @@ namespace PropertiesDotNet.Serialization
                     if (converter.Accepts(type))
                     {
                         string? primitive = converter.Serialize(this, type, value);
-                        TypeDeserialized?.Invoke(this, type, primitive);
+                        TypeSerialized?.Invoke(this, type, primitive);
                         return primitive;
                     }
                 }

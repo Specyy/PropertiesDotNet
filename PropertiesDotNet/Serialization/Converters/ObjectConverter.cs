@@ -18,18 +18,45 @@ namespace PropertiesDotNet.Serialization.Converters
         /// <summary>
         /// The bindings flags for properties and fields.
         /// </summary>
-        public BindingFlags MemberFlags { get; set; }
+        public BindingFlags MemberFlags
+        {
+            get => _memberFlags;
+            set
+            {
+                if (value != _memberFlags)
+                    ClearCache();
+
+                _memberFlags = value;
+            }
+        }
+
+        private BindingFlags _memberFlags;
 
         /// <summary>
         /// Whether to allow search for fields as members or only properties.
         /// </summary>
-        public bool AllowFields { get; set; }
+        public bool AllowFields
+        {
+            get => _allowFields;
+            set
+            {
+                if (value != _allowFields)
+                    ClearCache();
+
+                _allowFields = value;
+            }
+        }
+
+        private bool _allowFields;
+
+        private readonly Dictionary<Type, Dictionary<string, PropertiesMember>> _memberCache;
 
         /// <summary>
         /// Creates a new instance of the default object converter.
         /// </summary>
         public ObjectConverter()
         {
+            _memberCache = new Dictionary<Type, Dictionary<string, PropertiesMember>>();
             AllowFields = true;
             MemberFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase;
         }
@@ -47,17 +74,16 @@ namespace PropertiesDotNet.Serialization.Converters
 
             foreach (var node in tree)
             {
-                MemberInfo member = ((MemberInfo)type.GetProperty(node.Name, MemberFlags) ??
-                    (AllowFields ? type.GetField(node.Name, MemberFlags) : null)) ??
-                    throw new PropertiesException($"Could not find member \"{node.Name}\" within type: {type.FullName}");
+                var member = GetMember(type, node.Name);
+                MemberInfo memberInfo = member?.Info ?? throw new PropertiesException($"Could not find member \"{node.Name}\" within type: {type.FullName}");
 
                 if (node is PropertiesPrimitive primitive)
                 {
-                    SetMemberValue(serializer.ValueProvider, target, member, serializer.DeserializePrimitive(GetMemberType(member), primitive.Value));
+                    member.SetValue(serializer.ValueProvider, target, serializer.DeserializePrimitive(member.Type, primitive.Value));
                 }
                 else if (node is PropertiesObject obj)
                 {
-                    SetMemberValue(serializer.ValueProvider, target, member, serializer.DeserializeObject(GetMemberType(member), obj));
+                    member.SetValue(serializer.ValueProvider, target, serializer.DeserializeObject(member.Type, obj));
                 }
                 else throw new PropertiesException($"Cannot deserialize tree node of type \"{node.GetType().FullName}\"!");
             }
@@ -65,83 +91,224 @@ namespace PropertiesDotNet.Serialization.Converters
             return target;
         }
 
-        private void SetMemberValue(IValueProvider valueProvider, object? target, MemberInfo member, object? value)
-        {
-            if (member is PropertyInfo prop)
-            {
-                valueProvider.SetValue(target, prop, value);
-            }
-            else if (member is FieldInfo field)
-            {
-                valueProvider.SetValue(target, field, value);
-            }
-            else throw new ArgumentException($"Invalid member: \"{member.GetType().FullName}\"!");
-        }
-
         /// <inheritdoc/>
         public void Serialize(PropertiesSerializer serializer, Type type, object? value, PropertiesObject tree)
         {
-            foreach (MemberInfo member in GetValidMembers(type, MemberFlags))
+            var members = GetMembers(type);
+
+            if (members is null)
+                return;
+
+            var entryValues = members.Values;
+            foreach (var member in entryValues)
             {
-                SerializeMember(serializer, member, value, tree);
+                PropertiesTreeNode node;
+
+                if (serializer.IsPrimitive(member.Type))
+                {
+                    string? pValue = serializer.SerializePrimitive(member.Type, member.GetValue(serializer.ValueProvider, value));
+                    // Member name already string, no conversion needed?
+                    node = tree.AddPrimitive(member.Name, pValue);
+                }
+                else
+                {
+                    // Member name already string, no conversion needed?
+                    node = new PropertiesObject(member.Name);
+                    serializer.SerializeObject(member.Type, member.GetValue(serializer.ValueProvider, value), (PropertiesObject)node);
+                    tree.Add(node);
+                }
+
+                if (member.Comments != null)
+                    node.Comments = member.Comments;
             }
         }
 
-        private void SerializeMember(PropertiesSerializer serializer, MemberInfo member, object? target, PropertiesObject tree)
+        /// <summary>
+        /// Clears the cached members for the specified <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">The type members to clear.</param>
+        public void ClearCache(Type type)
         {
-            var memberType = GetMemberType(member);
-            if (serializer.IsPrimitive(memberType))
+            _memberCache?.Remove(type);
+        }
+
+        /// <summary>
+        /// Clears all the  cached members.
+        /// </summary>
+        public void ClearCache()
+        {
+            _memberCache?.Clear();
+        }
+
+        private PropertiesMember? GetMember(Type type, string name)
+        {
+            var members = GetMembers(type);
+
+            if (members is null)
+                return null;
+
+            return members.TryGetValue(name, out var member) ? member : null;
+        }
+
+        private Dictionary<string, PropertiesMember>? GetMembers(Type type)
+        {
+            if (_memberCache.TryGetValue(type, out var members))
+                return members;
+
+            ReadProperties(type);
+
+            if (AllowFields)
+                ReadFields(type);
+
+            if (_memberCache.TryGetValue(type, out Dictionary<string, PropertiesMember> newMembers))
+                return newMembers;
+
+            return null;
+        }
+
+        private void ReadProperties(Type type)
+        {
+            foreach (var prop in type.GetProperties(MemberFlags))
             {
-                string? pValue = serializer.SerializePrimitive(memberType, GetMemberValue(serializer.ValueProvider, target, member));
-                // TODO: Get attribute - add comments from attribute
-                // TODO: Get attribute - get name from attribute
-                // Memeber name already string, no conversion needed?
-                tree.AddPrimitive(member.Name, pValue);
+                PropertiesMember? member = ReadMember(prop);
+
+                if (member is null)
+                    continue;
+
+                UpdateCache(type, member);
+            }
+        }
+
+        private void ReadFields(Type type)
+        {
+            foreach (var field in type.GetFields(MemberFlags))
+            {
+                PropertiesMember? member = ReadMember(field);
+
+                if (member is null)
+                    continue;
+
+                UpdateCache(type, member);
+            }
+        }
+
+        private void UpdateCache(Type cacheType, PropertiesMember member)
+        {
+            if (_memberCache.TryGetValue(cacheType, out var existingMembers))
+            {
+                existingMembers.Add(member.Name, member);
             }
             else
             {
-                // TODO: Get attribute - get name from attribute
-                // Memeber name already string, no conversion needed?
-                PropertiesObject memberObj = new PropertiesObject(member.Name);
-                serializer.SerializeObject(memberType, GetMemberValue(serializer.ValueProvider, target, member), memberObj);
-                tree.Add(memberObj);
+                _memberCache[cacheType] = new Dictionary<string, PropertiesMember>
+                {
+                    { member.Name, member }
+                };
             }
         }
 
-        private object? GetMemberValue(IValueProvider valueProvider, object? target, MemberInfo member)
+        private PropertiesMember? ReadMember(PropertyInfo prop)
         {
-            if (member is PropertyInfo prop)
+            PropertiesMember member;
+
+            var memberAtt = Utils.TypeExtensions.GetCustomAttribute<PropertiesMemberAttribute>(prop);
+            if (memberAtt is null)
             {
-                return valueProvider.GetValue(target, prop);
+                if (!prop.CanRead || !prop.CanWrite)
+                    return null;
+
+                member = new PropertiesMember(prop.Name, prop.PropertyType, null, prop);
             }
-            else if (member is FieldInfo field)
+            else
             {
-                return valueProvider.GetValue(target, field);
+                if (!memberAtt.Serialize)
+                    return null;
+
+                member = new PropertiesMember(string.IsNullOrEmpty(memberAtt.Name) ? prop.Name : memberAtt.Name,
+                   memberAtt.SerializeAs ?? prop.PropertyType, null, prop);
             }
-            else throw new ArgumentException($"Invalid member: \"{member.GetType().FullName}\"!");
+
+            ReadComments(member);
+            return member;
         }
 
-        private Type GetMemberType(MemberInfo member)
+        private PropertiesMember? ReadMember(FieldInfo field)
         {
-            if (member is PropertyInfo prop)
+            PropertiesMember member;
+
+            var memberAtt = Utils.TypeExtensions.GetCustomAttribute<PropertiesMemberAttribute>(field);
+            if (memberAtt is null)
             {
-                return prop.PropertyType;
+                member = new PropertiesMember(field.Name, field.FieldType, null, field);
             }
-            else if (member is FieldInfo field)
+            else
             {
-                return field.FieldType;
+                if (!memberAtt.Serialize)
+                    return null;
+
+                member = new PropertiesMember(string.IsNullOrEmpty(memberAtt.Name) ? field.Name : memberAtt.Name,
+                   memberAtt.SerializeAs ?? field.FieldType, null, field);
             }
-            else throw new ArgumentException($"Invalid member: \"{member.GetType().FullName}\"!");
+
+            ReadComments(member);
+            return member;
         }
 
-        private IEnumerable<MemberInfo> GetValidMembers(Type type, BindingFlags flags)
+        private void ReadComments(PropertiesMember member)
         {
-            foreach (var prop in type.GetProperties(flags))
-                yield return prop;
+            var commentAtts = Utils.TypeExtensions.GetCustomAttributes<PropertiesCommentAttribute>(member.Info);
+            if (commentAtts != null)
+            {
+                var comments = new List<string>();
 
-            if (AllowFields)
-                foreach (var field in type.GetFields(flags))
-                    yield return field;
+                foreach (var commentAtt in commentAtts)
+                    comments.Add(commentAtt.Comment);
+
+                member.Comments = comments;
+            }
+        }
+
+        private class PropertiesMember
+        {
+            public string Name { get; }
+            public Type Type { get; set; }
+
+            public List<string>? Comments { get; set; }
+            public MemberInfo Info { get; }
+
+            public PropertiesMember(string name, Type serializeAs, List<string>? comments, MemberInfo info)
+            {
+                Name = name;
+                Type = serializeAs;
+                Comments = comments;
+                Info = info;
+            }
+
+            public object? GetValue(IValueProvider valueProvider, object? target)
+            {
+                if (Info is PropertyInfo prop)
+                {
+                    return valueProvider.GetValue(target, prop);
+                }
+                else if (Info is FieldInfo field)
+                {
+                    return valueProvider.GetValue(target, field);
+                }
+                else throw new ArgumentException($"Invalid member: \"{Info.GetType().FullName}\"!");
+            }
+
+            public void SetValue(IValueProvider valueProvider, object? target, object? value)
+            {
+                if (Info is PropertyInfo prop)
+                {
+                    valueProvider.SetValue(target, prop, value);
+                }
+                else if (Info is FieldInfo field)
+                {
+                    valueProvider.SetValue(target, field, value);
+                }
+                else throw new ArgumentException($"Invalid member: \"{Info.GetType().FullName}\"!");
+            }
         }
     }
 }
