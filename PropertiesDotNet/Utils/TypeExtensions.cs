@@ -82,6 +82,23 @@ namespace PropertiesDotNet.Utils
 #endif
         }
 
+        public static IEnumerable<T> GetCustomAttributes<T>(MemberInfo member) where T : Attribute
+        {
+            var atts = member.GetCustomAttributes(typeof(T), true);
+
+            foreach (var att in atts)
+                yield return (T)att;
+        }
+
+        public static T? GetCustomAttribute<T>(MemberInfo member) where T : Attribute
+        {
+#if NETSTANDARD1_3
+            return (T?)member.GetCustomAttribute(typeof(T));
+#else
+            return (T?)Attribute.GetCustomAttribute(member, typeof(T));
+#endif
+        }
+
         public static bool HasDefaultConstuctor(this Type type)
         {
 #if NETSTANDARD1_3
