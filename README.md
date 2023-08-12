@@ -22,6 +22,33 @@ The library is currently available in the following .NET frameworks:
 * .NET Framework 4.0
 * .NET Framework 3.5
 
+## Quick Start
+
+1. Install the package from NuGet:
+
+Install-Package PropertiesDotNet
+
+2. Use the `PropertiesDocume y` class to load a .properties file:
+
+```csharp
+using PropertiesDotNet.ObjectModel;
+
+var doc = PropertiesDocument.Load("path/to/file.properties");
+```
+
+3. Access and update the properties:
+
+```csharp
+// Get a property
+string? propertyValue = doc["property.name"];
+
+// Set a property
+doc["property.name"] = "new value";
+
+// Save the properties back to the .properties file
+doc.Save(filePath);
+```
+
 ## Installation
 You can install the PropertiesDotNet library via NuGet Package Manager or by using the following NuGet CLI command:
 ```bash
