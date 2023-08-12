@@ -33,20 +33,21 @@ Install-Package PropertiesDotNet
 ```csharp
 using PropertiesDotNet.ObjectModel;
 
-var doc = PropertiesDocument.Load("path/to/file.properties");
+string filePath = "path/to/file.properties"
+var properties = PropertiesDocument.Load(filePath);
 ```
 
 3. Access and update the properties:
 
 ```csharp
 // Get a property
-string? propertyValue = doc["property.name"];
+string? propertyValue = properties["property.name"];
 
 // Set a property
-doc["property.name"] = "new value";
+properties["property.name"] = "new value";
 
 // Save the properties back to the .properties file
-doc.Save(filePath);
+properties.Save(filePath);
 ```
 
 ## Installation
