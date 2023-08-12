@@ -89,7 +89,7 @@ namespace PropertiesDotNet.Serialization.Converters
                 case TypeCode.Decimal:
                 case TypeCode.String:
                 case TypeCode.DateTime:
-                    return input.ToString();
+                    return input?.ToString() ?? null;
                 default:
                     throw new PropertiesException($"Cannot serialize primitive type: {type.FullName}");
             }
