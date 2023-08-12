@@ -15,7 +15,9 @@ The library is currently available in the following .NET frameworks:
  
 * .NET 6.0 
 * .NET Core 3.0
-* netstandard 2.0
+* .NET Standard 2.1
+* .NET Standard 2.0
+* .NET Standard 1.3
 * .NET Framework 4.6.1
 * .NET Framework 4.0
 * .NET Framework 3.5
