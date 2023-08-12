@@ -131,44 +131,60 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
         /// <inheritdoc/>
         public void WriteObject(PropertiesObject root, IPropertiesWriter output)
         {
-            WriteObject(null, root, output);
+            // Treat root comments as document-level comments
+            WriteComments(root, output);
+            WriteObject(root, null, output);
+
+            if (_keyBuilder != null)
+                _keyBuilder.Length = 0;
+
+            output.Flush();
         }
 
-        private void WriteObject(PropertiesObject? parent, PropertiesObject obj, IPropertiesWriter output)
+        private void WriteObject(PropertiesObject obj, List<PropertiesObject>? parents, IPropertiesWriter output)
         {
-            _keyBuilder ??= new StringBuilder();
-            bool trueRoot = false;
-
             foreach (var node in obj)
             {
-                if (_keyBuilder.Length == 0)
-                    trueRoot = true;
-                else
-                    _keyBuilder.Append(Delimeter);
-
-                _keyBuilder.Append(node.Name);
-
-                // TODO: Allow customization of handle
-                for (int i = 0; i < parent?.Comments?.Count; i++)
-                    output.Write(new PropertiesToken(PropertiesTokenType.Comment, parent.Comments[i]));
-
-                // TODO: Allow customization of handle
-                for (int i = 0; i < node.Comments?.Count; i++)
-                    output.Write(new PropertiesToken(PropertiesTokenType.Comment, node.Comments[i]));
-
-                if (node is PropertiesPrimitive prop)
+                if (node is PropertiesPrimitive primitive)
                 {
-                    output.WriteProperty(_keyBuilder.ToString(), prop.Value);
+                    for (int i = 0; i < parents?.Count; i++)
+                        WriteComments(parents[i], output);
+
+                    WriteComments(primitive, output);
+
+                    if (parents is null)
+                    {
+                        output.WriteProperty(primitive.Name, primitive.Value);
+                    }
+                    else
+                    {
+                        output.WriteProperty(_keyBuilder.Append(primitive.Name).ToString(), primitive.Value);
+                        _keyBuilder.Length -= primitive.Name.Length;
+                    }
+
                 }
-                else if (node is PropertiesObject childObj)
+                else if (node is PropertiesObject objNode)
                 {
-                    WriteObject(obj, childObj, output);
+                    _keyBuilder ??= new StringBuilder();
+                    _keyBuilder.Append(objNode.Name).Append(Delimeter);
+
+                    parents ??= new List<PropertiesObject>();
+                    int index = parents.Count;
+
+                    parents.Add(objNode);
+                    WriteObject(objNode, parents, output);
+                    parents.RemoveAt(index);
+                    // 1 = delimeter
+                    _keyBuilder.Length -= objNode.Name.Length + 1;
                 }
                 else throw new ArgumentException($"Cannot write tree node of type: {node.GetType()}");
-
-                // 1 = delimeter
-                _keyBuilder.Length -= (trueRoot ? 0 : 1) + node.Name.Length;
             }
+        }
+
+        private void WriteComments(PropertiesTreeNode node, IPropertiesWriter output)
+        {
+            for (int i = 0; i < node.Comments?.Count; i++)
+                output.Write(new PropertiesToken(PropertiesTokenType.Comment, node.Comments[i]));
         }
 
         /// <summary>
@@ -179,49 +195,64 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
         /// <exception cref="ArgumentException">The tree contains nodes that cannot be serialized.</exception>
         public void WriteObject(PropertiesObject root, PropertiesDocument doc)
         {
-            WriteObject(null, root, doc);
+            WriteObject(root, null, doc);
+
+            if (_keyBuilder != null)
+                _keyBuilder.Length = 0;
         }
 
-        private void WriteObject(PropertiesObject? parent, PropertiesObject obj, PropertiesDocument doc)
+        private void WriteObject(PropertiesObject obj, List<PropertiesObject>? parents, PropertiesDocument doc)
         {
-            _keyBuilder ??= new StringBuilder();
-            bool trueRoot = false;
-
             foreach (var node in obj)
             {
-                if (_keyBuilder.Length == 0)
-                    trueRoot = true;
-                else
-                    _keyBuilder.Append(Delimeter);
-
-                _keyBuilder.Append(node.Name);
-
-                if (node is PropertiesPrimitive prop)
+                if (node is PropertiesPrimitive primitive)
                 {
-                    var property = new PropertiesProperty(_keyBuilder.ToString(), prop.Value);
+                    string key;
 
-                    if (parent != null)
-                        property.Comments = parent.Comments;
-
-                    if(node.Comments != null)
+                    if (parents is null)
                     {
-                        if(property.Comments is null)
-                            prop.Comments = node.Comments;
-                        else
-                            prop.Comments.AddRange(node.Comments);
+                        key = primitive.Name;
+                    }
+                    else
+                    {
+                        key = _keyBuilder.Append(primitive.Name).ToString();
+                        _keyBuilder.Length -= primitive.Name.Length;
                     }
 
-                    doc.AddProperty(property);
+                    var prop = new PropertiesProperty(key, primitive.Value);
+
+                    for (int i = 0; i < parents?.Count; i++)
+                        AddComments(prop, parents[i]);
+
+                    AddComments(prop, node);
+
+                    doc.AddProperty(prop);
                 }
-                else if (node is PropertiesObject childObj)
+                else if (node is PropertiesObject objNode)
                 {
-                    WriteObject(obj, childObj, doc);
+                    _keyBuilder ??= new StringBuilder();
+                    _keyBuilder.Append(objNode.Name).Append(Delimeter);
+
+                    parents ??= new List<PropertiesObject>();
+                    int index = parents.Count;
+
+                    parents.Add(objNode);
+                    WriteObject(objNode, parents, doc);
+                    parents.RemoveAt(index);
+                    // 1 = delimeter
+                    _keyBuilder.Length -= objNode.Name.Length + 1;
                 }
                 else throw new ArgumentException($"Cannot write tree node of type: {node.GetType()}");
-
-                // 1 = delimeter
-                _keyBuilder.Length -= (trueRoot ? 0 : 1) + node.Name.Length;
             }
+        }
+
+        private void AddComments(PropertiesProperty prop, PropertiesTreeNode node)
+        {
+            if (prop.Comments is null)
+                prop.Comments ??= new List<string>();
+
+            for (int i = 0; i < node.Comments?.Count; i++)
+                prop.Comments.Add(node.Comments[i]);
         }
 
         /// <inheritdoc/>

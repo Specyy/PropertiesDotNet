@@ -143,5 +143,8 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
         {
             return !(other is null) && _children.Count == other._children.Count && !_children.Except(other._children).Any();
         }
+
+        /// <inheritdoc/>
+        public override bool Equals(object? obj) => Equals(obj as PropertiesObject ?? obj as PropertiesTreeNode);
     }
 }

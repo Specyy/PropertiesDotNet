@@ -40,6 +40,12 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
         public virtual bool Equals(string? other) => Name.Equals(other);
 
         /// <inheritdoc/>
+        public override bool Equals(object? obj) => Equals(obj as PropertiesTreeNode);
+
+        /// <summary>
+        /// Returns the <see cref="Name"/> of this node.
+        /// </summary>
+        /// <returns>The <see cref="Name"/> of this node</returns>
         public override string ToString() => Name;
     }
 }
