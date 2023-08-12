@@ -106,16 +106,15 @@ namespace PropertiesDotNet.Serialization.Converters
 
                 if (serializer.IsPrimitive(member.Type))
                 {
-                    // TODO: Handle null members (skip or error, or write as primitive null)
+                    // TODO: Handle null members (skip, error, or write as primitive null)
+                    string pKey = serializer.SerializePrimitive(typeof(string), member.Name)!;
                     string? pValue = serializer.SerializePrimitive(member.Type, member.GetValue(serializer.ValueProvider, value));
-                    // Member name already string, no conversion needed?
-                    node = tree.AddPrimitive(member.Name, pValue);
+                    node = tree.AddPrimitive(pKey, pValue);
                 }
                 else
                 {
-                    // Member name already string, no conversion needed?
-                    node = new PropertiesObject(member.Name);
-                    // TODO: Handle null members (skip or error, or write as primitive null)
+                    node = new PropertiesObject(serializer.SerializePrimitive(typeof(string), member.Name));
+                    // TODO: Handle null members (skip, error, or write as primitive null)
                     serializer.SerializeObject(member.Type, member.GetValue(serializer.ValueProvider, value), (PropertiesObject)node);
                     tree.Add(node);
                 }

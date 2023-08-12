@@ -4,7 +4,7 @@ namespace PropertiesDotNet.Serialization
 {
     /// <summary>
     /// Represents a (de)serializer for primitive ".properties" types. These converters register specific types as
-    /// primitive types and take precedence over object serialization.
+    /// primitive types.
     /// </summary>
     /// <remarks>
     /// A primitive value is a textual value that can be written
