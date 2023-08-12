@@ -266,15 +266,147 @@ namespace PropertiesDotNet.ObjectModel
         }
 
         /// <summary>
-        /// Gets the specified property, if it exists inside this document.
+        /// Gets the specified property value, if it exists inside this document.
         /// </summary>
         /// <param name="key">The property key.</param>
-        /// <returns>The specified property, if it exists.</returns>
+        /// <returns>The specified property's value, if it exists.</returns>
         /// <exception cref="KeyNotFoundException">The property key is not found.</exception>
         public virtual string? GetValue(string key)
         {
             return TryGetValue(key, out var val) ? val :
                 throw new KeyNotFoundException($"Could not find key \"{key}\" within properties document!");
+        }
+
+        /// <summary>
+        /// Gets the specified property value as a <see langword="bool"/>, if it exists inside this document.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <returns>The specified property's value, if it exists.</returns>
+        /// <exception cref="KeyNotFoundException">The property key is not found.</exception>
+        public virtual bool GetBool(string key)
+        {
+            return bool.Parse(GetValue(key));
+        }
+
+        /// <summary>
+        /// Gets the specified property value as a <see langword="byte"/>, if it exists inside this document.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <returns>The specified property's value, if it exists.</returns>
+        /// <exception cref="KeyNotFoundException">The property key is not found.</exception>
+        public virtual byte GetByte(string key)
+        {
+            return byte.Parse(GetValue(key));
+        }
+
+        /// <summary>
+        /// Gets the specified property value as a <see langword="sbyte"/>, if it exists inside this document.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <returns>The specified property's value, if it exists.</returns>
+        /// <exception cref="KeyNotFoundException">The property key is not found.</exception>
+        public virtual sbyte GetSByte(string key)
+        {
+            return sbyte.Parse(GetValue(key));
+        }
+
+        /// <summary>
+        /// Gets the specified property value as a <see langword="short"/>, if it exists inside this document.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <returns>The specified property's value, if it exists.</returns>
+        /// <exception cref="KeyNotFoundException">The property key is not found.</exception>
+        public virtual short GetInt16(string key)
+        {
+            return short.Parse(GetValue(key));
+        }
+
+        /// <summary>
+        /// Gets the specified property value as a <see langword="ushort"/>, if it exists inside this document.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <returns>The specified property's value, if it exists.</returns>
+        /// <exception cref="KeyNotFoundException">The property key is not found.</exception>
+        public virtual ushort GetUInt16(string key)
+        {
+            return ushort.Parse(GetValue(key));
+        }
+
+        /// <summary>
+        /// Gets the specified property value as a <see langword="int"/>, if it exists inside this document.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <returns>The specified property's value, if it exists.</returns>
+        /// <exception cref="KeyNotFoundException">The property key is not found.</exception>
+        public virtual int GetInt32(string key)
+        {
+            return int.Parse(GetValue(key));
+        }
+
+        /// <summary>
+        /// Gets the specified property value as a <see langword="uint"/>, if it exists inside this document.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <returns>The specified property's value, if it exists.</returns>
+        /// <exception cref="KeyNotFoundException">The property key is not found.</exception>
+        public virtual uint GetUInt32(string key)
+        {
+            return uint.Parse(GetValue(key));
+        }
+
+        /// <summary>
+        /// Gets the specified property value as a <see langword="long"/>, if it exists inside this document.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <returns>The specified property's value, if it exists.</returns>
+        /// <exception cref="KeyNotFoundException">The property key is not found.</exception>
+        public virtual long GetInt64(string key)
+        {
+            return long.Parse(GetValue(key));
+        }
+
+        /// <summary>
+        /// Gets the specified property value as a <see langword="ulong"/>, if it exists inside this document.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <returns>The specified property's value, if it exists.</returns>
+        /// <exception cref="KeyNotFoundException">The property key is not found.</exception>
+        public virtual ulong GetUInt64(string key)
+        {
+            return ulong.Parse(GetValue(key));
+        }
+
+        /// <summary>
+        /// Gets the specified property value as a <see langword="float"/>, if it exists inside this document.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <returns>The specified property's value, if it exists.</returns>
+        /// <exception cref="KeyNotFoundException">The property key is not found.</exception>
+        public virtual float GetFloat(string key)
+        {
+            return float.Parse(GetValue(key));
+        }
+
+        /// <summary>
+        /// Gets the specified property value as a <see langword="double"/>, if it exists inside this document.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <returns>The specified property's value, if it exists.</returns>
+        /// <exception cref="KeyNotFoundException">The property key is not found.</exception>
+        public virtual double GetDouble(string key)
+        {
+            return double.Parse(GetValue(key));
+        }
+
+        /// <summary>
+        /// Gets the specified property value as a <see langword="decimal"/>, if it exists inside this document.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <returns>The specified property's value, if it exists.</returns>
+        /// <exception cref="KeyNotFoundException">The property key is not found.</exception>
+        public virtual decimal GetDecimal(string key)
+        {
+            return decimal.Parse(GetValue(key));
         }
 
         /// <summary>
