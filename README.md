@@ -11,6 +11,15 @@ This powerful and intuitive library is designed to effortlessly parse Java `.pro
 
 The library allows for the configuration of .properties documents in three distinct ways: a low level token parsing and document writing API, a high level object model similar to XmlDocument, and a serialization library that allows for serialization and deserialization of .NET objects to and from .properties documents.
 
+The library is currently available in the following .NET frameworks:
+ 
+* .NET 6.0 
+* .NET Core 3.0
+* netstandard 2.0
+* .NET Framework 4.6.1
+* .NET Framework 4.0
+* .NET Framework 3.5
+
 ## Installation
 You can install the PropertiesDotNet library via NuGet Package Manager or by using the following NuGet CLI command:
 ```bash
