@@ -94,6 +94,48 @@ while(reader.MoveNext())
 
 ## Serialization
 
+```csharp
+using PropertiesDotNet.Serialization
+
+public class Player
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+    public List<Player> Friends { get; set; }
+
+    public override string? ToString()
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine($"Name: {Name}");
+        sb.AppendLine($"Age: {Age}");
+        sb.AppendLine($"Friends:");
+
+        foreach(var friend in Friends)
+        {
+            sb.AppendLine($"    - Name: {friend.Name}");
+            sb.AppendLine($"    - Age: {friend.Age}");
+        }
+    }
+}
+
+// path/to/file.properties
+//
+// Name = Steven
+// Age = 36
+// Friends.0.Name = Albert
+// Friends.0.Age = 43
+// Friends.1.Name = Timmy
+// Friends.1.Age = 22
+
+string filePath = "path/to/file.properties";
+var player = PropertiesSerializer.Deserialize<Player>(filePath);
+
+Console.WriteLine(player);
+
+// Output:
+// 
+```
+
 ## Installation
 You can install the PropertiesDotNet library via NuGet Package Manager or by using the following NuGet CLI command:
 ```bash
