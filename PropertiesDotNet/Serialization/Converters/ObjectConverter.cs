@@ -106,6 +106,7 @@ namespace PropertiesDotNet.Serialization.Converters
 
                 if (serializer.IsPrimitive(member.Type))
                 {
+                    // TODO: Handle null members (skip or error, or write as primitive null)
                     string? pValue = serializer.SerializePrimitive(member.Type, member.GetValue(serializer.ValueProvider, value));
                     // Member name already string, no conversion needed?
                     node = tree.AddPrimitive(member.Name, pValue);
@@ -114,6 +115,7 @@ namespace PropertiesDotNet.Serialization.Converters
                 {
                     // Member name already string, no conversion needed?
                     node = new PropertiesObject(member.Name);
+                    // TODO: Handle null members (skip or error, or write as primitive null)
                     serializer.SerializeObject(member.Type, member.GetValue(serializer.ValueProvider, value), (PropertiesObject)node);
                     tree.Add(node);
                 }
@@ -155,10 +157,7 @@ namespace PropertiesDotNet.Serialization.Converters
             if (_memberCache.TryGetValue(type, out var members))
                 return members;
 
-            ReadProperties(type);
-
-            if (AllowFields)
-                ReadFields(type);
+            ReadMembers(type);
 
             if (_memberCache.TryGetValue(type, out Dictionary<string, PropertiesMember> newMembers))
                 return newMembers;
@@ -166,7 +165,7 @@ namespace PropertiesDotNet.Serialization.Converters
             return null;
         }
 
-        private void ReadProperties(Type type)
+        private void ReadMembers(Type type)
         {
             foreach (var prop in type.GetProperties(MemberFlags))
             {
@@ -177,18 +176,18 @@ namespace PropertiesDotNet.Serialization.Converters
 
                 UpdateCache(type, member);
             }
-        }
 
-        private void ReadFields(Type type)
-        {
-            foreach (var field in type.GetFields(MemberFlags))
+            if (AllowFields)
             {
-                PropertiesMember? member = ReadMember(field);
+                foreach (var field in type.GetFields(MemberFlags))
+                {
+                    PropertiesMember? member = ReadMember(field);
 
-                if (member is null)
-                    continue;
+                    if (member is null)
+                        continue;
 
-                UpdateCache(type, member);
+                    UpdateCache(type, member);
+                }
             }
         }
 
@@ -200,7 +199,7 @@ namespace PropertiesDotNet.Serialization.Converters
             }
             else
             {
-                _memberCache[cacheType] = new Dictionary<string, PropertiesMember>
+                _memberCache[cacheType] = new Dictionary<string, PropertiesMember>()
                 {
                     { member.Name, member }
                 };

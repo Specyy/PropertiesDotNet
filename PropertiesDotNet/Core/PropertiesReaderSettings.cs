@@ -50,6 +50,17 @@ namespace PropertiesDotNet.Core
         public static PropertiesReaderSettings Default => new PropertiesReaderSettings();
 
         /// <summary>
+        /// Returns a <see cref="PropertiesReaderSettings"/> with settings optimized for performance.
+        /// </summary>
+        public static PropertiesReaderSettings Optimized => new PropertiesReaderSettings()
+        {
+            IgnoreComments = true,
+            ThrowOnError = false,
+            InvalidEscapes = true,
+            AllUnicodeEscapes = false
+        };
+
+        /// <summary>
         /// Creates a new <see cref="PropertiesReaderSettings"/> with the given settings.
         /// </summary>
         /// <param name="ignoreComments">Whether an <see cref="IPropertiesReader"/> should ignore document comments.</param>
