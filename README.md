@@ -95,7 +95,7 @@ while(reader.MoveNext())
 ## Serialization
 
 ```csharp
-using PropertiesDotNet.Serialization
+using PropertiesDotNet.Serialization;
 
 public class Player
 {
@@ -115,6 +115,8 @@ public class Player
             sb.AppendLine($"    - Name: {friend.Name}");
             sb.AppendLine($"    - Age: {friend.Age}");
         }
+
+        return sb.ToString();
     }
 }
 
@@ -134,6 +136,14 @@ Console.WriteLine(player);
 
 // Output:
 // 
+// Name: Steven
+// Age: 36
+// Friends:
+//     - Name: Albert
+//     - Age: 43
+//     - Name: Timmy
+//     - Age: 22
+//
 ```
 
 ## Installation
