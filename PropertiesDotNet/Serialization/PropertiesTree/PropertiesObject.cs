@@ -89,10 +89,84 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
         /// <summary>
         /// Retrieves the child with the specified name, if available.
         /// </summary>
-        /// <param name="name">THe name of the node</param>
+        /// <param name="name">The name of the node</param>
         /// <param name="node">The child node with the specified name.</param>
         /// <returns>true if this object contains a child element with the given <paramref name="name"/>; false otherwise.</returns>
         public bool TryGetChild(string name, out PropertiesTreeNode? node) => _children.TryGetValue(name, out node);
+
+        /// <summary>
+        /// Retrieves the primitive property with the specified name, if available.
+        /// </summary>
+        /// <param name="name">The name of the node</param>
+        /// <param name="property">The primitive property with the specified name.</param>
+        /// <returns>true if this object contains a primitive property with the given <paramref name="name"/>; false otherwise.</returns>
+        public bool TryGetProperty(string name, out PropertiesPrimitive? property) => TryGetPrimitive(name, out property);
+
+        /// <summary>
+        /// Retrieves the primitive property with the specified name, if available.
+        /// </summary>
+        /// <param name="name">The name of the node</param>
+        /// <param name="property">The primitive property with the specified name.</param>
+        /// <returns>true if this object contains a primitive property with the given <paramref name="name"/>; false otherwise.</returns>
+        public bool TryGetPrimitive(string name, out PropertiesPrimitive? property)
+        {
+            if (TryGetChild(name, out var node))
+                return (property = node as PropertiesPrimitive) != null;
+
+            property = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Retrieves the primitive property with the specified name.
+        /// </summary>
+        /// <param name="name">The name of the node</param>
+        /// <returns>The primitive property with the specified name.</returns>
+        /// <exception cref="KeyNotFoundException">No direct children with the given name exist within this object node.</exception>
+        /// <exception cref="InvalidCastException">If the element with the <paramref name="name"/> is not a primitive property.</exception>
+        public PropertiesPrimitive GetProperty(string name) => GetPrimitive(name);
+
+        /// <summary>
+        /// Retrieves the primitive property with the specified name.
+        /// </summary>
+        /// <param name="name">The name of the node</param>
+        /// <returns>The primitive property with the specified name.</returns>
+        /// <exception cref="KeyNotFoundException">No direct children with the given name exist within this object node.</exception>
+        /// <exception cref="InvalidCastException">If the element with the <paramref name="name"/> is not a primitive property.</exception>
+        public PropertiesPrimitive GetPrimitive(string name) => (PropertiesPrimitive)this[name];
+
+        /// <summary>
+        /// Retrieves an object with the specified name, if available.
+        /// </summary>
+        /// <param name="name">The name of the node</param>
+        /// <param name="object">The child object with the specified name.</param>
+        /// <returns>true if this object contains a child object with the given <paramref name="name"/>; false otherwise.</returns>
+        public bool TryGetObject(string name, out PropertiesObject? @object)
+        {
+            if (TryGetChild(name, out var node))
+                return (@object = node as PropertiesObject) != null;
+
+            @object = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Retrieves an object with the specified name, if available.
+        /// </summary>
+        /// <param name="name">The name of the node</param>
+        /// <returns>The child object with the specified name.</returns>
+        /// <exception cref="KeyNotFoundException">No direct children with the given name exist within this object node.</exception>
+        /// <exception cref="InvalidCastException">If the element with the <paramref name="name"/> is not an object.</exception>
+        public PropertiesObject GetObject(string name) => (PropertiesObject)this[name];
+
+        /// <summary>
+        /// Retrieves the value of a primitive property with the specified name.
+        /// </summary>
+        /// <param name="propertyName">The name of the primitive property.</param>
+        /// <returns>The primitive property with the specified name.</returns>
+        /// <exception cref="KeyNotFoundException">No direct children with the given name exist within this object node.</exception>
+        /// <exception cref="InvalidCastException">If the element with the <paramref name="propertyName"/> is not a primitive property.</exception>
+        public string? GetValue(string propertyName) => GetPrimitive(propertyName).Value;
 
         /// <summary>
         /// Removes the specified node from the list of children of this object node.
