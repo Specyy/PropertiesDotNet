@@ -35,9 +35,9 @@ namespace PropertiesDotNet.Core
         private uint _flushCounter;
 
         private WriterState _state;
-        private StringBuilder _textPool;
-        private StreamCursor _cursor;
-        private TextWriter _stream;
+        private readonly StringBuilder _textPool;
+        private readonly StreamCursor _cursor;
+        private readonly TextWriter _stream;
 
         /// <summary>
         /// Creates a new <see cref="PropertiesWriter"/>.
@@ -55,6 +55,16 @@ namespace PropertiesDotNet.Core
         /// <param name="output">The output stream.</param>
         /// <param name="settings">The settings for this writer.</param>
         public PropertiesWriter(Stream output, PropertiesWriterSettings? settings = null) : this(new StreamWriter(output), settings)
+        {
+
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="PropertiesWriter"/> that writes to the <paramref name="filePath"/>.
+        /// </summary>
+        /// <param name="filePath">The path to the .properties file.</param>
+        /// <param name="settings">The settings for this writer.</param>
+        public PropertiesWriter(string filePath, PropertiesWriterSettings? settings = null) : this(File.OpenWrite(filePath), settings)
         {
 
         }
@@ -307,10 +317,13 @@ namespace PropertiesDotNet.Core
             bool newLine = key;
             int fallbackStartIndex = _textPool.Length - 1;
             StreamMark fallback = _cursor.Position;
+            uint startColumn = fallback.Column;
 
             if (!key && _state == WriterState.ValueOrAssigner)
-                // TODO: Maybe emit event for default assigner
-                WriteInternal('=');
+            {
+                WriteAssigner();
+                startColumn++;
+            }
 
             for (int i = 0; i < text.Length; i++)
             {
@@ -324,7 +337,7 @@ namespace PropertiesDotNet.Core
                         {
                             WriteInternal('\\');
 
-                            uint returnColumn = _cursor.Column;
+                            uint returnColumn = startColumn;
 
                             WriteLineInternal();
 

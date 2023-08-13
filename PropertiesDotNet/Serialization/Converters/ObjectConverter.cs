@@ -74,21 +74,28 @@ namespace PropertiesDotNet.Serialization.Converters
 
             foreach (var node in tree)
             {
-                var member = GetMember(type, node.Name);
-                MemberInfo memberInfo = member?.Info ?? throw new PropertiesException($"Could not find member \"{node.Name}\" within type: {type.FullName}");
-
-                if (node is PropertiesPrimitive primitive)
-                {
-                    member.SetValue(serializer.ValueProvider, target, serializer.DeserializePrimitive(member.Type, primitive.Value));
-                }
-                else if (node is PropertiesObject obj)
-                {
-                    member.SetValue(serializer.ValueProvider, target, serializer.DeserializeObject(member.Type, obj));
-                }
-                else throw new PropertiesException($"Cannot deserialize tree node of type \"{node.GetType().FullName}\"!");
+                DeserializeMember(serializer, type, target, node);
             }
 
             return target;
+        }
+
+        private void DeserializeMember(PropertiesSerializer serializer, Type containerType, object container, PropertiesTreeNode memberNode)
+        {
+            var member = GetMember(containerType, memberNode.Name);
+
+            if (member?.Info is null)
+                throw new PropertiesException($"Could not find member \"{memberNode.Name}\" within type: {containerType.FullName}");
+
+            if (memberNode is PropertiesPrimitive primitive)
+            {
+                member.SetValue(serializer.ValueProvider, container, serializer.DeserializePrimitive(member.Type, primitive.Value));
+            }
+            else if (memberNode is PropertiesObject obj)
+            {
+                member.SetValue(serializer.ValueProvider, container, serializer.DeserializeObject(member.Type, obj));
+            }
+            else throw new PropertiesException($"Cannot deserialize tree node of type \"{memberNode.GetType().FullName}\"!");
         }
 
         /// <inheritdoc/>
@@ -100,28 +107,34 @@ namespace PropertiesDotNet.Serialization.Converters
                 return;
 
             var entryValues = members.Values;
+
             foreach (var member in entryValues)
             {
-                PropertiesTreeNode node;
-
-                if (serializer.IsPrimitive(member.Type))
-                {
-                    // TODO: Handle null members (skip, error, or write as primitive null)
-                    string pKey = serializer.SerializePrimitive(typeof(string), member.Name)!;
-                    string? pValue = serializer.SerializePrimitive(member.Type, member.GetValue(serializer.ValueProvider, value));
-                    node = tree.AddPrimitive(pKey, pValue);
-                }
-                else
-                {
-                    node = new PropertiesObject(serializer.SerializePrimitive(typeof(string), member.Name));
-                    // TODO: Handle null members (skip, error, or write as primitive null)
-                    serializer.SerializeObject(member.Type, member.GetValue(serializer.ValueProvider, value), (PropertiesObject)node);
-                    tree.Add(node);
-                }
-
-                if (member.Comments != null)
-                    node.Comments = member.Comments;
+                SerializeMember(serializer, value, member, tree);
             }
+        }
+
+        private void SerializeMember(PropertiesSerializer serializer, object? container, PropertiesMember member, PropertiesObject @object)
+        {
+            PropertiesTreeNode node;
+
+            if (serializer.IsPrimitive(member.Type))
+            {
+                // TODO: Handle null members (skip, error, or write as primitive null)
+                string propKey = serializer.SerializePrimitive(typeof(string), member.Name)!;
+                string? propValue = serializer.SerializePrimitive(member.Type, member.GetValue(serializer.ValueProvider, container));
+                node = @object.AddPrimitive(propKey, propValue);
+            }
+            else
+            {
+                node = new PropertiesObject(serializer.SerializePrimitive(typeof(string), member.Name));
+                // TODO: Handle null members (skip, error, or write as primitive null)
+                serializer.SerializeObject(member.Type, member.GetValue(serializer.ValueProvider, container), (PropertiesObject)node);
+                @object.Add(node);
+            }
+
+            if (member.Comments != null)
+                node.Comments = member.Comments;
         }
 
         /// <summary>
@@ -156,16 +169,13 @@ namespace PropertiesDotNet.Serialization.Converters
             if (_memberCache.TryGetValue(type, out var members))
                 return members;
 
-            ReadMembers(type);
-
-            if (_memberCache.TryGetValue(type, out Dictionary<string, PropertiesMember> newMembers))
-                return newMembers;
-
-            return null;
+            return ReadMembers(type);
         }
 
-        private void ReadMembers(Type type)
+        private Dictionary<string, PropertiesMember>? ReadMembers(Type type)
         {
+            Dictionary<string, PropertiesMember>? memberCache = null;
+
             foreach (var prop in type.GetProperties(MemberFlags))
             {
                 PropertiesMember? member = ReadMember(prop);
@@ -173,7 +183,7 @@ namespace PropertiesDotNet.Serialization.Converters
                 if (member is null)
                     continue;
 
-                UpdateCache(type, member);
+                UpdateCache(ref memberCache, member);
             }
 
             if (AllowFields)
@@ -185,24 +195,20 @@ namespace PropertiesDotNet.Serialization.Converters
                     if (member is null)
                         continue;
 
-                    UpdateCache(type, member);
+                    UpdateCache(ref memberCache, member);
                 }
             }
+
+            if (memberCache != null)
+                _memberCache[type] = memberCache;
+
+            return memberCache;
         }
 
-        private void UpdateCache(Type cacheType, PropertiesMember member)
+        private void UpdateCache(ref Dictionary<string, PropertiesMember> cache, PropertiesMember member)
         {
-            if (_memberCache.TryGetValue(cacheType, out var existingMembers))
-            {
-                existingMembers.Add(member.Name, member);
-            }
-            else
-            {
-                _memberCache[cacheType] = new Dictionary<string, PropertiesMember>()
-                {
-                    { member.Name, member }
-                };
-            }
+            cache ??= new Dictionary<string, PropertiesMember>();
+            cache.Add(member.Name, member);
         }
 
         private PropertiesMember? ReadMember(PropertyInfo prop)

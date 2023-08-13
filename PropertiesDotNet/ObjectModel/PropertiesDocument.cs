@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Runtime.InteropServices.ComTypes;
 
 using PropertiesDotNet.Core;
 using PropertiesDotNet.Utils;
@@ -60,6 +61,16 @@ namespace PropertiesDotNet.ObjectModel
         }
 
         /// <summary>
+        /// Creates a new <see cref="PropertiesDocument"/> from the given .properties file.
+        /// </summary>
+        /// <param name="filePath">The file path of the .properties document.</param>
+        /// <param name="override">Whether to override duplicate properties.</param>
+        public PropertiesDocument(string filePath, bool @override = true) : this()
+        {
+            LoadDocument(filePath, @override);
+        }
+
+        /// <summary>
         /// Creates a new <see cref="PropertiesDocument"/> from the given data.
         /// </summary>
         /// <param name="stream">The stream containing document data.</param>
@@ -90,6 +101,36 @@ namespace PropertiesDotNet.ObjectModel
         }
 
         /// <summary>
+        /// Loads this document from the given .properties file.
+        /// </summary>
+        /// <param name="filePath">The file path to the .properties document.</param>
+        /// <param name="override">Whether to override duplicate properties.</param>
+        public static PropertiesDocument Load(string filePath, bool @override = true)
+        {
+            return new PropertiesDocument(filePath, @override);
+        }
+
+        /// <summary>
+        /// Loads this document from the given reader.
+        /// </summary>
+        /// <param name="stream">The stream to load from.</param>
+        /// <param name="override">Whether to override duplicate properties.</param>
+        public static PropertiesDocument Load(Stream stream, bool @override = true)
+        {
+            return new PropertiesDocument(stream, @override);
+        }
+
+        /// <summary>
+        /// Loads this document from the given reader.
+        /// </summary>
+        /// <param name="reader">The reader to load from.</param>
+        /// <param name="override">Whether to override duplicate properties.</param>
+        public static PropertiesDocument Load(TextReader reader, bool @override = true)
+        {
+            return new PropertiesDocument(reader, @override);
+        }
+
+        /// <summary>
         /// Loads this document from the given reader.
         /// </summary>
         /// <param name="reader">The reader to load from.</param>
@@ -100,46 +141,13 @@ namespace PropertiesDotNet.ObjectModel
         }
 
         /// <summary>
-        /// Loads this document from the given reader.
+        /// Loads this document from the given .properties file.
         /// </summary>
-        /// <param name="stream">The stream to load from.</param>
-        /// <param name="override">Whether to override duplicate properties.</param>
-        public static PropertiesDocument Load(Stream stream, bool @override = true)
-        {
-            using var pReader = new PropertiesReader(stream);
-            return Load(pReader, @override);
-        }
-
-        /// <summary>
-        /// Loads this document from the given reader.
-        /// </summary>
-        /// <param name="reader">The reader to load from.</param>
-        /// <param name="override">Whether to override duplicate properties.</param>
-        public static PropertiesDocument Load(TextReader reader, bool @override = true)
-        {
-            using var pReader = new PropertiesReader(reader);
-            return Load(pReader, @override);
-        }
-
-        /// <summary>
-        /// Loads this document from the given text document.
-        /// </summary>
-        /// <param name="document">The text document to load.</param>
-        /// <param name="override">Whether to override duplicate properties.</param>
-        public static PropertiesDocument Load(string document, bool @override = true)
-        {
-            using var reader = new PropertiesReader(document);
-            return Load(reader, @override);
-        }
-
-        /// <summary>
-        /// Loads this document from the given text document.
-        /// </summary>
-        /// <param name="document">The text document to load.</param>
+        /// <param name="filePath">The file path to the .properties document.</param>
         /// <param name="override">Whether to override existing properties.</param>
-        public virtual void LoadDocument(string document, bool @override = true)
+        public virtual void LoadDocument(string filePath, bool @override = true)
         {
-            using var reader = new PropertiesReader(document);
+            using var reader = new PropertiesReader(filePath);
             LoadDocument(reader, @override);
         }
 

@@ -65,9 +65,9 @@ namespace PropertiesDotNet.Core
         /// <summary>
         /// Creates a new <see cref="PropertiesReader"/>.
         /// </summary>
-        /// <param name="input">The input document.</param>
+        /// <param name="filePath">The file path to the .properties document.</param>
         /// <param name="settings">The settings for this reader.</param>
-        public PropertiesReader(string input, PropertiesReaderSettings? settings = null) : this(new StringReader(input),
+        public PropertiesReader(string filePath, PropertiesReaderSettings? settings = null) : this(File.OpenRead(filePath),
             settings)
         {
         }
