@@ -166,10 +166,7 @@ namespace PropertiesDotNet.Serialization.Converters
 
         private Dictionary<string, PropertiesMember>? GetMembers(Type type)
         {
-            if (_memberCache.TryGetValue(type, out var members))
-                return members;
-
-            return ReadMembers(type);
+            return _memberCache.TryGetValue(type, out var members) ? members : ReadMembers(type);
         }
 
         private Dictionary<string, PropertiesMember>? ReadMembers(Type type)

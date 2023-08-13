@@ -107,7 +107,7 @@ namespace PropertiesDotNet.Core
         /// <returns>Whether the property could be read.</returns>
         /// <exception cref="PropertiesException">If an error was encountered whilst trying to
         /// read the document, and exceptions are configured to be thrown.</exception>
-        public static bool TryReadProperty(this IPropertiesReader reader, out string key, out string? value)
+        public static bool TryReadProperty(this IPropertiesReader reader, out string? key, out string? value)
         {
             var token = reader.Token;
 
@@ -144,7 +144,7 @@ namespace PropertiesDotNet.Core
                 }
             }
 
-            key = null!;
+            key = null;
             value = null;
             return false;
         }
@@ -291,6 +291,7 @@ namespace PropertiesDotNet.Core
         public static bool ReadBool(this IPropertiesReader reader)
         {
             string text = reader.Read().Text;
+
             if (bool.TryParse(text, out bool value))
                 return value;
 
