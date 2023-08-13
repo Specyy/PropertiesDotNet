@@ -36,7 +36,7 @@ namespace PropertiesDotNet.Serialization.Converters
                 case TypeCode.DateTime:
                     return true;
                 default:
-                    return false;
+                    return type == typeof(Guid);
             }
         }
 
@@ -65,7 +65,13 @@ namespace PropertiesDotNet.Serialization.Converters
                 TypeCode.Decimal => decimal.Parse(input, NumberStyles.Float | NumberStyles.AllowCurrencySymbol),
                 TypeCode.String => input,
                 TypeCode.DateTime => DateTime.Parse(input),
-                _ => throw new PropertiesException($"Cannot deserialize primitive type: {type.FullName} (\"{input}\")"),
+                _ => type == typeof(Guid) ?
+#if NET35
+                new Guid(input)
+#else
+                Guid.Parse(input)
+#endif
+                 : throw new PropertiesException($"Cannot deserialize primitive type: {type.FullName} (\"{input}\")"),
             };
         }
 
@@ -91,6 +97,9 @@ namespace PropertiesDotNet.Serialization.Converters
                 case TypeCode.DateTime:
                     return input?.ToString() ?? null;
                 default:
+                    if (type == typeof(Guid))
+                        return input?.ToString();
+
                     throw new PropertiesException($"Cannot serialize primitive type: {type.FullName}");
             }
         }

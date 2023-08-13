@@ -215,8 +215,8 @@ namespace PropertiesDotNet.Serialization.Converters
             var memberAtt = Utils.TypeExtensions.GetCustomAttribute<PropertiesMemberAttribute>(prop);
             if (memberAtt is null)
             {
-                if (!prop.CanRead || !prop.CanWrite)
-                    return null;
+                //if (!prop.CanRead || !prop.CanWrite)
+                //    return null;
 
                 member = new PropertiesMember(prop.Name, prop.PropertyType, null, prop);
             }
