@@ -280,6 +280,8 @@ namespace PropertiesDotNet.Utils
 #endif
         }
 
+        public static T ConvertType<T>(object? value, IObjectProvider objectProvider) => (T)ConvertType(value, typeof(T), objectProvider);
+
         public static object? ConvertType(object? value, Type type, IObjectProvider objectProvider)
         {
             // Handle null and DBNull
@@ -347,11 +349,9 @@ namespace PropertiesDotNet.Utils
                 MethodInfo[] publicStaticMethods = currentType.GetMethods(BindingFlags.Public | BindingFlags.Static);
                 foreach (MethodInfo method in publicStaticMethods)
                 {
-                    bool isCastingOperator = method.IsSpecialName &&
+                    if (method.IsSpecialName &&
                         (method.Name == "op_Implicit" || method.Name == "op_Explicit") &&
-                        type.IsAssignableFrom(method.ReturnParameter.ParameterType);
-
-                    if (isCastingOperator)
+                        type.IsAssignableFrom(method.ReturnParameter.ParameterType))
                     {
                         ParameterInfo[] parameters = method.GetParameters();
 
@@ -370,7 +370,6 @@ namespace PropertiesDotNet.Utils
             // If source type is string, try to find a Parse or TryParse method
             if (sourceType == typeof(string))
             {
-
                 // Try with - public static T Parse(string, IFormatProvider)
                 var parseFunction = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, new[] { typeof(string), typeof(IFormatProvider) });
                 if (parseFunction != null)
@@ -389,7 +388,7 @@ namespace PropertiesDotNet.Utils
             // Handle TimeSpan
             if (type == typeof(TimeSpan))
             {
-                return TimeSpan.Parse((string)ConvertType(value, typeof(string), objectProvider)!);
+                return TimeSpan.Parse(ConvertType<string>(value, objectProvider)!);
             }
 
             // Default to the Convert class

@@ -36,7 +36,7 @@ namespace PropertiesDotNet.Serialization.Converters
         /// <inheritdoc/>
         public override void Serialize(PropertiesSerializer serializer, Type type, object? value, PropertiesObject tree)
         {
-            var array = value as Array;
+            var array = TypeExtensions.ConvertType<Array>(value, serializer.ObjectProvider);
             var itemType = type.GetElementType()!;
 
             for (int i = 0; i < array.Length; i++)
