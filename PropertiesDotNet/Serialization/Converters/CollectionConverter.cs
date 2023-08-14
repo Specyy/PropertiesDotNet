@@ -72,8 +72,7 @@ namespace PropertiesDotNet.Serialization.Converters
                 }
                 else
                 {
-                    int count = list.Count;
-                    for (int i = 0; i < index - count; i++)
+                    for (int i = 0, count = list.Count; i < index - count; i++)
                         list.Add(TypeExtensions.ConvertType(null, itemType, serializer.ObjectProvider));
 
                     list.Add(value);
