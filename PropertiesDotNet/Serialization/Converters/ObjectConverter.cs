@@ -218,6 +218,10 @@ namespace PropertiesDotNet.Serialization.Converters
                 //if (!prop.CanRead || !prop.CanWrite)
                 //    return null;
 
+                // Property is an indexer
+                if (prop.GetIndexParameters()?.Length > 0)
+                    return null;
+
                 member = new PropertiesMember(prop.Name, prop.PropertyType, null, prop);
             }
             else
