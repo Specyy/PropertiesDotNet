@@ -363,7 +363,7 @@ namespace PropertiesDotNet.Core
 
             for (int i = 0; i < codeLength; i++)
             {
-                int hex = ToHex(document[_index]); // '9' -> 9
+                int hex = ReadHex(document[_index]); // '9' -> 9
                 Read(document);
 
                 if (hex < 0 || hex > 15)
@@ -488,7 +488,7 @@ namespace PropertiesDotNet.Core
 #if !NET35 && !NET40
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-        private int ToHex(char c) => c <= '9' ? c - '0' :
+        private int ReadHex(char c) => c <= '9' ? c - '0' :
                 (c <= 'F' ? c - 'A' + 10 : c - 'a' + 10);
 
 #if !NET35 && !NET40

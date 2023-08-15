@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using PropertiesDotNet.Utils;
+
 namespace PropertiesDotNet.Serialization.PropertiesTree
 {
     /// <summary>
@@ -25,5 +27,11 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
 
         /// <inheritdoc/>
         public bool Equals(PropertiesPrimitive? other) => !(other is null) && other.Name == Name && other.Value == Value;
+
+        /// <inheritdoc/>
+        public override bool Equals(object? obj) => Equals(obj as PropertiesPrimitive);
+
+        /// <inheritdoc/>
+        public override int GetHashCode() => HashCodeHelper.GenerateHashCode(base.GetHashCode(), Value.GetHashCode());
     }
 }

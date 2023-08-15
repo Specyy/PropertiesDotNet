@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using PropertiesDotNet.Utils;
+
 namespace PropertiesDotNet.Serialization.PropertiesTree
 {
     /// <summary>
@@ -47,5 +49,11 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
         /// </summary>
         /// <returns>The <see cref="Name"/> of this node</returns>
         public override string ToString() => Name;
+
+        /// <summary>
+        /// Returns the hash code for this tree node
+        /// </summary>
+        /// <returns>The hash of this tree node.</returns>
+        public override int GetHashCode() => HashCodeHelper.GenerateHashCode(GetHashCode(), HashCodeHelper.GenerateHashCode<string>(Comments));
     }
 }

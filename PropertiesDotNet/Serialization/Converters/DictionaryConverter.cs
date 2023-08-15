@@ -76,10 +76,10 @@ namespace PropertiesDotNet.Serialization.Converters
             GetDictionaryTypes(serializer, type, out Type keyType, out Type valueType);
             IDictionary dictionary = value as IDictionary ?? (IDictionary)serializer.ObjectProvider.Construct(typeof(DynamicGenericDictionary<,>).MakeGenericType(keyType, valueType), new[] { value });
 
-            foreach (DictionaryEntry entry in dictionary)
+            foreach (var entryKey in dictionary.Keys)
             {
-                object? entryKey = entry.Key;
-                object? entryValue = entry.Value;
+                object? entryValue = dictionary[entryKey];
+
                 // Key must be primitive
                 string? keyText = serializer.SerializePrimitive(entryKey?.GetType(), entryKey);
 

@@ -49,6 +49,14 @@ namespace PropertiesDotNet.Serialization.Converters
             return rawValue;
         }
 
+        /// <summary>
+        /// Deserializes the <paramref name="list"/> from the <paramref name="tree"/>.
+        /// </summary>
+        /// <param name="serializer">The underlying serializer.</param>
+        /// <param name="itemType">The list item type.</param>
+        /// <param name="list">A new instance of the list.</param>
+        /// <param name="tree">The document tree.</param>
+        /// <exception cref="PropertiesException">If the list could not be deserialized.</exception>
         protected void Deserialize(PropertiesSerializer serializer, Type itemType, IList list, PropertiesObject tree)
         {
             foreach (var node in tree)

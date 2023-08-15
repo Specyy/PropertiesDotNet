@@ -138,7 +138,7 @@ namespace PropertiesDotNet.Utils
         }
 
         /// <inheritdoc/>
-        public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value) =>
+        public bool TryGetValue(TKey key, out TValue value) =>
             _dictionary.TryGetValue(key, out value);
 
         IEnumerator IEnumerable.GetEnumerator() => _list.GetEnumerator();

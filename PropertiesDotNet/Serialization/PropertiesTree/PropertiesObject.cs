@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+using PropertiesDotNet.Utils;
+
 namespace PropertiesDotNet.Serialization.PropertiesTree
 {
     /// <summary>
@@ -220,5 +222,8 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
 
         /// <inheritdoc/>
         public override bool Equals(object? obj) => Equals(obj as PropertiesObject ?? obj as PropertiesTreeNode);
+
+        /// <inheritdoc/>
+        public override int GetHashCode() => HashCodeHelper.GenerateHashCode(base.GetHashCode(), HashCodeHelper.GenerateHashCode(Children));
     }
 }
