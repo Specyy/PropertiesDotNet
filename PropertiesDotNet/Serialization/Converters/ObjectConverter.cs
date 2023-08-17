@@ -202,10 +202,10 @@ namespace PropertiesDotNet.Serialization.Converters
             return memberCache;
         }
 
-        private void UpdateCache(ref Dictionary<string, PropertiesMember> cache, PropertiesMember member)
+        private void UpdateCache(ref Dictionary<string, PropertiesMember> typeCache, PropertiesMember member)
         {
-            cache ??= new Dictionary<string, PropertiesMember>();
-            cache.Add(member.Name, member);
+            typeCache ??= new Dictionary<string, PropertiesMember>();
+            typeCache.Add(member.Name, member);
         }
 
         private PropertiesMember? ReadMember(PropertyInfo prop)

@@ -50,7 +50,7 @@ namespace PropertiesDotNet.Serialization.Converters
         }
 
         /// <summary>
-        /// Deserializes the <paramref name="list"/> from the <paramref name="tree"/>.
+        /// Deserializes the <paramref name="list"/> (collection) from the <paramref name="tree"/>.
         /// </summary>
         /// <param name="serializer">The underlying serializer.</param>
         /// <param name="itemType">The list item type.</param>

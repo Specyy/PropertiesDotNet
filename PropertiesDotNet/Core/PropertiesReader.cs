@@ -302,6 +302,8 @@ namespace PropertiesDotNet.Core
                 case '=': _textPool.Append('='); break;
                 case ':': _textPool.Append(':'); break;
                 case ' ': _textPool.Append('\x20'); break;
+                case '#': _textPool.Append('#'); break;
+                case '!': _textPool.Append('!'); break;
 
                 // Logical lines
                 // TODO: Maybe switch from this case into the default case and use a IsNewLine(...) check

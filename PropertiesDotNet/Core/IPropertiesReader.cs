@@ -70,7 +70,7 @@ namespace PropertiesDotNet.Core
         {
             var token = reader.Token;
             reader.MoveNext();
-            return token.Type == PropertiesTokenType.None ? reader.Token : token;
+            return token.Type == PropertiesTokenType.None ? reader.Read() : token;
         }
 
         /// <summary>
@@ -108,6 +108,19 @@ namespace PropertiesDotNet.Core
         /// <exception cref="PropertiesException">If an error was encountered whilst trying to
         /// read the document, and exceptions are configured to be thrown.</exception>
         public static bool TryReadProperty(this IPropertiesReader reader, out string? key, out string? value)
+            => reader.TryReadProperty(out key, out _, out value);
+
+        /// <summary>
+        /// Reads the current property, or the next property if the reader is not at a property.
+        /// </summary>
+        /// <param name="reader">The underlying reader.</param>
+        /// <param name="key">The property key.</param>
+        /// <param name="assigner">The property assigner.</param>
+        /// <param name="value">The property value.</param>
+        /// <returns>Whether the property could be read.</returns>
+        /// <exception cref="PropertiesException">If an error was encountered whilst trying to
+        /// read the document, and exceptions are configured to be thrown.</exception>
+        public static bool TryReadProperty(this IPropertiesReader reader, out string? key, out char? assigner, out string? value)
         {
             var token = reader.Token;
 
@@ -128,23 +141,26 @@ namespace PropertiesDotNet.Core
                     if (token.Type == PropertiesTokenType.Assigner)
                     {
                         reader.MoveNext();
-                        token = reader.Token;
+                        assigner = (token = reader.Token).Text?[0];
                     }
 
                     if (token.Type == PropertiesTokenType.Value)
                     {
                         value = token.Text;
+                        assigner = null;
                         return true;
                     }
                 }
                 else
                 {
+                    assigner = null;
                     value = null;
                     return true;
                 }
             }
 
             key = null;
+            assigner = null;
             value = null;
             return false;
         }
