@@ -148,32 +148,26 @@ namespace PropertiesDotNet.Core
                 switch (ch)
                 {
                     case '\r':
-                        WriteInternal('\\');
-                        WriteInternal('r');
+                        WriteInternal('\\').WriteInternal('r');
                         break;
                     case '\n':
-                        WriteInternal('\\');
-                        WriteInternal('n');
+                        WriteInternal('\\').WriteInternal('n');
                         break;
                     case '\t':
-                        WriteInternal('\\');
-                        WriteInternal('t');
+                        WriteInternal('\\').WriteInternal('t');
                         break;
                     case '\f':
-                        WriteInternal('\\');
-                        WriteInternal('f');
+                        WriteInternal('\\').WriteInternal('f');
+                        ;
                         break;
                     case '\a':
-                        WriteInternal('\\');
-                        WriteInternal('a');
+                        WriteInternal('\\').WriteInternal('a');
                         break;
                     case '\v':
-                        WriteInternal('\\');
-                        WriteInternal('v');
+                        WriteInternal('\\').WriteInternal('v');
                         break;
                     case '\0':
-                        WriteInternal('\\');
-                        WriteInternal('0');
+                        WriteInternal('\\').WriteInternal('0');
                         break;
                     default:
                         if (IsLatin1Printable(ch) || Settings.AllCharacters)
@@ -351,8 +345,7 @@ namespace PropertiesDotNet.Core
                         }
                         else
                         {
-                            WriteInternal('\\');
-                            WriteInternal(ch == '\n' ? 'n' : 'r');
+                            WriteInternal('\\').WriteInternal(ch == '\n' ? 'n' : 'r');
                             newLine = false;
                         }
                         break;
@@ -360,26 +353,20 @@ namespace PropertiesDotNet.Core
                     case ' ':
                     case '\f':
                         if (key || newLine || i == 0)
-                        {
-                            WriteInternal('\\');
-                            WriteInternal(ch == ' ' ? ch : (ch == '\t' ? 't' : 'f'));
-                        }
+                            WriteInternal('\\').WriteInternal(ch == ' ' ? ch : (ch == '\t' ? 't' : 'f'));
                         else WriteInternal(ch);
 
                         newLine = false;
                         break;
 
                     case '\a':
-                        WriteInternal('\\');
-                        WriteInternal('a');
+                        WriteInternal('\\').WriteInternal('a');
                         break;
                     case '\v':
-                        WriteInternal('\\');
-                        WriteInternal('v');
+                        WriteInternal('\\').WriteInternal('v');
                         break;
                     case '\0':
-                        WriteInternal('\\');
-                        WriteInternal('0');
+                        WriteInternal('\\').WriteInternal('0');
                         break;
 
                     case '#':
@@ -402,8 +389,7 @@ namespace PropertiesDotNet.Core
                         break;
 
                     case '\\':
-                        WriteInternal('\\');
-                        WriteInternal('\\');
+                        WriteInternal('\\').WriteInternal('\\');
                         newLine = false;
                         break;
 
@@ -454,8 +440,7 @@ namespace PropertiesDotNet.Core
                 }
                 else if (index + 1 < text.Length && char.IsLowSurrogate(text[index + 1]))
                 {
-                    WriteInternal('\\');
-                    WriteInternal('U');
+                    WriteInternal('\\').WriteInternal('U');
                     // TODO: Test perf
                     WriteInternal(char.ConvertToUtf32(text[index], text[++index]).ToString("X8", CultureInfo.InvariantCulture));
                 }
@@ -468,8 +453,7 @@ namespace PropertiesDotNet.Core
             // 4-number escape
             else
             {
-                WriteInternal('\\');
-                WriteInternal('u');
+                WriteInternal('\\').WriteInternal('u');
                 // TODO: Test perf
                 WriteInternal(((ushort)text[index]).ToString("X4", CultureInfo.InvariantCulture));
             }
@@ -488,21 +472,24 @@ namespace PropertiesDotNet.Core
             }
         }
 
-        private void WriteInternal(char value)
+        private PropertiesWriter WriteInternal(char value)
         {
             _textPool.Append(value);
             _cursor.AdvanceColumn(value == '\t' ? 4 : 1);
+            return this;
         }
 
-        private void WriteInternal(string? value)
+        private PropertiesWriter WriteInternal(string? value)
         {
             if (string.IsNullOrEmpty(value))
-                return;
+                return this;
 
             for (int i = 0; i < value!.Length; i++)
             {
                 WriteInternal(value[i]);
             }
+
+            return this;
         }
 
 #if !NET35 && !NET40

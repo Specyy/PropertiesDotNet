@@ -236,7 +236,8 @@ namespace PropertiesDotNet.Core
             else
             {
                 _state = EndOfStream ? ReaderState.End : ReaderState.Start;
-                Token = new PropertiesToken(PropertiesTokenType.Value, _textPool.ToString());
+                Token = new PropertiesToken(PropertiesTokenType.Value,
+                    Token.Type == PropertiesTokenType.Key && _textPool.Length == 0 ? null : _textPool.ToString());
 
                 if (_state == ReaderState.End)
                     ReadToken();

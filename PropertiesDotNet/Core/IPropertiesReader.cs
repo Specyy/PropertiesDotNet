@@ -69,8 +69,7 @@ namespace PropertiesDotNet.Core
         public static PropertiesToken Read(this IPropertiesReader reader)
         {
             var token = reader.Token;
-            reader.MoveNext();
-            return token.Type == PropertiesTokenType.None ? reader.Read() : token;
+            return reader.MoveNext() && token.Type == PropertiesTokenType.None ? reader.Read() : token;
         }
 
         /// <summary>
