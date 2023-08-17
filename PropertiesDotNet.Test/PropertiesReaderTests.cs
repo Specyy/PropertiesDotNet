@@ -198,7 +198,7 @@ namespace PropertiesDotNet.Test
         [Test]
         public void UnsafePropertiesReader_ShouldReadCommentsByDefault()
         {
-            using var reader = new UnsafePropertiesReader(CommentsFile);
+            using var reader = new UnsafePropertiesReader(File.ReadAllText(CommentsFile));
 
             AssertTokenTypesEqual(
                 reader,
@@ -209,7 +209,7 @@ namespace PropertiesDotNet.Test
         [Test]
         public void UnsafePropertiesReader_ShouldRetrieveCommentData()
         {
-            using var reader = new UnsafePropertiesReader(CommentsFile);
+            using var reader = new UnsafePropertiesReader(File.ReadAllText(CommentsFile));
 
             AssertTokensEqual(
                 reader,
@@ -240,7 +240,7 @@ namespace PropertiesDotNet.Test
         [Test]
         public void UnsafePropertiesReader_ShouldNotTranslateEscapes()
         {
-            using var reader = new UnsafePropertiesReader(CommentEscapesFile,
+            using var reader = new UnsafePropertiesReader(File.ReadAllText(CommentEscapesFile),
                 new PropertiesReaderSettings()
                 {
                     AllUnicodeEscapes = true
@@ -259,14 +259,14 @@ namespace PropertiesDotNet.Test
         [Theory]
         public void UnsafePropertiesReader_ShouldNotReadOnEmptyDocument()
         {
-            using var reader = new UnsafePropertiesReader(EmptyFile);
+            using var reader = new UnsafePropertiesReader(File.ReadAllText(EmptyFile));
             AssertEnd(reader);
         }
 
         [Theory]
         public void UnsafePropertiesReader_VerifyTokensOnValuesWithLineBreaks()
         {
-            using var reader = new UnsafePropertiesReader(LineBreaksFile);
+            using var reader = new UnsafePropertiesReader(File.ReadAllText(LineBreaksFile));
 
             AssertTokensEqual(
                 reader,
@@ -280,7 +280,7 @@ namespace PropertiesDotNet.Test
         [Theory]
         public void UnsafePropertiesReader_VerifyTokensOnSample1()
         {
-            using var reader = new UnsafePropertiesReader(Sample1File);
+            using var reader = new UnsafePropertiesReader(File.ReadAllText(Sample1File));
 
             AssertTokensEqual(
                 reader,
@@ -302,7 +302,7 @@ namespace PropertiesDotNet.Test
         [Theory]
         public void UnsafePropertiesReader_VerifyTokensOnSample2()
         {
-            using var reader = new UnsafePropertiesReader(Sample2File,
+            using var reader = new UnsafePropertiesReader(File.ReadAllText(Sample2File),
                 new PropertiesReaderSettings()
                 {
                     AllCharacters = true
