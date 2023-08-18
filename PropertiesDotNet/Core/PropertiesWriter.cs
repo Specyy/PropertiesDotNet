@@ -140,9 +140,9 @@ namespace PropertiesDotNet.Core
             return true;
         }
 
-        private bool WriteCommentInternal(string value, int fallbackStartIndex, in StreamMark fallbackMark)
+        private bool WriteCommentInternal(string? value, int fallbackStartIndex, in StreamMark fallbackMark)
         {
-            for (int i = 0; i < value.Length; i++)
+            for (int i = 0; i < value?.Length; i++)
             {
                 char ch = value[i];
                 switch (ch)
@@ -158,7 +158,6 @@ namespace PropertiesDotNet.Core
                         break;
                     case '\f':
                         WriteInternal('\\').WriteInternal('f');
-                        ;
                         break;
                     case '\a':
                         WriteInternal('\\').WriteInternal('a');
