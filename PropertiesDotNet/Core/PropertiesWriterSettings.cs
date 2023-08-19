@@ -51,7 +51,7 @@ namespace PropertiesDotNet.Core
         public virtual uint FlushInterval
         {
             get => _flushInterval;
-            set => _flushInterval = value > 0 ? throw new ArgumentException(nameof(value)) : value;
+            set => _flushInterval = value > 0 ? value : throw new ArgumentException("Flush interval must be greater than 0", nameof(value));
         }
 
         private uint _flushInterval = 10;

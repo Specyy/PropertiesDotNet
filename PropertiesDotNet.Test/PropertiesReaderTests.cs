@@ -2,19 +2,19 @@
 
 namespace PropertiesDotNet.Test
 {
+    [TestFixture]
     public class PropertiesReaderTests
     {
         #region Samples
-        public string EmptyFile;
-        public string CommentsFile;
-        public string CommentEscapesFile;
-        public string LineBreaksFile;
-        public string Sample1File;
-        public string Sample2File;
+        public static readonly string EmptyFile;
+        public static readonly string CommentsFile;
+        public static readonly string CommentEscapesFile;
+        public static readonly string LineBreaksFile;
+        public static readonly string Sample1File;
+        public static readonly string Sample2File;
         #endregion
 
-        [OneTimeSetUp]
-        public void SetUp()
+        static PropertiesReaderTests()
         {
             string assemblyPath = Directory.GetParent(Assembly.GetExecutingAssembly().Location)!.FullName;
             string testDataDir = Path.Combine(assemblyPath, "data");
@@ -72,7 +72,7 @@ namespace PropertiesDotNet.Test
 
         
         [Test]
-        public void PropertiesReader_ShouldNotTranslateEscapes()
+        public void PropertiesReader_ShouldNotTranslateEscapesInComments()
         {
             using var reader = new PropertiesReader(CommentEscapesFile,
                 new PropertiesReaderSettings()
@@ -238,7 +238,7 @@ namespace PropertiesDotNet.Test
         }
 
         [Test]
-        public void UnsafePropertiesReader_ShouldNotTranslateEscapes()
+        public void UnsafePropertiesReader_ShouldNotTranslateEscapesInComments()
         {
             using var reader = new UnsafePropertiesReader(File.ReadAllText(CommentEscapesFile),
                 new PropertiesReaderSettings()
