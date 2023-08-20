@@ -17,7 +17,7 @@ namespace PropertiesDotNet.Utils
 #if !NETSTANDARD1_3
     [Serializable]
 #endif
-    internal class OrderedDictionary<TKey, TValue> : IDictionary<TKey, TValue> where TKey : notnull
+    internal class OrderedDictionary<TKey, TValue> : IDictionary, IDictionary<TKey, TValue> where TKey : notnull
     {
         // Do not serialize the dictionary, only the list and load the
         // data from the list
@@ -46,7 +46,23 @@ namespace PropertiesDotNet.Utils
         /// <summary>
         /// Gets a value indicating whether read is only.
         /// </summary>
-        public bool IsReadOnly => false;
+        public bool IsReadOnly => ((IDictionary)_dictionary).IsReadOnly;
+
+        /// <inheritdoc/>
+        public bool IsFixedSize => ((IDictionary)_dictionary).IsFixedSize;
+
+        /// <inheritdoc/>
+        ICollection IDictionary.Keys => ((IDictionary)_dictionary).Keys;
+
+        /// <inheritdoc/>
+        ICollection IDictionary.Values => ((IDictionary)_dictionary).Values;
+
+        /// <inheritdoc/>
+        public bool IsSynchronized => ((IDictionary)_dictionary).IsSynchronized;
+
+        /// <inheritdoc/>
+        public object SyncRoot => ((IDictionary)_dictionary).SyncRoot;
+
 
         /// <summary>
         /// Creates a new <see cref="OrderedDictionary{TKey, TValue}"/>.
@@ -130,11 +146,17 @@ namespace PropertiesDotNet.Utils
 
         public bool Remove(KeyValuePair<TKey, TValue> item) => Remove(item.Key);
 
-        public void RemoveAt(int index)
+        public bool RemoveAt(int index)
         {
-            var key = _list[index].Key;
-            _dictionary.Remove(key);
-            _list.RemoveAt(index);
+            if (index < Count)
+            {
+                var key = _list[index].Key;
+                _dictionary.Remove(key);
+                _list.RemoveAt(index);
+                return true;
+            }
+
+            return false;
         }
 
         /// <inheritdoc/>
@@ -157,6 +179,17 @@ namespace PropertiesDotNet.Utils
         }
 #endif
 
+        public void Add(object key, object? value) => Add((TKey)key, (TValue)value);
+
+        public bool Contains(object key) => Contains((TKey)key);
+
+        IDictionaryEnumerator IDictionary.GetEnumerator() => new DictionaryEnumerator(GetEnumerator());
+
+        public void Remove(object key) => Remove((TKey)key);
+
+        public void CopyTo(Array array, int index) => ((IDictionary)_dictionary).CopyTo(array, index);
+
+        /// <inheritdoc/>
         public TValue this[TKey key]
         {
             get => _dictionary[key];
@@ -173,6 +206,13 @@ namespace PropertiesDotNet.Utils
                     Add(key, value);
                 }
             }
+        }
+
+        /// <inheritdoc/>
+        public object? this[object key]
+        {
+            get => ((IDictionary)_dictionary)[key];
+            set => ((IDictionary)_dictionary)[key] = value;
         }
 
         public KeyValuePair<TKey, TValue> this[int index]
@@ -200,10 +240,7 @@ namespace PropertiesDotNet.Utils
 
             public bool Contains(TKey item) => _orderedDictionary._dictionary.ContainsKey(item);
 
-            public KeyCollection(OrderedDictionary<TKey, TValue> orderedDictionary)
-            {
-                _orderedDictionary = orderedDictionary;
-            }
+            public KeyCollection(OrderedDictionary<TKey, TValue> orderedDictionary) => _orderedDictionary = orderedDictionary;
 
             public void CopyTo(TKey[] array, int arrayIndex)
             {
@@ -233,10 +270,7 @@ namespace PropertiesDotNet.Utils
 
             public bool Contains(TValue item) => _orderedDictionary._dictionary.ContainsValue(item);
 
-            public ValueCollection(OrderedDictionary<TKey, TValue> orderedDictionary)
-            {
-                _orderedDictionary = orderedDictionary;
-            }
+            public ValueCollection(OrderedDictionary<TKey, TValue> orderedDictionary) => _orderedDictionary = orderedDictionary;
 
             public void CopyTo(TValue[] array, int arrayIndex)
             {
@@ -250,6 +284,22 @@ namespace PropertiesDotNet.Utils
             public bool Remove(TValue item) => throw new NotSupportedException();
 
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        }
+
+        private class DictionaryEnumerator : IDictionaryEnumerator
+        {
+            public DictionaryEntry Entry => new DictionaryEntry(Key, Value);
+            public object Key => _enumerator.Current.Key;
+            public object Value => _enumerator.Current.Value;
+            public object Current => Entry;
+
+            private readonly IEnumerator<KeyValuePair<TKey, TValue>> _enumerator;
+
+            public DictionaryEnumerator(IEnumerator<KeyValuePair<TKey, TValue>> enumerator) => _enumerator = enumerator;
+
+            public bool MoveNext() => _enumerator.MoveNext();
+
+            public void Reset() => _enumerator.Reset();
         }
     }
 }

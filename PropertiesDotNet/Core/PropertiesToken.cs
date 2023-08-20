@@ -63,16 +63,6 @@ namespace PropertiesDotNet.Core
         /// <summary>
         /// Checks if these <see cref="PropertiesToken"/>s are equal.
         /// </summary>
-        /// <param name="other">The <see cref="PropertiesToken"/> to check.</param>
-        /// <returns>true if they are equal; false otherwise.</returns>
-        public bool Equals(in PropertiesToken other)
-        {
-            return Type == other.Type && Text == other.Text;
-        }
-
-        /// <summary>
-        /// Checks if these <see cref="PropertiesToken"/>s are equal.
-        /// </summary>
         /// <param name="token">The first token.</param>
         /// <param name="other">The <see cref="PropertiesToken"/> to check.</param>
         /// <returns>true if they are equal; false otherwise.</returns>

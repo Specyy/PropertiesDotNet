@@ -7,7 +7,7 @@ namespace PropertiesDotNet.ObjectModel
     /// <summary>
     /// Represents a property within a ".properties" document.
     /// </summary>
-    public class PropertiesProperty : IEquatable<PropertiesProperty>
+    public class PropertiesProperty : IEquatable<PropertiesProperty>, IEquatable<KeyValuePair<string, string?>>
     {
         /// <summary>
         /// The key for this property. This cannot be <see langword="null"/> or empty.
@@ -23,6 +23,7 @@ namespace PropertiesDotNet.ObjectModel
         /// <summary>
         /// The value assigner for this property. This must be '=', ':' or any type of white-space.
         /// </summary>
+        /// <remarks>The value may be \0 on a property with an empty value.</remarks>
         /// <exception cref="ArgumentException">If the value is not '=', ':' or any type of white-space.</exception>
         public virtual char Assigner
         {
@@ -40,7 +41,9 @@ namespace PropertiesDotNet.ObjectModel
                         break;
 
                     default:
-                        throw new ArgumentException("Assigner must be '=', ':' or any type of white-space!");
+                        _assigner = (value == default && Value is null) ?
+                            (char)default : throw new ArgumentException("Assigner must be '=', ':' or any type of white-space");
+                        break;
                 }
             }
         }
@@ -50,7 +53,29 @@ namespace PropertiesDotNet.ObjectModel
         /// <summary>
         /// The value of this property. This can be <see langword="null"/>.
         /// </summary>
-        public virtual string? Value { get; set; }
+        public virtual string? Value
+        {
+            get => _value;
+            set
+            {
+                if (Assigner == default && value != null)
+                    Assigner = '=';
+
+                _value = value;
+            }
+        }
+
+        private string? _value;
+
+        /// <summary>
+        /// Creates a new properties document property.
+        /// </summary>
+        /// <param name="value">The key-value pair for this property.</param>
+        /// <exception cref="ArgumentException">If the key is <see langword="null"/> empty.</exception>
+        public PropertiesProperty(KeyValuePair<string, string?> value) : this(value.Key, value.Value)
+        {
+
+        }
 
         /// <summary>
         /// Creates a new properties document property.
@@ -60,7 +85,8 @@ namespace PropertiesDotNet.ObjectModel
         /// <exception cref="ArgumentException">If the key is <see langword="null"/> empty.</exception>
         public PropertiesProperty(string key, string? value) : this(key, '=', value)
         {
-
+            if (value is null)
+                _assigner = default;
         }
 
         /// <summary>
@@ -74,7 +100,7 @@ namespace PropertiesDotNet.ObjectModel
         public PropertiesProperty(string key, char assigner, string? value)
         {
             if (string.IsNullOrEmpty(key))
-                throw new ArgumentException("Key cannot be null or empty!", nameof(key));
+                throw new ArgumentException("Key cannot be null or empty", nameof(key));
 
             Key = key;
             Assigner = assigner;
@@ -94,6 +120,16 @@ namespace PropertiesDotNet.ObjectModel
         }
 
         /// <summary>
+        /// Adds a comment to this property.
+        /// </summary>
+        /// <param name="comment">The text value of the comment.</param>
+        public virtual void AddComment(string comment)
+        {
+            Comments ??= new List<string>();
+            Comments.Add(comment);
+        }
+
+        /// <summary>
         /// Returns this property as it would be written within a ".properties" document.
         /// </summary>
         /// <returns>This property as it would be written within a ".properties" document</returns>
@@ -105,24 +141,27 @@ namespace PropertiesDotNet.ObjectModel
                 for (int i = 0; i < Comments.Count; i++)
                     sb.Append('#').Append(' ').AppendLine(Comments[i]);
 
-                sb.Append($"{Key}{_assigner}{Value}");
+                sb.Append($"{Key}{(Assigner == default ? string.Empty : Assigner.ToString())}{Value}");
                 return sb.ToString();
             }
 
-            return $"{Key}{_assigner}{Value}";
+            return $"{Key}{(Assigner == default ? string.Empty : Assigner.ToString())}{Value}";
         }
 
         /// <inheritdoc/>
         public override int GetHashCode() => ToString().GetHashCode();
 
         /// <summary>
-        /// Whether this property has the same key and value as specified.
+        /// Whether this property is equal to the specified property.
         /// </summary>
         /// <param name="other">The other </param>
-        /// <returns>true if this property has the same key and value as specified; false otherwise.</returns>
+        /// <returns>true if this property is equal to the specified property; false otherwise.</returns>
         public virtual bool Equals(PropertiesProperty? other)
         {
             if (!Equals(other?.Key, other?.Value))
+                return false;
+
+            if (Assigner != other?.Assigner)
                 return false;
 
             if (Comments?.Count != other?.Comments?.Count)
@@ -153,6 +192,9 @@ namespace PropertiesDotNet.ObjectModel
 
             return Equals(obj as PropertiesProperty);
         }
+
+        /// <inheritdoc/>
+        public virtual bool Equals(KeyValuePair<string, string?> other) => Equals(other.Key, other.Value);
 
         /// <summary>
         /// Returns this property as it would be written within a ".properties" document.

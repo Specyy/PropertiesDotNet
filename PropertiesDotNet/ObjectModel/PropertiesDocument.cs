@@ -2,8 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
-using System.Runtime.InteropServices.ComTypes;
+using System.Linq;
 
 using PropertiesDotNet.Core;
 using PropertiesDotNet.Utils;
@@ -13,7 +14,7 @@ namespace PropertiesDotNet.ObjectModel
     /// <summary>
     /// Represents a ".properties" document.
     /// </summary>
-    public class PropertiesDocument : IEnumerable<PropertiesProperty>, IEnumerable
+    public class PropertiesDocument : IDictionary, IDictionary<string, string?>, IEnumerable<PropertiesProperty>, IEnumerable
     {
         private readonly OrderedDictionary<string, PropertiesProperty> _properties;
 
@@ -37,7 +38,7 @@ namespace PropertiesDotNet.ObjectModel
         public PropertiesDocument(params KeyValuePair<string, string?>[] properties) : this()
         {
             for (var i = 0; i < properties.Length; i++)
-                AddProperty(properties[i]);
+                Add(properties[i]);
         }
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace PropertiesDotNet.ObjectModel
         public PropertiesDocument(IDictionary<string, string?> properties) : this()
         {
             foreach (var property in properties)
-                AddProperty(property);
+                Add(property);
         }
 
         /// <summary>
@@ -57,7 +58,7 @@ namespace PropertiesDotNet.ObjectModel
         public PropertiesDocument(IEnumerable<PropertiesProperty> properties) : this()
         {
             foreach (PropertiesProperty property in properties)
-                AddProperty(property);
+                Add(property);
         }
 
         /// <summary>
@@ -189,7 +190,7 @@ namespace PropertiesDotNet.ObjectModel
                     case PropertiesTokenType.Key:
                         string key = token.Text!;
 
-                        char assigner = '=';
+                        char assigner = default;
 
                         if (reader.MoveNext() && (token = reader.Token).Type == PropertiesTokenType.Assigner)
                         {
@@ -200,10 +201,13 @@ namespace PropertiesDotNet.ObjectModel
                         if ((token = reader.Token).Type != PropertiesTokenType.Value)
                             throw new PropertiesException($"Missing value for key \"{key}\"!");
 
+                        var property = assigner == default ?
+                            new PropertiesProperty(key, token.Text) : new PropertiesProperty(key, assigner, token.Text);
+
                         if (@override)
-                            SetProperty(new PropertiesProperty(key, assigner, token.Text));
+                            SetProperty(property);
                         else
-                            AddProperty(new PropertiesProperty(key, assigner, token.Text));
+                            Add(property);
                         break;
 
                     case PropertiesTokenType.Error:
@@ -230,26 +234,16 @@ namespace PropertiesDotNet.ObjectModel
         /// <param name="value">The property value.</param>
         public virtual void AddProperty(string key, string? value)
         {
-            AddProperty(new PropertiesProperty(key, value));
+            Add(new PropertiesProperty(key, value));
         }
 
         /// <summary>
         /// Adds the specified property to this document, if it does not already contain a property with the same key.
         /// </summary>
         /// <param name="property">The property to add.</param>
-        public virtual void AddProperty(PropertiesProperty property)
+        public virtual void Add(PropertiesProperty property)
         {
             _properties.Add(property.Key, property);
-        }
-
-        /// <summary>
-        /// Sets the specified property within this document; overrides if a property with the same key already exists.
-        /// </summary>
-        /// <param name="key">The property key.</param>
-        /// <param name="value">The property value.</param>
-        public virtual void SetProperty(string key, string? value)
-        {
-            SetProperty(new PropertiesProperty(key, value));
         }
 
         /// <summary>
@@ -458,7 +452,28 @@ namespace PropertiesDotNet.ObjectModel
         /// </summary>
         /// <param name="property">The property to check for.</param>
         /// <returns>Whether this document contains the specified property.</returns>
-        public virtual bool ContainsProperty(PropertiesProperty property) => ContainsKey(property.Key);
+        public virtual bool Contains(PropertiesProperty property) => TryGetProperty(property.Key, out var prop) && prop.Equals(property);
+
+        /// <summary>
+        /// Removes the property with the specified <paramref name="key"/> from this document.
+        /// </summary>
+        /// <param name="key">The property key.</param>
+        /// <returns>true if the property was removed; false otherwise.</returns>
+        public virtual bool Remove(string key) => _properties.Remove(key);
+
+        /// <summary>
+        /// Removes the specified property from this document.
+        /// </summary>
+        /// <param name="property">The property to remove.</param>
+        /// <returns>true if the property was removed; false otherwise.</returns>
+        public virtual bool Remove(PropertiesProperty property) => TryGetProperty(property.Key, out var prop) && prop.Equals(property) && Remove(prop);
+
+        /// <summary>
+        /// Removes the property at the specified <paramref name="index"/>.
+        /// </summary>
+        /// <param name="index">The index of the property to remove.</param>
+        /// <returns>true if the property was removed; false otherwise.</returns>
+        public virtual bool RemoveAt(int index) => _properties.RemoveAt(index);
 
         /// <summary>
         /// Gets or sets the specified property.
@@ -469,7 +484,7 @@ namespace PropertiesDotNet.ObjectModel
         public virtual string? this[string key]
         {
             get => GetValue(key);
-            set => SetProperty(key, value);
+            set => _properties[key] = new PropertiesProperty(key, value);
         }
 
         /// <summary>
@@ -492,7 +507,7 @@ namespace PropertiesDotNet.ObjectModel
         public virtual void Save(string path, bool timestamp = true)
         {
             using var fileStream = File.OpenWrite(path);
-            Save(fileStream);
+            Save(fileStream, timestamp);
         }
 
         /// <summary>
@@ -503,7 +518,7 @@ namespace PropertiesDotNet.ObjectModel
         public virtual void Save(Stream stream, bool timestamp = true)
         {
             using var writer = new PropertiesWriter(stream);
-            Save(writer);
+            Save(writer, timestamp);
         }
 
         /// <summary>
@@ -514,7 +529,7 @@ namespace PropertiesDotNet.ObjectModel
         public virtual void Save(TextWriter writer, bool timestamp = true)
         {
             using var pWriter = new PropertiesWriter(writer);
-            Save(pWriter);
+            Save(pWriter, timestamp);
         }
 
         /// <summary>
@@ -527,7 +542,7 @@ namespace PropertiesDotNet.ObjectModel
             if (timestamp)
             {
                 // TODO: Output timezone abbreviation
-                writer.Write(new PropertiesToken(PropertiesTokenType.Comment, DateTime.Now.ToString($"ddd MMM dd HH:mm:ss '{TimeZoneInfo.Local.DisplayName.Substring(1, 9)}' yyyy")));
+                writer.Write(new PropertiesToken(PropertiesTokenType.Comment, DateTime.Now.ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)));
             }
 
             for (int i = 0; i < _properties.Count; i++)
@@ -539,11 +554,64 @@ namespace PropertiesDotNet.ObjectModel
                     writer.Write(new PropertiesToken(PropertiesTokenType.Comment, prop.Comments[j]));
 
                 writer.Write(new PropertiesToken(PropertiesTokenType.Key, prop.Key));
-                writer.Write(new PropertiesToken(PropertiesTokenType.Assigner, prop.Assigner.ToString()));
+
+                if (prop.Assigner == default && prop.Value != null)
+                {
+                    throw new PropertiesException($"Value must be null for property with null assigner ({prop})");
+                }
+                else
+                {
+                    writer.Write(new PropertiesToken(PropertiesTokenType.Assigner, prop.Assigner.ToString()));
+                }
+
                 writer.Write(new PropertiesToken(PropertiesTokenType.Value, prop.Value));
             }
 
             writer.Flush();
+        }
+
+        #region Interfaces
+        /// <inheritdoc/>
+        public virtual ICollection<string> Keys => _properties.Keys;
+
+        /// <inheritdoc/>
+        public virtual ICollection<string?> Values => _properties.Values.Select(prop => prop.Value).ToList();
+
+        /// <inheritdoc/>
+        public virtual bool IsReadOnly => ((IDictionary)_properties).IsReadOnly;
+
+        /// <inheritdoc/>
+        public virtual bool IsFixedSize => ((IDictionary)_properties).IsFixedSize;
+
+        /// <inheritdoc/>
+        ICollection IDictionary.Keys => ((IDictionary)_properties).Keys;
+
+        /// <inheritdoc/>
+        ICollection IDictionary.Values => (List<string?>)Values;
+
+        /// <inheritdoc/>
+        public virtual bool IsSynchronized => ((IDictionary)_properties).IsSynchronized;
+
+        /// <inheritdoc/>
+        public virtual object SyncRoot => ((IDictionary)_properties).SyncRoot;
+
+        /// <inheritdoc/>
+        public object? this[object key]
+        {
+            get
+            {
+                if (key is int index)
+                    return this[index];
+
+                return this[key!.ToString()];
+            }
+            set
+            {
+                if (key is int index)
+                    this[index] = (PropertiesProperty)value;
+
+                this[key!.ToString()] = value?.ToString();
+            }
         }
 
         /// <inheritdoc/>
@@ -551,5 +619,64 @@ namespace PropertiesDotNet.ObjectModel
 
         /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        /// <inheritdoc/>
+        public virtual void Add(string key, string? value) => AddProperty(key, value);
+
+        /// <inheritdoc/>
+        public virtual void Add(KeyValuePair<string, string?> item) => AddProperty(item.Key, item.Value);
+
+        /// <inheritdoc/>
+        public virtual bool Contains(KeyValuePair<string, string?> item) => TryGetValue(item.Key, out var value) && item.Value == value;
+
+        /// <inheritdoc/>
+        public virtual void CopyTo(KeyValuePair<string, string?>[] array, int arrayIndex)
+        {
+            var temp = new KeyValuePair<string, string?>[Count];
+
+            for (int i = 0; i < temp.Length; i++)
+                temp[i] = this[i];
+
+            Array.Copy(temp, 0, array, arrayIndex, temp.Length);
+        }
+
+        /// <inheritdoc/>
+        public virtual bool Remove(KeyValuePair<string, string?> item) => Remove((PropertiesProperty)item);
+
+        /// <inheritdoc/>
+        IEnumerator<KeyValuePair<string, string?>> IEnumerable<KeyValuePair<string, string?>>.GetEnumerator() => _properties.Cast<KeyValuePair<string, string?>>().GetEnumerator();
+
+        /// <inheritdoc/>
+        public virtual void Add(object key, object? value) => AddProperty(key.ToString(), value?.ToString());
+
+        /// <inheritdoc/>
+        public virtual bool Contains(object key)
+        {
+            if (key is KeyValuePair<string, string?> pair)
+                return Contains(pair);
+
+            if (key is PropertiesProperty prop)
+                return Contains(prop);
+
+            return ContainsKey(key!.ToString());
+        }
+
+        /// <inheritdoc/>
+        IDictionaryEnumerator IDictionary.GetEnumerator() => ((IDictionary)_properties).GetEnumerator();
+
+        /// <inheritdoc/>
+        public virtual void Remove(object key)
+        {
+            if (key is KeyValuePair<string, string?> pair)
+                Remove(pair);
+            else if (key is PropertiesProperty prop)
+                Remove(prop);
+            else
+                Remove(key!.ToString());
+        }
+
+        /// <inheritdoc/>
+        public void CopyTo(Array array, int index) => CopyTo((KeyValuePair<string, string?>[])array, index);
+        #endregion
     }
 }
