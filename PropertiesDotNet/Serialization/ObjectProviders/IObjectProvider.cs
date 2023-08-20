@@ -14,9 +14,9 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
     internal delegate object ObjectConstructor(object?[]? args);
 
     /// <summary>
-    /// Represents a provider where specific object types can be created. Object providers are only
-    /// responsible for the creation of non-serializable types.
+    /// Represents a factory or provider where specific object types can be created.
     /// </summary>
+    /// <remarks>Object providers are only responsible for the creation of non-serializable types.</remarks>
     public interface IObjectProvider
     {
         /// <summary>
@@ -81,7 +81,7 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
         /// <param name="args">The constructor arguments.</param>
         /// <typeparam name="T">The type to construct.</typeparam>
         /// <returns>A new instance of the specified <typeparamref name="T"/>. This instance is empty.</returns>
-        public static T Construct<T>(this IObjectProvider provider, object?[]? args) where T : notnull => (T)provider.Construct(typeof(T), args);
+        public static T Construct<T>(this IObjectProvider provider, params object?[]? args) where T : notnull => (T)provider.Construct(typeof(T), args);
 
         /// <summary>
         /// Creates a new instance of the specified <typeparamref name="T"/> using the default constructor.
@@ -127,7 +127,7 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
 #if NETSTANDARD1_3
             return obj.TypeHandle.GetHashCode();
 #else
-            return obj.UnderlyingSystemType.GetHashCode();
+            return obj.GetHashCode();
 #endif
         }
 

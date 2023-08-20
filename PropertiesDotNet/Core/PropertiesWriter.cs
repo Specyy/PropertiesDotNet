@@ -258,6 +258,7 @@ namespace PropertiesDotNet.Core
             if (_state != WriterState.ValueOrAssigner && _state != WriterState.Value)
                 return Settings.ThrowOnError ? throw new PropertiesException($"Expected {StateToString(_state)} got Value!") : false;
 
+            // Fast path & for empty properties
             if (string.IsNullOrEmpty(value))
             {
                 _state = WriterState.CommentOrKey;
@@ -463,6 +464,8 @@ namespace PropertiesDotNet.Core
         /// <inheritdoc/>
         public void Flush()
         {
+            _flushCounter = 0;
+
             if (_textPool?.Length > 0)
             {
                 _stream.Write(_textPool.ToString());
@@ -510,7 +513,6 @@ namespace PropertiesDotNet.Core
             if ((_flushCounter = Settings.AutoFlush ? _flushCounter + 1 : 0) == Settings.FlushInterval)
             {
                 Flush();
-                _flushCounter = 0;
                 return true;
             }
 

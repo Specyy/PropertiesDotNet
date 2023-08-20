@@ -32,7 +32,7 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
         /// <inheritdoc/>
         public object Construct(Type type, Type[]? argTypes, object?[]? args)
         {
-            if (type.IsAbstract())
+            if (type.IsAbstract() || type.IsInterface())
                 throw new ArgumentException($"Cannot create instance of type: {type?.FullName ?? "null"}");
 
             if ((argTypes?.Length ?? 0) != (args?.Length ?? 0))

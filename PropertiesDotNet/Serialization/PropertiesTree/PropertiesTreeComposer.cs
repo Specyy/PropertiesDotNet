@@ -226,7 +226,7 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
 
                     AddComments(prop, node);
 
-                    doc.AddProperty(prop);
+                    doc.Add(prop);
                 }
                 else if (node is PropertiesObject objNode)
                 {

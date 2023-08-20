@@ -69,46 +69,47 @@ namespace PropertiesDotNet.Serialization
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
     public sealed class PropertiesCommentAttribute : Attribute
     {
-        /// <summary>
-        /// The comment handle to be used, if applicable.
-        /// </summary>
-        public char? Handle
-        {
-            get => _handle;
-            set => _handle = value.HasValue ?
-                (value.Value == '#' || value.Value == '!' ? value : throw new PropertiesException("Command handle must be '#' or '!'")) : null;
-        }
+        ///// <summary>
+        ///// The comment handle to be used, if applicable.
+        ///// </summary>
+        //public char? Handle
+        //{
+        //    get => _handle;
+        //    set => _handle = value.HasValue ?
+        //        (value.Value == '#' || value.Value == '!' ? value : throw new PropertiesException("Command handle must be '#' or '!'")) : null;
+        //}
 
-        private char? _handle;
+        //private char? _handle;
 
         /// <summary>
         /// The content of this comment.
         /// </summary>
         public string Comment { get; set; }
 
-        /// <summary>
-        /// Instructs the <see cref="Converters.ObjectConverter"/> that this comment should be written above this member.
-        /// </summary>
-        /// <param name="handle">The comment handle to be used, if applicable.</param>
-        /// <param name="comment">The content of this comment.</param>
-        public PropertiesCommentAttribute(char handle, string comment)
-        {
-            Handle = handle;
-            Comment = comment;
-        }
+        ///// <summary>
+        ///// Instructs the <see cref="Converters.ObjectConverter"/> that this comment should be written above this member.
+        ///// </summary>
+        ///// <param name="handle">The comment handle to be used, if applicable.</param>
+        ///// <param name="comment">The content of this comment.</param>
+        //public PropertiesCommentAttribute(char handle, string comment)
+        //{
+        //    Handle = handle;
+        //    Comment = comment;
+        //}
 
         /// <summary>
         /// Instructs the <see cref="Converters.ObjectConverter"/> that this comment should be written above this member.
         /// </summary>
         /// <param name="comment">The content of this comment.</param>
-        public PropertiesCommentAttribute(string comment) : this('#', comment)
+        public PropertiesCommentAttribute(string comment)
         {
+            Comment = comment;
         }
 
         /// <summary>
         /// Returns the text content of this comment with the handle.
         /// </summary>
         /// <returns>The text content of this comment with the handle.</returns>
-        public override string ToString() => $"{Handle ?? '#'} {Comment}";
+        public override string ToString() => $"# {Comment}";
     }
 }

@@ -28,6 +28,16 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
         public PropertiesTreeNode(string name) => Name = name;
 
         /// <summary>
+        /// Adds a comment to this node.
+        /// </summary>
+        /// <param name="comment">The text value of the comment.</param>
+        public virtual void AddComment(string comment)
+        {
+            Comments ??= new List<string>();
+            Comments.Add(comment);
+        }
+
+        /// <summary>
         /// Checks whether this node is equal to the underlying node.
         /// </summary>
         /// <param name="other">The underlying node.</param>

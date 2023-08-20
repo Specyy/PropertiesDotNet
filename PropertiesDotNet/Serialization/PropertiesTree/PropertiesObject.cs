@@ -25,6 +25,25 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
         public int ChildCount => _children.Count;
 
         /// <summary>
+        /// Returns the number of children (including sub-children) within this ".properties" object.
+        /// </summary>
+        public int DeepChildCount
+        {
+            get
+            {
+                int count = ChildCount;
+
+                foreach (var child in Children)
+                {
+                    if (child is PropertiesObject @object)
+                        count += @object.DeepChildCount;
+                }
+
+                return count;
+            }
+        }
+
+        /// <summary>
         /// Creates a new object node for a ".properties" document tree.
         /// </summary>
         /// <param name="name">The name of this particular node.</param>
@@ -63,7 +82,7 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
         /// <param name="value">The value for the primitive property.</param>
         /// <returns>The property that was added.</returns>
         /// <exception cref="ArgumentException">A child node with the same name already exists.</exception>
-        public PropertiesPrimitive AddProperty(string key, string value) => AddPrimitive(key, value);
+        public PropertiesPrimitive AddProperty(string key, string? value) => AddPrimitive(key, value);
 
         /// <summary>
         /// Adds a primitive property to this object.
@@ -72,7 +91,7 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
         /// <param name="value">The value for the primitive property.</param>
         /// <returns>The property that was added.</returns>
         /// <exception cref="ArgumentException">A child node with the same name already exists.</exception>
-        public PropertiesPrimitive AddPrimitive(string key, string value)
+        public PropertiesPrimitive AddPrimitive(string key, string? value)
         {
             return Add(new PropertiesPrimitive(key, value)) as PropertiesPrimitive;
         }

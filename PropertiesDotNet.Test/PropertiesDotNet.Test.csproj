@@ -29,6 +29,7 @@
 
 	<ItemGroup>
 	  <None Remove="data\line-breaks.properties" />
+	  <None Remove="Data\object.properties" />
 	</ItemGroup>
 
 </Project>

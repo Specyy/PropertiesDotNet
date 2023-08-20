@@ -28,7 +28,7 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
         void WriteObject(PropertiesObject root, IPropertiesWriter output);
 
         /// <summary>
-        /// Creates an object that should be used as the root of the document tree.
+        /// Creates an object that is suitable as the root of a document tree.
         /// </summary>
         /// <returns>The root of a potential document tree.</returns>
         PropertiesObject CreateRoot();
