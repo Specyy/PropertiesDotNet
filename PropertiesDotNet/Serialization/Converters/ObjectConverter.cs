@@ -7,6 +7,7 @@ using PropertiesDotNet.Serialization.ObjectProviders;
 using PropertiesDotNet.Serialization.ValueProviders;
 using PropertiesDotNet.Serialization.PropertiesTree;
 using PropertiesDotNet.Utils;
+using System.Runtime.CompilerServices;
 
 namespace PropertiesDotNet.Serialization.Converters
 {
@@ -157,17 +158,10 @@ namespace PropertiesDotNet.Serialization.Converters
         private PropertiesMember? GetMember(Type type, string name)
         {
             var members = GetMembers(type);
-
-            if (members is null)
-                return null;
-
-            return members.TryGetValue(name, out var member) ? member : null;
+            return members is null ? null : (members.TryGetValue(name, out var member) ? member : null);
         }
 
-        private Dictionary<string, PropertiesMember>? GetMembers(Type type)
-        {
-            return _memberCache.TryGetValue(type, out var members) ? members : ReadMembers(type);
-        }
+        private Dictionary<string, PropertiesMember>? GetMembers(Type type) => _memberCache.TryGetValue(type, out var members) ? members : ReadMembers(type);
 
         private Dictionary<string, PropertiesMember>? ReadMembers(Type type)
         {
@@ -196,10 +190,7 @@ namespace PropertiesDotNet.Serialization.Converters
                 }
             }
 
-            if (memberCache != null)
-                _memberCache[type] = memberCache;
-
-            return memberCache;
+            return memberCache is null ? null : _memberCache[type] = memberCache;
         }
 
         private void UpdateCache(ref Dictionary<string, PropertiesMember> typeCache, PropertiesMember member)
@@ -244,6 +235,10 @@ namespace PropertiesDotNet.Serialization.Converters
             var memberAtt = Utils.TypeExtensions.GetCustomAttribute<PropertiesMemberAttribute>(field);
             if (memberAtt is null)
             {
+                // Remove k__BackingField for auto-properties
+                if (Utils.TypeExtensions.GetCustomAttribute<CompilerGeneratedAttribute>(field) != null)
+                    return null;
+
                 member = new PropertiesMember(field.Name, field.FieldType, null, field);
             }
             else
