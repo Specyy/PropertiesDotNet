@@ -441,34 +441,37 @@ namespace PropertiesDotNet.Core
         private bool WriteEscaped(string text, ref int index)
         {
             // 8-number escape
-            if (char.IsHighSurrogate(text[index]))
-            {
-                if (!Settings.AllUnicodeEscapes)
-                {
-                    int unicode = char.ConvertToUtf32(text[index], text[index + 1]);
-                    return Settings.ThrowOnError ?
-                        throw new PropertiesException($"Cannot create long unicode escape for character \"{char.ConvertFromUtf32(unicode)}\" ({unicode})!")
-                        : false;
-                }
-                else if (index + 1 < text.Length && char.IsLowSurrogate(text[index + 1]))
-                {
-                    WriteInternal('\\').WriteInternal('U');
-                    // TODO: Test perf
-                    WriteInternal(char.ConvertToUtf32(text[index], text[++index]).ToString("X8", CultureInfo.InvariantCulture));
-                }
-                else
-                {
-                    return Settings.ThrowOnError ?
-                        throw new PropertiesException("Missing low surrogate for UTF-16 character!") : false;
-                }
-            }
+            //if (char.IsHighSurrogate(text[index]))
+            //{
+            //    if (!Settings.AllUnicodeEscapes)
+            //    {
+            //        int unicode = char.ConvertToUtf32(text[index], text[index + 1]);
+            //        return Settings.ThrowOnError ?
+            //            throw new PropertiesException($"Cannot create long unicode escape for character \"{char.ConvertFromUtf32(unicode)}\" ({unicode})!")
+            //            : false;
+            //    }
+            //    else if (index + 1 < text.Length && char.IsLowSurrogate(text[index + 1]))
+            //    {
+            //        WriteInternal('\\').WriteInternal('U');
+            //        // TODO: Test perf
+            //        WriteInternal(char.ConvertToUtf32(text[index], text[++index]).ToString("X8", CultureInfo.InvariantCulture));
+            //    }
+            //    else
+            //    {
+            //        return Settings.ThrowOnError ?
+            //            throw new PropertiesException("Missing low surrogate for UTF-16 character!") : false;
+            //    }
+            //}
+            //
+            //else
+            //{
+
             // 4-number escape
-            else
-            {
-                WriteInternal('\\').WriteInternal('u');
-                // TODO: Test perf
-                WriteInternal(((ushort)text[index]).ToString("X4", CultureInfo.InvariantCulture));
-            }
+            WriteInternal('\\').WriteInternal('u');
+            // TODO: Test perf
+            WriteInternal(((ushort)text[index]).ToString("X4", CultureInfo.InvariantCulture));
+
+            //}
 
             return true;
         }
