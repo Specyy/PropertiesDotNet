@@ -31,7 +31,7 @@ namespace PropertiesDotNet.Test
         [Test]
         public void PropertiesReader_ShouldReadCommentsByDefault()
         {
-            using var reader = new PropertiesReader(CommentsFile);
+            using var reader = PropertiesReader.FromFile(CommentsFile);
 
             AssertTokenTypesEqual(
                 reader,
@@ -42,7 +42,7 @@ namespace PropertiesDotNet.Test
         [Test]
         public void PropertiesReader_ShouldRetrieveCommentData()
         {
-            using var reader = new PropertiesReader(CommentsFile);
+            using var reader = PropertiesReader.FromFile(CommentsFile);
 
             AssertTokensEqual(
                 reader,
@@ -74,7 +74,7 @@ namespace PropertiesDotNet.Test
         [Test]
         public void PropertiesReader_ShouldNotTranslateEscapesInComments()
         {
-            using var reader = new PropertiesReader(CommentEscapesFile,
+            using var reader = PropertiesReader.FromFile(CommentEscapesFile,
                 new PropertiesReaderSettings()
                 {
                     AllUnicodeEscapes = true
@@ -93,14 +93,14 @@ namespace PropertiesDotNet.Test
         [Theory]
         public void PropertiesReader_ShouldNotReadOnEmptyDocument()
         {
-            using var reader = new PropertiesReader(EmptyFile);
+            using var reader = PropertiesReader.FromFile(EmptyFile);
             AssertEnd(reader);
         }
 
         [Theory]
         public void PropertiesReader_VerifyTokensOnValuesWithLineBreaks()
         {
-            using var reader = new PropertiesReader(LineBreaksFile);
+            using var reader = PropertiesReader.FromFile(LineBreaksFile);
 
             AssertTokensEqual(
                 reader,
@@ -114,7 +114,7 @@ namespace PropertiesDotNet.Test
         [Theory]
         public void PropertiesReader_VerifyTokensOnSample1()
         {
-            using var reader = new PropertiesReader(Sample1File);
+            using var reader = PropertiesReader.FromFile(Sample1File);
 
             AssertTokensEqual(
                 reader,
@@ -136,7 +136,7 @@ namespace PropertiesDotNet.Test
         [Theory]
         public void PropertiesReader_VerifyTokensOnSample2()
         {
-            using var reader = new PropertiesReader(Sample2File,
+            using var reader = PropertiesReader.FromFile(Sample2File,
                 new PropertiesReaderSettings()
                 {
                     AllCharacters = true

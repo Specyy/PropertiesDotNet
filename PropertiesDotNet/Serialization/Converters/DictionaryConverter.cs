@@ -14,6 +14,11 @@ namespace PropertiesDotNet.Serialization.Converters
     /// </summary>
     public sealed class DictionaryConverter : IPropertiesConverter
     {
+        /// <summary>
+        /// Creates a new <see cref="DictionaryConverter"/>.
+        /// </summary>
+        public DictionaryConverter() { }
+
         /// <inheritdoc/>
         public bool Accepts(Type type)
         {

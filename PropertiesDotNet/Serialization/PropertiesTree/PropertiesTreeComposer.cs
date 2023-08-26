@@ -81,19 +81,21 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
 
             while (input.MoveNext())
             {
-                switch (input.Token.Type)
+                var token = input.Token;
+
+                switch (token.Type)
                 {
                     case PropertiesTokenType.Comment:
                     case PropertiesTokenType.Assigner:
                     case PropertiesTokenType.Value:
                         continue;
                     case PropertiesTokenType.Error:
-                        throw new PropertiesException(input.Token.Text);
+                        throw new PropertiesException(token.Text);
                     case PropertiesTokenType.Key:
-                        ReadObject(input, rootNode, input.Token.Text.Split(Delimeter));
+                        ReadObject(input, rootNode, token.Text.Split(Delimeter));
                         break;
                     default:
-                        throw new PropertiesException($"Cannot intepret token: {input.Token.Type}!");
+                        throw new PropertiesException($"Cannot intepret token: {token.Type}!");
                 }
             }
 

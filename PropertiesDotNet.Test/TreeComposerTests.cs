@@ -18,7 +18,7 @@ namespace PropertiesDotNet.Test
         [Test]
         public void PropertiesTreeComposer_ShouldReadDocumentObjects()
         {
-            using var reader = new PropertiesReader(ObjectFile);
+            using var reader = PropertiesReader.FromFile(ObjectFile);
             var composer = new PropertiesTreeComposer();
 
             var @object = composer.ReadObject(reader);

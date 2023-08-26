@@ -11,6 +11,11 @@ namespace PropertiesDotNet.Serialization.Converters
     /// </summary>
     public sealed class SystemTypeConverter : IPropertiesPrimitiveConverter
     {
+        /// <summary>
+        /// Creates a new <see cref="SystemTypeConverter"/>.
+        /// </summary>
+        public SystemTypeConverter() { }
+
         /// <inheritdoc/>
         public bool Accepts(Type type)
         {
@@ -60,9 +65,9 @@ namespace PropertiesDotNet.Serialization.Converters
                 TypeCode.UInt32 => uint.Parse(input, NumberStyles.Integer | NumberStyles.AllowExponent),
                 TypeCode.Int64 => long.Parse(input, NumberStyles.Integer | NumberStyles.AllowExponent),
                 TypeCode.UInt64 => ulong.Parse(input, NumberStyles.Integer | NumberStyles.AllowExponent),
-                TypeCode.Single => float.Parse(char.ToUpperInvariant(input[input.Length - 1]) == char.ToUpperInvariant('f') ? input.Substring(0, input.Length - 1) : input, NumberStyles.Float),
-                TypeCode.Double => double.Parse(char.ToUpperInvariant(input[input.Length - 1]) == char.ToUpperInvariant('d') ? input.Substring(0, input.Length - 1) : input, NumberStyles.Float),
-                TypeCode.Decimal => decimal.Parse(input, NumberStyles.Float | NumberStyles.AllowCurrencySymbol),
+                TypeCode.Single => float.Parse(char.ToUpperInvariant(input[input.Length - 1]) == 'F' ? input.Substring(0, input.Length - 1) : input, NumberStyles.Float),
+                TypeCode.Double => double.Parse(char.ToUpperInvariant(input[input.Length - 1]) == 'D' ? input.Substring(0, input.Length - 1) : input, NumberStyles.Float),
+                TypeCode.Decimal => decimal.Parse(char.ToUpperInvariant(input[input.Length - 1]) == 'M' ? input.Substring(0, input.Length - 1) : input, NumberStyles.Float | NumberStyles.AllowCurrencySymbol),
                 TypeCode.String => input,
                 TypeCode.DateTime => DateTime.Parse(input),
                 _ => type == typeof(Guid) ?
@@ -80,22 +85,22 @@ namespace PropertiesDotNet.Serialization.Converters
         {
             return TypeExtensions.GetTypeCode(type) switch
             {
-                TypeCode.Boolean => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<bool>(input.ToString()).ToString() : ((bool?)input)?.ToString(),
-                TypeCode.Char => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<char>(input.ToString()).ToString() : ((char?)input)?.ToString(),
-                TypeCode.SByte => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<sbyte>(input.ToString()).ToString() : ((sbyte?)input)?.ToString(),
-                TypeCode.Byte => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<byte>(input.ToString()).ToString() : ((byte?)input)?.ToString(),
-                TypeCode.Int16 => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<short>(input.ToString()).ToString() : ((short?)input)?.ToString(),
-                TypeCode.UInt16 => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<ushort>(input.ToString()).ToString() : ((ushort?)input)?.ToString(),
-                TypeCode.Int32 => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<int>(input.ToString()).ToString() : ((int?)input)?.ToString(),
-                TypeCode.UInt32 => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<uint>(input.ToString()).ToString() : ((uint?)input)?.ToString(),
-                TypeCode.Int64 => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<long>(input.ToString()).ToString() : ((long?)input)?.ToString(),
-                TypeCode.UInt64 => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<ulong>(input.ToString()).ToString() : ((ulong?)input)?.ToString(),
-                TypeCode.Single => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<float>(input.ToString()).ToString() : ((float?)input)?.ToString(),
-                TypeCode.Double => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<double>(input.ToString()).ToString() : ((double?)input)?.ToString(),
-                TypeCode.Decimal => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<decimal>(input.ToString()).ToString() : ((decimal?)input)?.ToString(),
+                TypeCode.Boolean => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<bool>(input.ToString()).ToString() : Convert.ToBoolean(input).ToString(),
+                TypeCode.Char => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<char>(input.ToString()).ToString() : Convert.ToChar(input).ToString(),
+                TypeCode.SByte => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<sbyte>(input.ToString()).ToString() : Convert.ToSByte(input).ToString(),
+                TypeCode.Byte => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<byte>(input.ToString()).ToString() : Convert.ToByte(input).ToString(),
+                TypeCode.Int16 => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<short>(input.ToString()).ToString() : Convert.ToInt16(input).ToString(),
+                TypeCode.UInt16 => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<ushort>(input.ToString()).ToString() : Convert.ToUInt16(input).ToString(),
+                TypeCode.Int32 => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<int>(input.ToString()).ToString() : Convert.ToInt32(input).ToString(),
+                TypeCode.UInt32 => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<uint>(input.ToString()).ToString() : Convert.ToUInt32(input).ToString(),
+                TypeCode.Int64 => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<long>(input.ToString()).ToString() : Convert.ToInt64(input).ToString(),
+                TypeCode.UInt64 => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<ulong>(input.ToString()).ToString() : Convert.ToUInt64(input).ToString(),
+                TypeCode.Single => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<float>(input.ToString()).ToString() : Convert.ToSingle(input).ToString(),
+                TypeCode.Double => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<double>(input.ToString()).ToString() : Convert.ToDouble(input).ToString(),
+                TypeCode.Decimal => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<decimal>(input.ToString()).ToString() : Convert.ToDecimal(input).ToString(),
                 TypeCode.String => input?.ToString(),
-                TypeCode.DateTime => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<DateTime>(input.ToString()).ToString() : ((DateTime?)input)?.ToString(),
-                _ => type == typeof(Guid) ? ((Guid?)input)?.ToString() : throw new PropertiesException($"Cannot serialize primitive type: {type.FullName}"),
+                TypeCode.DateTime => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<DateTime>(input.ToString()).ToString() : Convert.ToDateTime(input).ToString(),
+                _ => type == typeof(Guid) ? (input is null ? Guid.Empty.ToString() : ((Guid)input).ToString()) : throw new PropertiesException($"Cannot serialize primitive type: {type.FullName}"),
             };
         }
     }

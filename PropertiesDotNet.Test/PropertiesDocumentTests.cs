@@ -1,4 +1,6 @@
-﻿namespace PropertiesDotNet.Test
+﻿using NUnit.Framework.Constraints;
+
+namespace PropertiesDotNet.Test
 {
     [TestFixture]
     public class PropertiesDocumentTests
@@ -29,7 +31,7 @@ propWithComments:valueForPropWithComments"));
         [Theory]
         public void PropertiesDocument_VerifyPropertiesOnSample1()
         {
-            var document = PropertiesDocument.Load(PropertiesReaderTests.Sample1File);
+            var document = PropertiesDocument.LoadFile(PropertiesReaderTests.Sample1File);
 
             Assert.That(document, Has.Count.EqualTo(7));
             Assert.Multiple(() =>
@@ -47,7 +49,7 @@ propWithComments:valueForPropWithComments"));
         [Theory]
         public void PropertiesDocument_VerifyPropertiesOnSample2()
         {
-            using var reader = new PropertiesReader(PropertiesReaderTests.Sample2File,
+            using var reader = PropertiesReader.FromFile(PropertiesReaderTests.Sample2File,
                 new PropertiesReaderSettings()
                 {
                     AllCharacters = true
@@ -80,7 +82,7 @@ propWithComments:valueForPropWithComments"));
         [Test]
         public void PropertiesDocument_ShouldErrorOnDuplicateKeysWhenRequested()
         {
-            Assert.Throws<ArgumentException>(() => PropertiesDocument.Load(PropertiesReaderTests.Sample2File, false));
+            Assert.Throws(new InstanceOfTypeConstraint(typeof(Exception)), () => PropertiesDocument.LoadFile(PropertiesReaderTests.Sample2File, false));
         }
 
         [Test]
@@ -95,7 +97,7 @@ propWithComments:valueForPropWithComments"));
         [Test]
         public void PropertiesDocument_ShouldChangePropertiesWhenEdited()
         {
-            var document = PropertiesDocument.Load(PropertiesReaderTests.Sample1File);
+            var document = PropertiesDocument.LoadFile(PropertiesReaderTests.Sample1File);
             document["key1"] = "new value";
             Assert.That(document.Remove("key2"));
 
@@ -106,6 +108,6 @@ propWithComments:valueForPropWithComments"));
 key3 value3", sw.ToString());
         }
 
-        private string ToString(PropertiesProperty property) => $"{property.Key}{(property.Assigner == default ? string.Empty : property.Assigner.ToString())}{property.Value}";
+        private string ToString(PropertiesProperty property) => $"{property.Key}{property.Assigner}{property.Value}";
     }
 }

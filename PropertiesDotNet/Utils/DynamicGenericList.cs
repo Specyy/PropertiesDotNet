@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PropertiesDotNet.Utils
 {
@@ -83,11 +84,18 @@ namespace PropertiesDotNet.Utils
         {
             get
             {
-                throw new NotSupportedException();
+                return _genericCollection is IList<T> list ? list[index] : _genericCollection.ElementAt(index);
             }
             set
             {
-                ((IList<T>)_genericCollection)[index] = (T)value!;
+                // Only list and linked-list "have" indexing properties
+
+                if (_genericCollection is LinkedList<T> linkedList)
+                {
+                    linkedList.Find(linkedList.ElementAt(index)).Value = (T)value;
+                }
+                // We want the error message
+                else ((IList<T>)_genericCollection)[index] = (T)value;
             }
         }
 

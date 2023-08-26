@@ -10,6 +10,11 @@ namespace PropertiesDotNet.Serialization.Converters
     /// </summary>
     public sealed class ArrayConverter : CollectionConverter
     {
+        /// <summary>
+        /// Creates a new <see cref="ArrayConverter"/>.
+        /// </summary>
+        public ArrayConverter() : base() { }
+
         /// <inheritdoc/>
         public override bool Accepts(Type type)
         {

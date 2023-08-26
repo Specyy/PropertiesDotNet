@@ -394,6 +394,9 @@ namespace PropertiesDotNet.Core
             return newLine = false;
         }
 
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private void WriteWhiteSpace(bool firstOnKey, char whitespace)
         {
             if (firstOnKey)
@@ -402,6 +405,9 @@ namespace PropertiesDotNet.Core
                 WriteInternal(whitespace);
         }
 
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private void WriteCommentHandle(bool firstOnKey, char handle)
         {
             if (firstOnKey)
@@ -410,6 +416,9 @@ namespace PropertiesDotNet.Core
             WriteInternal(handle);
         }
 
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private bool WriteCharacter(char character, string text, ref int index, in StreamMark fallbackMark, int fallbackStartIndex)
         {
             if (IsLatin1Printable(character) || Settings.AllCharacters)

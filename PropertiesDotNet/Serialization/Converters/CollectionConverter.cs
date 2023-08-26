@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 using PropertiesDotNet.Core;
 using PropertiesDotNet.Serialization.ObjectProviders;
@@ -13,8 +12,15 @@ namespace PropertiesDotNet.Serialization.Converters
     /// <summary>
     /// Represents a converter for <see cref="ICollection{T}"/> and <see cref="IList"/> types.
     /// </summary>
+    /// <remarks>This implementation is most optimized for collections that implement <see cref="IList"/> or <see cref="IList{T}"/>.
+    /// Please attempt to do so for the greatest performance.</remarks>
     public class CollectionConverter : IPropertiesConverter
     {
+        /// <summary>
+        /// Creates a new <see cref="CollectionConverter"/>.
+        /// </summary>
+        public CollectionConverter() { }
+
         /// <inheritdoc/>
         public virtual bool Accepts(Type type)
         {
@@ -27,6 +33,10 @@ namespace PropertiesDotNet.Serialization.Converters
         /// <inheritdoc/>
         public virtual object? Deserialize(PropertiesSerializer serializer, Type type, PropertiesObject tree)
         {
+            // TODO: Allow well-formatted collections to be deserialized as HashSets
+            if (type.GetGenericTypeDefinition() == typeof(HashSet<>))
+                throw new NotSupportedException($"Deserialization of {typeof(HashSet<>).FullName} is not supported");
+
             object? rawValue;
             IList list;
             Type itemType;
@@ -95,22 +105,35 @@ namespace PropertiesDotNet.Serialization.Converters
             var itemType = genericCollectionType is null ? typeof(object) : genericCollectionType.GetGenericArguments()[0];
             IList list = value as IList ?? (IList)serializer.ObjectProvider.Construct(typeof(DynamicGenericList<>).MakeGenericType(itemType), new[] { value });
 
-            for (int i = 0; i < list.Count; i++)
+            // Prefer for-loop since it is usually faster
+            if (value is IList)
             {
-                object? item = list[i];
-                string? index = serializer.SerializePrimitive(i);
+                for (int i = 0; i < list.Count; i++)
+                    SerializeItem(serializer, itemType, list[i], i, tree);
+            }
+            // We need to use iterator since not all collections have index accessors
+            else
+            {
+                int i = 0;
+                foreach (var item in list)
+                    SerializeItem(serializer, itemType, item, i++, tree);
+            }
+        }
 
-                if (serializer.IsPrimitive(item?.GetType() ?? itemType))
-                {
-                    // TODO: if itemType is primitive, serialize into inline array
-                    tree.AddPrimitive(index, serializer.SerializePrimitive(item?.GetType() ?? itemType, item));
-                }
-                else
-                {
-                    PropertiesObject itemObj = new PropertiesObject(index);
-                    serializer.SerializeObject(item?.GetType() ?? itemType, item, itemObj);
-                    tree.Add(itemObj);
-                }
+        private void SerializeItem(PropertiesSerializer serializer, Type itemType, object? item, int i, PropertiesObject tree)
+        {
+            string? index = serializer.SerializePrimitive(i);
+
+            if (serializer.IsPrimitive(item?.GetType() ?? itemType))
+            {
+                // TODO: if itemType is primitive, serialize into inline array
+                tree.AddPrimitive(index, serializer.SerializePrimitive(item?.GetType() ?? itemType, item));
+            }
+            else
+            {
+                PropertiesObject itemObj = new PropertiesObject(index);
+                serializer.SerializeObject(item?.GetType() ?? itemType, item, itemObj);
+                tree.Add(itemObj);
             }
         }
     }
