@@ -62,124 +62,140 @@ namespace PropertiesDotNet.ObjectModel
         }
 
         /// <summary>
-        /// Creates a new <see cref="PropertiesDocument"/> from the given .properties file.
-        /// </summary>
-        /// <param name="filePath">The file path of the .properties document.</param>
-        /// <param name="override">Whether to override duplicate properties.</param>
-        public PropertiesDocument(string filePath, bool @override = true) : this()
-        {
-            LoadDocument(filePath, @override);
-        }
-
-        /// <summary>
         /// Creates a new <see cref="PropertiesDocument"/> from the given data.
         /// </summary>
         /// <param name="stream">The stream containing document data.</param>
-        /// <param name="override">Whether to override duplicate properties.</param>
-        public PropertiesDocument(Stream stream, bool @override = true) : this()
+        /// <param name="overwrite">Whether to override duplicate properties.</param>
+        public PropertiesDocument(Stream stream, bool overwrite = true) : this()
         {
-            LoadDocument(stream, @override);
+            LoadDocument(stream, overwrite);
         }
 
         /// <summary>
         /// Creates a new <see cref="PropertiesDocument"/> from the given data.
         /// </summary>
         /// <param name="reader">The reader containing document data.</param>
-        /// <param name="override">Whether to override duplicate properties.</param>
-        public PropertiesDocument(TextReader reader, bool @override = true) : this()
+        /// <param name="overwrite">Whether to override duplicate properties.</param>
+        public PropertiesDocument(TextReader reader, bool overwrite = true) : this()
         {
-            LoadDocument(reader, @override);
+            LoadDocument(reader, overwrite);
         }
 
         /// <summary>
         /// Creates a new <see cref="PropertiesDocument"/> from the given data.
         /// </summary>
         /// <param name="reader">The document data.</param>
-        /// <param name="override">Whether to override duplicate properties.</param>
-        public PropertiesDocument(IPropertiesReader reader, bool @override = true) : this()
+        /// <param name="overwrite">Whether to override duplicate properties.</param>
+        public PropertiesDocument(IPropertiesReader reader, bool overwrite = true) : this()
         {
-            LoadDocument(reader, @override);
+            LoadDocument(reader, overwrite);
+        }
+
+        /// <summary>
+        /// Loads this document from the given .properties document.
+        /// </summary>
+        /// <param name="document">The .properties document as a string.</param>
+        /// <param name="overwrite">Whether to override duplicate properties.</param>
+        public static PropertiesDocument Load(string document, bool overwrite = true)
+        {
+            var doc = new PropertiesDocument();
+            doc.LoadDocument(document, overwrite);
+            return doc;
         }
 
         /// <summary>
         /// Loads this document from the given .properties file.
         /// </summary>
-        /// <param name="filePath">The file path to the .properties document.</param>
-        /// <param name="override">Whether to override duplicate properties.</param>
-        public static PropertiesDocument Load(string filePath, bool @override = true)
+        /// <param name="path">The file path of the input document.</param>
+        /// <param name="overwrite">Whether to override duplicate properties.</param>
+        public static PropertiesDocument LoadFile(string path, bool overwrite = true)
         {
-            return new PropertiesDocument(filePath, @override);
+            var doc = new PropertiesDocument();
+            doc.LoadFileDocument(path, overwrite);
+            return doc;
         }
 
         /// <summary>
         /// Loads this document from the given reader.
         /// </summary>
         /// <param name="stream">The stream to load from.</param>
-        /// <param name="override">Whether to override duplicate properties.</param>
-        public static PropertiesDocument Load(Stream stream, bool @override = true)
+        /// <param name="overwrite">Whether to override duplicate properties.</param>
+        public static PropertiesDocument Load(Stream stream, bool overwrite = true)
         {
-            return new PropertiesDocument(stream, @override);
+            return new PropertiesDocument(stream, overwrite);
         }
 
         /// <summary>
         /// Loads this document from the given reader.
         /// </summary>
         /// <param name="reader">The reader to load from.</param>
-        /// <param name="override">Whether to override duplicate properties.</param>
-        public static PropertiesDocument Load(TextReader reader, bool @override = true)
+        /// <param name="overwrite">Whether to override duplicate properties.</param>
+        public static PropertiesDocument Load(TextReader reader, bool overwrite = true)
         {
-            return new PropertiesDocument(reader, @override);
+            return new PropertiesDocument(reader, overwrite);
         }
 
         /// <summary>
         /// Loads this document from the given reader.
         /// </summary>
         /// <param name="reader">The reader to load from.</param>
-        /// <param name="override">Whether to override duplicate properties.</param>
-        public static PropertiesDocument Load(IPropertiesReader reader, bool @override = true)
+        /// <param name="overwrite">Whether to override duplicate properties.</param>
+        public static PropertiesDocument Load(IPropertiesReader reader, bool overwrite = true)
         {
-            return new PropertiesDocument(reader, @override);
+            return new PropertiesDocument(reader, overwrite);
+        }
+
+        /// <summary>
+        /// Loads this document from the given .properties document.
+        /// </summary>
+        /// <param name="document">The .properties document as a string.</param>
+        /// <param name="overwrite">Whether to override existing properties.</param>
+        public virtual void LoadDocument(string document, bool overwrite = true)
+        {
+            using var reader = new PropertiesReader(document);
+            LoadDocument(reader, overwrite);
         }
 
         /// <summary>
         /// Loads this document from the given .properties file.
         /// </summary>
-        /// <param name="filePath">The file path to the .properties document.</param>
-        /// <param name="override">Whether to override existing properties.</param>
-        public virtual void LoadDocument(string filePath, bool @override = true)
+        /// <param name="path">The file path of the input document.</param>
+        /// <param name="overwrite">Whether to override existing properties.</param>
+        // TODO: Rethink naming
+        public virtual void LoadFileDocument(string path, bool overwrite = true)
         {
-            using var reader = new PropertiesReader(filePath);
-            LoadDocument(reader, @override);
+            using var reader = PropertiesReader.FromFile(path);
+            LoadDocument(reader, overwrite);
         }
 
         /// <summary>
         /// Loads this document from the given reader.
         /// </summary>
         /// <param name="stream">The stream to load from.</param>
-        /// <param name="override">Whether to override existing properties.</param>
-        public virtual void LoadDocument(Stream stream, bool @override = true)
+        /// <param name="overwrite">Whether to override existing properties.</param>
+        public virtual void LoadDocument(Stream stream, bool overwrite = true)
         {
             using var pReader = new PropertiesReader(stream);
-            LoadDocument(pReader, @override);
+            LoadDocument(pReader, overwrite);
         }
 
         /// <summary>
         /// Loads this document from the given reader.
         /// </summary>
         /// <param name="reader">The reader to load from.</param>
-        /// <param name="override">Whether to override existing properties.</param>
-        public virtual void LoadDocument(TextReader reader, bool @override = true)
+        /// <param name="overwrite">Whether to override existing properties.</param>
+        public virtual void LoadDocument(TextReader reader, bool overwrite = true)
         {
             using var pReader = new PropertiesReader(reader);
-            LoadDocument(pReader, @override);
+            LoadDocument(pReader, overwrite);
         }
 
         /// <summary>
         /// Loads this document from the given reader.
         /// </summary>
         /// <param name="reader">The reader to load from.</param>
-        /// <param name="override">Whether to override existing properties.</param>
-        public virtual void LoadDocument(IPropertiesReader reader, bool @override = true)
+        /// <param name="overwrite">Whether to override existing properties.</param>
+        public virtual void LoadDocument(IPropertiesReader reader, bool overwrite = true)
         {
             while (reader.MoveNext())
             {
@@ -190,7 +206,7 @@ namespace PropertiesDotNet.ObjectModel
                     case PropertiesTokenType.Key:
                         string key = token.Text!;
 
-                        char assigner = default;
+                        char? assigner = null;
 
                         if (reader.MoveNext() && (token = reader.Token).Type == PropertiesTokenType.Assigner)
                         {
@@ -201,10 +217,10 @@ namespace PropertiesDotNet.ObjectModel
                         if ((token = reader.Token).Type != PropertiesTokenType.Value)
                             throw new PropertiesException($"Missing value for key \"{key}\"!");
 
-                        var property = assigner == default ?
-                            new PropertiesProperty(key, token.Text) : new PropertiesProperty(key, assigner, token.Text);
+                        var property = assigner is null ?
+                            new PropertiesProperty(key, token.Text) : new PropertiesProperty(key, assigner!.Value, token.Text);
 
-                        if (@override)
+                        if (overwrite)
                             SetProperty(property);
                         else
                             Add(property);
@@ -545,9 +561,9 @@ namespace PropertiesDotNet.ObjectModel
                 writer.Write(new PropertiesToken(PropertiesTokenType.Comment, DateTime.Now.ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)));
             }
 
-            for (int i = 0; i < _properties.Count; i++)
+            for (int i = 0; i < Count; i++)
             {
-                PropertiesProperty prop = _properties[i].Value;
+                PropertiesProperty prop = this[i];
 
                 for (int j = 0; j < prop.Comments?.Count; j++)
                     // TODO: Allow customization of handle
@@ -555,9 +571,10 @@ namespace PropertiesDotNet.ObjectModel
 
                 writer.Write(new PropertiesToken(PropertiesTokenType.Key, prop.Key));
 
-                if (prop.Assigner == default && prop.Value != null)
+                if (prop.Assigner is null)
                 {
-                    throw new PropertiesException($"Value must be null for property with null assigner ({prop})");
+                    if (prop.Value != null)
+                        throw new PropertiesException($"Value must be null for property with null assigner ({prop})");
                 }
                 else
                 {

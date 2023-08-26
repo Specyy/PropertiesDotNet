@@ -65,9 +65,9 @@ namespace PropertiesDotNet.Core
         /// <summary>
         /// Creates a new <see cref="PropertiesReader"/>.
         /// </summary>
-        /// <param name="filePath">The file path to the .properties document.</param>
+        /// <param name="document">The .properties document as a string.</param>
         /// <param name="settings">The settings for this reader.</param>
-        public PropertiesReader(string filePath, PropertiesReaderSettings? settings = null) : this(File.OpenRead(filePath),
+        public PropertiesReader(string document, PropertiesReaderSettings? settings = null) : this(new StringReader(document),
             settings)
         {
         }
@@ -94,6 +94,22 @@ namespace PropertiesDotNet.Core
             _cursor = new StreamCursor();
             _textPool = new StringBuilder();
         }
+
+        /// <summary>
+        /// Creates a new <see cref="PropertiesReader"/> from the file <paramref name="path"/>.
+        /// </summary>
+        /// <param name="path">The file path of the input document.</param>
+        /// <param name="settings">The settings for this reader.</param>
+        /// <returns>An appropriate <see cref="PropertiesReader"/>.</returns>
+        public static PropertiesReader FromFile(string path, PropertiesReaderSettings? settings = null) => new PropertiesReader(File.OpenRead(path), settings);
+
+        /// <summary>
+        /// Creates a new <see cref="PropertiesReader"/> from the <paramref name="file"/>.
+        /// </summary>
+        /// <param name="file">The input document.</param>
+        /// <param name="settings">The settings for this reader.</param>
+        /// <returns>An appropriate <see cref="PropertiesReader"/>.</returns>
+        public static PropertiesReader FromFile(FileInfo file, PropertiesReaderSettings? settings = null) => new PropertiesReader(file.OpenRead(), settings);
 
         /// <inheritdoc/>
         public bool MoveNext()
