@@ -169,19 +169,7 @@ namespace PropertiesDotNet.Core
                         WriteInternal('\\').WriteInternal('0');
                         break;
                     default:
-                        if (IsLatin1Printable(ch) || Settings.AllCharacters)
-                        {
-                            WriteInternal(ch);
-                        }
-                        else if (!WriteEscaped(value, ref i))
-                        {
-                            if (_textPool.Length > 0)
-                            {
-                                _textPool.Remove(fallbackStartIndex, i);
-                                _cursor.CopyFrom(in fallbackMark);
-                            }
-                            return false;
-                        }
+                        WriteCharacter(ch, value, ref i, in fallbackMark, fallbackStartIndex);
                         break;
                 }
             }
@@ -310,8 +298,8 @@ namespace PropertiesDotNet.Core
         {
             bool newLine = key;
             int fallbackStartIndex = _textPool.Length - 1;
-            StreamMark fallback = _cursor.Position;
-            uint startColumn = fallback.Column;
+            StreamMark fallbackMark = _cursor.Position;
+            uint startColumn = fallbackMark.Column;
 
             if (!key && _state == WriterState.ValueOrAssigner)
             {
@@ -327,36 +315,14 @@ namespace PropertiesDotNet.Core
                 {
                     case '\r':
                     case '\n':
-                        if (logicalLines)
-                        {
-                            WriteInternal('\\');
-
-                            uint returnColumn = startColumn;
-
-                            WriteLineInternal();
-
-                            while (_cursor.Column < returnColumn)
-                                WriteInternal(' ');
-
-                            if (ch == '\r' && i + 1 < text.Length && text[i] == '\n')
-                                i++;
-
-                            newLine = true;
-                        }
-                        else
-                        {
-                            WriteInternal('\\').WriteInternal(ch == '\n' ? 'n' : 'r');
-                            newLine = false;
-                        }
+                        if (WriteNewLine(logicalLines, startColumn, text, ref i, ref newLine))
+                            continue;
                         break;
+
                     case '\t':
                     case ' ':
                     case '\f':
-                        if (key || newLine || i == 0)
-                            WriteInternal('\\').WriteInternal(ch == ' ' ? ch : (ch == '\t' ? 't' : 'f'));
-                        else WriteInternal(ch);
-
-                        newLine = false;
+                        WriteWhiteSpace(key || newLine || i == 0, ch);
                         break;
 
                     case '\a':
@@ -371,11 +337,7 @@ namespace PropertiesDotNet.Core
 
                     case '#':
                     case '!':
-                        if (key && i == 0)
-                            WriteInternal('\\');
-
-                        WriteInternal(ch);
-                        newLine = false;
+                        WriteCommentHandle(key && i == 0, ch);
                         break;
 
                     case '=':
@@ -385,32 +347,18 @@ namespace PropertiesDotNet.Core
                             WriteInternal('\\');
 
                         WriteInternal(ch);
-                        newLine = false;
                         break;
 
                     case '\\':
                         WriteInternal('\\').WriteInternal('\\');
-                        newLine = false;
                         break;
 
                     default:
-                        if (IsLatin1Printable(ch) || Settings.AllCharacters)
-                        {
-                            WriteInternal(ch);
-                        }
-                        else if (!WriteEscaped(text, ref i))
-                        {
-                            if (_textPool.Length > 0)
-                            {
-                                _textPool.Remove(fallbackStartIndex, i);
-                                _cursor.CopyFrom(in fallback);
-                            }
-                            return false;
-                        }
-
-                        newLine = false;
+                        WriteCharacter(ch, text, ref i, in fallbackMark, fallbackStartIndex);
                         break;
                 }
+
+                newLine = false;
             }
 
             if (!(TokenWritten is null))
@@ -423,6 +371,61 @@ namespace PropertiesDotNet.Core
 
                 TokenWritten(this, new PropertiesToken(key ? PropertiesTokenType.Key : PropertiesTokenType.Value, new string(chars)));
             }
+            return true;
+        }
+
+        private bool WriteNewLine(bool logicalLines, uint startColumn, string text, ref int index, ref bool newLine)
+        {
+            if (logicalLines)
+            {
+                WriteInternal('\\');
+                WriteLineInternal();
+
+                while (_cursor.Column < startColumn)
+                    WriteInternal(' ');
+
+                if (text[index] == '\r' && index + 1 < text.Length && text[index + 1] == '\n')
+                    index++;
+
+                return newLine = true;
+            }
+
+            WriteInternal('\\').WriteInternal(text[index] == '\n' ? 'n' : 'r');
+            return newLine = false;
+        }
+
+        private void WriteWhiteSpace(bool firstOnKey, char whitespace)
+        {
+            if (firstOnKey)
+                WriteInternal('\\').WriteInternal(whitespace == ' ' ? whitespace : (whitespace == '\t' ? 't' : 'f'));
+            else
+                WriteInternal(whitespace);
+        }
+
+        private void WriteCommentHandle(bool firstOnKey, char handle)
+        {
+            if (firstOnKey)
+                WriteInternal('\\');
+
+            WriteInternal(handle);
+        }
+
+        private bool WriteCharacter(char character, string text, ref int index, in StreamMark fallbackMark, int fallbackStartIndex)
+        {
+            if (IsLatin1Printable(character) || Settings.AllCharacters)
+            {
+                WriteInternal(character);
+            }
+            else if (!WriteEscaped(text, ref index))
+            {
+                if (_textPool.Length > 0)
+                {
+                    _textPool.Remove(fallbackStartIndex, index);
+                    _cursor.CopyFrom(in fallbackMark);
+                }
+                return false;
+            }
+
             return true;
         }
 
@@ -474,6 +477,9 @@ namespace PropertiesDotNet.Core
             }
         }
 
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private PropertiesWriter WriteInternal(char value)
         {
             _textPool.Append(value);
@@ -481,15 +487,13 @@ namespace PropertiesDotNet.Core
             return this;
         }
 
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private PropertiesWriter WriteInternal(string? value)
         {
-            if (string.IsNullOrEmpty(value))
-                return this;
-
-            for (int i = 0; i < value!.Length; i++)
-            {
+            for (int i = 0; i < value?.Length; i++)
                 WriteInternal(value[i]);
-            }
 
             return this;
         }
@@ -508,6 +512,9 @@ namespace PropertiesDotNet.Core
             _cursor.AdvanceLine();
         }
 
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private bool CheckFlush()
         {
             if ((_flushCounter = Settings.AutoFlush ? _flushCounter + 1 : 0) == Settings.FlushInterval)
