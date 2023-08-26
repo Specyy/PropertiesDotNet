@@ -25,7 +25,7 @@ namespace PropertiesDotNet.ObjectModel
         /// </summary>
         /// <remarks>The value may be \0 on a property with an empty value.</remarks>
         /// <exception cref="ArgumentException">If the value is not '=', ':' or any type of white-space.</exception>
-        public virtual char Assigner
+        public virtual char? Assigner
         {
             get => _assigner;
             set
@@ -40,6 +40,10 @@ namespace PropertiesDotNet.ObjectModel
                         _assigner = value;
                         break;
 
+                    case null:
+                        _assigner = Value is null ? value : throw new ArgumentException("Assigner must be '=', ':' or any type of white-space");
+                        break;
+
                     default:
                         _assigner = (value == default && Value is null) ?
                             (char)default : throw new ArgumentException("Assigner must be '=', ':' or any type of white-space");
@@ -48,7 +52,7 @@ namespace PropertiesDotNet.ObjectModel
             }
         }
 
-        private char _assigner;
+        private char? _assigner;
 
         /// <summary>
         /// The value of this property. This can be <see langword="null"/>.
@@ -58,7 +62,7 @@ namespace PropertiesDotNet.ObjectModel
             get => _value;
             set
             {
-                if (Assigner == default && value != null)
+                if (Assigner is null && value != null)
                     Assigner = '=';
 
                 _value = value;
@@ -86,7 +90,7 @@ namespace PropertiesDotNet.ObjectModel
         public PropertiesProperty(string key, string? value) : this(key, '=', value)
         {
             if (value is null)
-                _assigner = default;
+                _assigner = null;
         }
 
         /// <summary>
@@ -103,8 +107,8 @@ namespace PropertiesDotNet.ObjectModel
                 throw new ArgumentException("Key cannot be null or empty", nameof(key));
 
             Key = key;
-            Assigner = assigner;
             Value = value;
+            Assigner = assigner;
         }
 
         /// <summary>
@@ -115,8 +119,8 @@ namespace PropertiesDotNet.ObjectModel
         {
             Comments = property.Comments;
             Key = property.Key;
-            Assigner = property.Assigner;
             Value = property.Value;
+            Assigner = property.Assigner;
         }
 
         /// <summary>
@@ -141,11 +145,11 @@ namespace PropertiesDotNet.ObjectModel
                 for (int i = 0; i < Comments.Count; i++)
                     sb.Append('#').Append(' ').AppendLine(Comments[i]);
 
-                sb.Append($"{Key}{(Assigner == default ? string.Empty : Assigner.ToString())}{Value}");
+                sb.Append($"{Key}{Assigner}{Value}");
                 return sb.ToString();
             }
 
-            return $"{Key}{(Assigner == default ? string.Empty : Assigner.ToString())}{Value}";
+            return $"{Key}{Assigner}{Value}";
         }
 
         /// <inheritdoc/>
