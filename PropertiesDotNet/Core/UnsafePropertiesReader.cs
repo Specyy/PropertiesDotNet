@@ -9,6 +9,7 @@ namespace PropertiesDotNet.Core
     /// A fast ".properties" document reader that implements a non-cached, 
     /// forward-only token generation scheme using unsafe string manipulation.
     /// </summary>
+    /// <remarks>To be used in performance-critical environments.</remarks>
     public sealed class UnsafePropertiesReader : IPropertiesReader
     {
         /// <inheritdoc/>
@@ -224,6 +225,7 @@ namespace PropertiesDotNet.Core
                 {
                     if (escapes)
                         _textPool.Append(document[_index]);
+
                     Read(document);
                 }
             }
