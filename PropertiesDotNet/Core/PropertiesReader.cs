@@ -367,9 +367,9 @@ namespace PropertiesDotNet.Core
             int codePoint = 0;
             int codeLength = identifier == 'U' ? 8 : 4;
 
-            for (int i = 0; i < codeLength; i++)
+            for (int i = 0; i < codeLength; i++, Read())
             {
-                int hex = ReadHex(Read()); // '9' -> 9
+                int hex = ReadHex(_stream.Peek()); // '9' -> 9
 
                 if (hex < 0 || hex > 15)
                 {

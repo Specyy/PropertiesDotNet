@@ -363,12 +363,11 @@ namespace PropertiesDotNet.Core
         private unsafe bool ReadUnicodeEscape(char* document, in StreamMark errEscapeStart, char identifier)
         {
             int codePoint = 0;
-            int codeLength = identifier == 'U' ? (byte)8 : (byte)4;
+            int codeLength = identifier == 'U' ? 8 : 4;
 
-            for (int i = 0; i < codeLength; i++)
+            for (int i = 0; i < codeLength; i++, Read(document))
             {
                 int hex = ReadHex(document[_index]); // '9' -> 9
-                Read(document);
 
                 if (hex < 0 || hex > 15)
                 {
