@@ -70,7 +70,6 @@ namespace PropertiesDotNet.Test
             AssertEnd(reader);
         }
 
-        
         [Test]
         public void PropertiesReader_ShouldNotTranslateEscapesInComments()
         {

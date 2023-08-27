@@ -18,7 +18,7 @@
         private void TestValueProviderProperties(IValueProvider provider)
         {
             var sample = new SampleClass();
-            var publicProperty = typeof(SampleClass).GetProperty(nameof(sample.PublicData))!;
+            var publicProperty = typeof(SampleClass).GetProperty(nameof(SampleClass.PublicData))!;
             var privateProperty = typeof(SampleClass).GetProperty("PrivateData", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
 
             Assert.That(sample.PublicData, Is.Null);
@@ -38,7 +38,7 @@
         private void TestValueProviderFields(IValueProvider provider)
         {
             var sample = new SampleClass();
-            var publicField = typeof(SampleClass).GetField(nameof(sample.PublicFieldData))!;
+            var publicField = typeof(SampleClass).GetField(nameof(SampleClass.PublicFieldData))!;
             var privateField = typeof(SampleClass).GetField("PrivateFieldData", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
 
             Assert.That(sample.PublicData, Is.Null);

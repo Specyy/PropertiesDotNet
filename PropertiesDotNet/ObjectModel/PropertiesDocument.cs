@@ -558,7 +558,8 @@ namespace PropertiesDotNet.ObjectModel
             if (timestamp)
             {
                 // TODO: Output timezone abbreviation
-                writer.Write(new PropertiesToken(PropertiesTokenType.Comment, DateTime.Now.ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)));
+                const string TIMESTAMP_FORMAT = "MM/dd/yyyy h:mm:ss tt";
+                writer.Write(new PropertiesToken(PropertiesTokenType.Comment, DateTime.Now.ToString(TIMESTAMP_FORMAT, CultureInfo.InvariantCulture)));
             }
 
             for (int i = 0; i < Count; i++)
