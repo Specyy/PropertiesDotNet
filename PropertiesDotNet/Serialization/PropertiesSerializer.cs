@@ -186,6 +186,19 @@ namespace PropertiesDotNet.Serialization
         }
 
         /// <summary>
+        /// Deserializes the ".properties" object tree as the given .NET <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="document">The input document to deserialize as a string.</param>
+        /// <typeparam name="T">The type to deserialize the tree as.</typeparam>
+        /// <returns>The deserialized value.</returns>
+        /// <exception cref="PropertiesException">If a deserialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could deserialize the tree as <typeparamref name="T"/>.</exception>
+        public static T Deserialize<T>(string document) where T : notnull
+        {
+            return new PropertiesSerializer().DeserializeObject<T>(document);
+        }
+
+        /// <summary>
         /// Deserializes the ".properties" object tree as the given .NET <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type to deserialize the tree as.</param>
@@ -210,6 +223,19 @@ namespace PropertiesDotNet.Serialization
         {
             using var reader = new PropertiesReader(input);
             return new PropertiesSerializer().DeserializeObject(type, reader);
+        }
+
+        /// <summary>
+        /// Deserializes the ".properties" object tree as the given .NET <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">The type to deserialize the tree as.</param>
+        /// <param name="document">The input document to deserialize as a string.</param>
+        /// <returns>The deserialized value.</returns>
+        /// <exception cref="PropertiesException">If a deserialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could deserialize the tree as the <paramref name="type"/>.</exception>
+        public static object? Deserialize(Type? type, string document)
+        {
+            return new PropertiesSerializer().DeserializeObject(type, document);
         }
 
         /// <summary>
@@ -291,6 +317,45 @@ namespace PropertiesDotNet.Serialization
         }
 
         /// <summary>
+        /// Deserializes the ".properties" object tree as the given .NET <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="input">The input document to deserialize.</param>
+        /// <typeparam name="T">The type to deserialize the tree as.</typeparam>
+        /// <returns>The deserialized value.</returns>
+        /// <exception cref="PropertiesException">If a deserialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could deserialize the tree as <typeparamref name="T"/>.</exception>
+        public T DeserializeObject<T>(TextReader input) where T : notnull
+        {
+            return (T)DeserializeObject(typeof(T), input);
+        }
+
+        /// <summary>
+        /// Deserializes the ".properties" object tree as the given .NET <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="document">The input document to deserialize as a string.</param>
+        /// <typeparam name="T">The type to deserialize the tree as.</typeparam>
+        /// <returns>The deserialized value.</returns>
+        /// <exception cref="PropertiesException">If a deserialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could deserialize the tree as <typeparamref name="T"/>.</exception>
+        public T DeserializeObject<T>(string document) where T : notnull
+        {
+            return (T)DeserializeObject(typeof(T), document);
+        }
+
+        /// <summary>
+        /// Deserializes the ".properties" object tree as the given .NET <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="input">The input document to deserialize.</param>
+        /// <typeparam name="T">The type to deserialize the tree as.</typeparam>
+        /// <returns>The deserialized value.</returns>
+        /// <exception cref="PropertiesException">If a deserialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could deserialize the tree as <typeparamref name="T"/>.</exception>
+        public T DeserializeObject<T>(Stream input) where T : notnull
+        {
+            return (T)DeserializeObject(typeof(T), input);
+        }
+
+        /// <summary>
         /// Deserializes the ".properties" object tree as the given .NET <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The type to deserialize the tree as.</param>
@@ -301,6 +366,48 @@ namespace PropertiesDotNet.Serialization
         public object? DeserializeObject(Type? type, IPropertiesReader input)
         {
             return DeserializeObject(type, TreeComposer.ReadObject(input));
+        }
+
+        /// <summary>
+        /// Deserializes the ".properties" object tree as the given .NET <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">The type to deserialize the tree as.</param>
+        /// <param name="input">The input document to deserialize.</param>
+        /// <returns>The deserialized value.</returns>
+        /// <exception cref="PropertiesException">If a deserialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could deserialize the tree as the <paramref name="type"/>.</exception>
+        public object? DeserializeObject(Type? type, TextReader input)
+        {
+            using var reader = new PropertiesReader(input);
+            return DeserializeObject(type, reader);
+        }
+
+        /// <summary>
+        /// Deserializes the ".properties" object tree as the given .NET <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">The type to deserialize the tree as.</param>
+        /// <param name="document">The input document to deserialize as a string.</param>
+        /// <returns>The deserialized value.</returns>
+        /// <exception cref="PropertiesException">If a deserialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could deserialize the tree as the <paramref name="type"/>.</exception>
+        public object? DeserializeObject(Type? type, string document)
+        {
+            using var reader = new PropertiesReader(document);
+            return DeserializeObject(type, reader);
+        }
+
+        /// <summary>
+        /// Deserializes the ".properties" object tree as the given .NET <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">The type to deserialize the tree as.</param>
+        /// <param name="input">The input document to deserialize.</param>
+        /// <returns>The deserialized value.</returns>
+        /// <exception cref="PropertiesException">If a deserialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could deserialize the tree as the <paramref name="type"/>.</exception>
+        public object? DeserializeObject(Type? type, Stream input)
+        {
+            using var reader = new PropertiesReader(input);
+            return DeserializeObject(type, reader);
         }
 
         /// <summary>
