@@ -1,10 +1,35 @@
-﻿using NUnit.Framework.Constraints;
+﻿using System.Collections;
+
+using NUnit.Framework.Constraints;
 
 namespace PropertiesDotNet.Test
 {
     [TestFixture]
     public class ConverterTests
     {
+        [Test]
+        [TestCase(typeof(string))]
+        [TestCase(typeof(char))]
+        [TestCase(typeof(bool))]
+        [TestCase(typeof(byte))]
+        [TestCase(typeof(sbyte))]
+        [TestCase(typeof(short))]
+        [TestCase(typeof(ushort))]
+        [TestCase(typeof(int))]
+        [TestCase(typeof(uint))]
+        [TestCase(typeof(long))]
+        [TestCase(typeof(ulong))]
+        [TestCase(typeof(float))]
+        [TestCase(typeof(double))]
+        [TestCase(typeof(decimal))]
+        [TestCase(typeof(DateTime))]
+        [TestCase(typeof(Guid))]
+        [TestCase(typeof(object))]
+        public void SystemTypeConverter_ShouldAcceptSystemTypes(Type type)
+        {
+            Assert.That(new SystemTypeConverter().Accepts(type), type != typeof(object) ? Is.True : Is.False);
+        }
+
         [Test]
         public void SystemTypeConverter_ShouldSerializeSystemTypes()
         {
@@ -64,30 +89,6 @@ namespace PropertiesDotNet.Test
         }
 
         [Test]
-        [TestCase(typeof(string))]
-        [TestCase(typeof(char))]
-        [TestCase(typeof(bool))]
-        [TestCase(typeof(byte))]
-        [TestCase(typeof(sbyte))]
-        [TestCase(typeof(short))]
-        [TestCase(typeof(ushort))]
-        [TestCase(typeof(int))]
-        [TestCase(typeof(uint))]
-        [TestCase(typeof(long))]
-        [TestCase(typeof(ulong))]
-        [TestCase(typeof(float))]
-        [TestCase(typeof(double))]
-        [TestCase(typeof(decimal))]
-        [TestCase(typeof(DateTime))]
-        [TestCase(typeof(Guid))]
-        [TestCase(typeof(object))]
-        public void SystemTypeConverter_ShouldAcceptSystemTypes(Type type)
-        {
-            bool accepts = new SystemTypeConverter().Accepts(type);
-            Assert.That(type != typeof(object) ? accepts : !accepts);
-        }
-
-        [Test]
         public void ArrayConverter_ShouldAcceptArrays()
         {
             var converter = new ArrayConverter();
@@ -97,8 +98,8 @@ namespace PropertiesDotNet.Test
                 Assert.That(converter.Accepts(typeof(Guid[])));
                 Assert.That(converter.Accepts(typeof(object[])));
                 Assert.That(converter.Accepts(typeof(List<string>[])));
-                Assert.That(!converter.Accepts(typeof(List<string>)));
-                Assert.That(!converter.Accepts(typeof(ICollection<string>)));
+                Assert.That(converter.Accepts(typeof(List<string>)), Is.False);
+                Assert.That(converter.Accepts(typeof(ICollection<string>)), Is.False);
             });
         }
 
@@ -146,8 +147,9 @@ namespace PropertiesDotNet.Test
                 Assert.That(converter.Accepts(typeof(LinkedList<string>)));
                 Assert.That(converter.Accepts(typeof(HashSet<string>)));
                 Assert.That(converter.Accepts(typeof(SortedSet<string>)));
-                Assert.That(converter.Accepts(typeof(System.Collections.ArrayList)));
+                Assert.That(converter.Accepts(typeof(ArrayList)));
                 Assert.That(converter.Accepts(typeof(List<List<string>[]>)));
+                Assert.That(converter.Accepts(typeof(List<List<string>[]>[])), Is.False);
             });
         }
 
@@ -200,6 +202,224 @@ namespace PropertiesDotNet.Test
                 Assert.DoesNotThrow(() => converter.Deserialize(serializer, typeof(LinkedList<string>), serializer.TreeComposer.ReadObject(reader)));
 
             // HashSet<T> is currently not supported
+        }
+
+        [Test]
+        public void DictionaryConverter_ShouldAcceptDictionaries()
+        {
+            var converter = new DictionaryConverter();
+            Assert.Multiple(() =>
+            {
+                Assert.That(converter.Accepts(typeof(Dictionary<string, object>)));
+                Assert.That(converter.Accepts(typeof(SortedList<string, object>)));
+                Assert.That(converter.Accepts(typeof(KeyValuePair<string, object>)), Is.False);
+                Assert.That(converter.Accepts(typeof(DictionaryEntry)), Is.False);
+            });
+        }
+
+        [Test]
+        public void DictionaryConverter_ShouldSerializeDictionaries()
+        {
+            var serializer = new PropertiesSerializer();
+            var converter = new DictionaryConverter();
+            var data = new Dictionary<string, object>()
+            {
+                { "Hello", "World" },
+                { "123", 456 },
+                { "GUID", Guid.NewGuid() },
+                { "Time", DateTime.Now },
+                { "Array", new[] { 9, 8, 7 } },
+                { "List", new List<char>("Example🌐List") },
+            };
+
+            Assert.DoesNotThrow(() => converter.Serialize(serializer, data.GetType(), data, serializer.TreeComposer.CreateRoot()));
+        }
+
+        [Test]
+        public void DictionaryConverter_ShouldDeserializeDictionaries()
+        {
+            var serializer = new PropertiesSerializer();
+            var converter = new DictionaryConverter();
+            string data = @"Hello=World
+123=456
+GUID=5cff0cec-7396-4065-b90c-fca2ec71fd1e
+Time=8/26/2023 12:11:37 PM
+Array.0=9
+Array.1=8
+Array.2=7
+List.0=E
+List.1=x
+List.2=a
+List.3=m
+List.4=p
+List.5=l
+List.6=e
+List.7=\u0020
+List.8=L
+List.9=i
+List.10=s
+List.11=t";
+
+            static bool DicitonaryEqual<TKey, TValue>(Dictionary<TKey, TValue> source, Dictionary<TKey, TValue> other) where TKey : notnull
+            {
+                if (source.Count != other.Count)
+                    return false;
+
+                foreach (var entry in source)
+                {
+                    if (other.TryGetValue(entry.Key, out var value))
+                    {
+                        if (value is Dictionary<TKey, TValue> dic)
+                        {
+                            if (!DicitonaryEqual((entry.Value as Dictionary<TKey, TValue>)!, dic))
+                                return false;
+                        }
+                        else if (!((entry.Value is null && value is null) || (entry.Value!.Equals(value) || entry.Value!.ToString()!.Equals(value!.ToString()))))
+                        {
+                            Console.WriteLine($"NotEqual: {entry.Key}:{entry.Value} && {entry.Key}:{value}");
+                            return false;
+                        }
+
+                    }
+                    else
+                    {
+                        Console.WriteLine($"NotEqual: {entry.Key}");
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            using var reader = new PropertiesReader(data);
+            Dictionary<string, object> read = null!;
+            Assert.DoesNotThrow(() => read = (Dictionary<string, object>)converter.Deserialize(serializer, typeof(Dictionary<string, object>), serializer.TreeComposer.ReadObject(reader))!);
+            Assert.That(DicitonaryEqual(read, new Dictionary<string, object>()
+            {
+                { "Hello", "World" },
+                { "123", "456" },
+                { "GUID", Guid.Parse("5cff0cec-7396-4065-b90c-fca2ec71fd1e") },
+                { "Time", DateTime.Parse("8/26/2023 12:11:37 PM") },
+                { "Array", new Dictionary<string, object>()
+                           {
+                                { "0", "9" },
+                                { "1", "8" },
+                                { "2", "7" }
+                           }
+
+                },
+                { "List", new Dictionary<string, object>()
+                          {
+                                { "0", "E" },
+                                { "1", "x" },
+                                { "2", "a" },
+                                { "3", "m" },
+                                { "4", "p" },
+                                { "5", "l" },
+                                { "6", "e" },
+                                { "7", " " },
+                                { "8", "L" },
+                                { "9", "i" },
+                                { "10", "s" },
+                                { "11", "t" }
+                          }
+                },
+            }), Is.True);
+        }
+
+        [Test]
+        public void ObjectConverter_ShouldAcceptObjects()
+        {
+            var converter = new ObjectConverter();
+            Assert.Multiple(() =>
+            {
+                Assert.That(converter.Accepts(typeof(object)));
+                Assert.That(converter.Accepts(typeof(Dictionary<string, object>)));
+                Assert.That(converter.Accepts(typeof(PropertiesDocument)));
+                Assert.That(converter.Accepts(typeof(PropertiesProperty)));
+                Assert.That(converter.Accepts(typeof(PropertiesTreeNode)), Is.False);
+                Assert.That(converter.Accepts(typeof(string[])), Is.False);
+            });
+        }
+
+        [Test]
+        public void ObjectConverter_ShouldSerializeObjects()
+        {
+            var serializer = new PropertiesSerializer();
+            var converter = new ObjectConverter()
+            {
+                AllowFields = true,
+                MemberFlags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
+            };
+            var data = new SampleClass();
+
+            using (var writer = new PropertiesWriter(Console.Out))
+            {
+                var root = serializer.TreeComposer.CreateRoot();
+                converter.Serialize(serializer, data.GetType(), data, root);
+                serializer.TreeComposer.WriteObject(root, writer);
+            }
+
+            Assert.DoesNotThrow(() => converter.Serialize(serializer, data.GetType(), data, serializer.TreeComposer.CreateRoot()));
+        }
+
+        [Test]
+        public void ObjectConverter_ShouldDeserializeObjects()
+        {
+            var serializer = new PropertiesSerializer();
+            var converter = new ObjectConverter()
+            {
+                AllowFields = true,
+                MemberFlags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
+            };
+            var restrictedConverter = new ObjectConverter()
+            {
+                AllowFields = false,
+                MemberFlags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
+            };
+            string data = @"PublicData=EditedPublicData
+PrivateData=EditedPrivateData
+PublicFieldData=EditedPublicFieldData
+PrivateFieldData=EditedPrivateFieldData";
+
+            using (var reader = new PropertiesReader(data))
+                Assert.Throws<PropertiesException>(() => restrictedConverter.Deserialize(serializer, typeof(SampleClass), serializer.TreeComposer.ReadObject(reader)));
+
+            using (var reader = new PropertiesReader(data))
+            {
+                SampleClass obj = null!;
+                Assert.DoesNotThrow(() => obj = (SampleClass)converter.Deserialize(serializer, typeof(SampleClass), serializer.TreeComposer.ReadObject(reader))!);
+                Assert.That(obj, Is.EqualTo(new SampleClass("EditedPublicData", "EditedPublicFieldData", "EditedPrivateData", "EditedPrivateFieldData")));
+            }
+        }
+
+        private class SampleClass : IEquatable<SampleClass>
+        {
+            public string? PublicData { get; set; } = "ExamplePublicData";
+            public string? PublicFieldData = "ExamplePublicFieldData";
+
+            private string? PrivateData { get; set; } = "ExamplePrivateData";
+            private string? PrivateFieldData = "ExamplePrivateFieldData";
+
+            public SampleClass() { }
+
+            public SampleClass(string? publicData, string? publicFieldData, string? privateData, string? privateFieldData)
+            {
+                PublicData = publicData;
+                PublicFieldData = publicFieldData;
+                PrivateData = privateData;
+                PrivateFieldData = privateFieldData;
+            }
+
+            public bool Equals(SampleClass? other)
+            {
+                return PublicData == other?.PublicData &&
+                    PublicFieldData == other?.PublicFieldData &&
+                    PrivateData == other?.PrivateData &&
+                    PrivateFieldData == other?.PrivateFieldData;
+            }
+
+            public override bool Equals(object? obj) => Equals(obj as SampleClass);
         }
     }
 }
