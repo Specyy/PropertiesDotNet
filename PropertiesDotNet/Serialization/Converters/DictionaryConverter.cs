@@ -29,13 +29,13 @@ namespace PropertiesDotNet.Serialization.Converters
         }
 
         /// <inheritdoc/>
-        public object? Deserialize(PropertiesSerializer serializer, Type type, PropertiesObject tree)
+        public object? Deserialize(PropertiesSerializer serializer, Type type, PropertiesObject obj)
         {
             GetDictionaryTypes(serializer, type, out Type keyType, out Type valueType);
             object? rawValue = serializer.ObjectProvider.Construct(type);
             IDictionary dictionary = rawValue as IDictionary ?? (IDictionary)serializer.ObjectProvider.Construct(typeof(DynamicGenericDictionary<,>).MakeGenericType(keyType, valueType), new[] { rawValue });
 
-            foreach (var node in tree)
+            foreach (var node in obj)
             {
                 // Key must be primitive
                 object? key = serializer.DeserializePrimitive(keyType, node.Name);
@@ -45,11 +45,11 @@ namespace PropertiesDotNet.Serialization.Converters
                 {
                     value = serializer.DeserializePrimitive(valueType, prop.Value);
                 }
-                else if (node is PropertiesObject obj)
+                else if (node is PropertiesObject innerObj)
                 {
                     // TODO: Maybe if value type is string, read the obj as a single string
                     // Check if key and value are both primitive, then do it
-                    value = serializer.DeserializeObject(valueType, obj);
+                    value = serializer.DeserializeObject(valueType, innerObj);
                 }
                 else throw new PropertiesException($"Cannot deserialize tree node of type \"{node.GetType().FullName}\"!");
 
@@ -76,7 +76,7 @@ namespace PropertiesDotNet.Serialization.Converters
         }
 
         /// <inheritdoc/>
-        public void Serialize(PropertiesSerializer serializer, Type type, object? value, PropertiesObject tree)
+        public void Serialize(PropertiesSerializer serializer, Type type, object? value, PropertiesObject obj)
         {
             GetDictionaryTypes(serializer, type, out Type keyType, out Type valueType);
             IDictionary dictionary = value as IDictionary ?? (IDictionary)serializer.ObjectProvider.Construct(typeof(DynamicGenericDictionary<,>).MakeGenericType(keyType, valueType), new[] { value });
@@ -90,13 +90,13 @@ namespace PropertiesDotNet.Serialization.Converters
 
                 if (serializer.IsPrimitive(entryValue?.GetType()))
                 {
-                    tree.AddPrimitive(keyText, serializer.SerializePrimitive(entryValue?.GetType(), entryValue));
+                    obj.AddPrimitive(keyText, serializer.SerializePrimitive(entryValue?.GetType(), entryValue));
                 }
                 else
                 {
                     PropertiesObject entryObj = new PropertiesObject(keyText);
                     serializer.SerializeObject(entryValue?.GetType(), entryValue, entryObj);
-                    tree.Add(entryObj);
+                    obj.Add(entryObj);
                 }
             }
         }

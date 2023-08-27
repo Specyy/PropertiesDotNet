@@ -18,22 +18,22 @@ namespace PropertiesDotNet.Serialization
         bool Accepts(Type type);
 
         /// <summary>
-        /// Deserializes the property <paramref name="tree"/> as the <paramref name="type"/>. 
+        /// Deserializes the property <paramref name="obj"/> as the <paramref name="type"/>. 
         /// </summary>
         /// <param name="serializer">The serializer which is requesting deserialization.</param>
         /// <param name="type">The type to deserialize.</param>
-        /// <param name="tree">A tree-like representation of the ".properties" object to deserialize.</param>
+        /// <param name="obj">A tree-like representation of the ".properties" object to deserialize.</param>
         /// <returns>The deserialized value.</returns>
-        object? Deserialize(PropertiesSerializer serializer, Type type, PropertiesObject tree);
+        object? Deserialize(PropertiesSerializer serializer, Type type, PropertiesObject obj);
 
         /// <summary>
         /// Serializes the object <paramref name="value"/> as the <paramref name="type"/> into
-        /// the <paramref name="tree"/>. 
+        /// the <paramref name="obj"/>. 
         /// </summary>
         /// <param name="serializer">The serializer which is requesting serialization.</param>
         /// <param name="type">The type to intepret the <paramref name="value"/> as.</param>
-        /// <param name="tree">A tree-like representation of the <paramref name="value"/>.</param>
+        /// <param name="obj">A tree-like representation of the <paramref name="value"/>.</param>
         /// <param name="value">The value to serialize.</param>
-        void Serialize(PropertiesSerializer serializer, Type type, object? value, PropertiesObject tree);
+        void Serialize(PropertiesSerializer serializer, Type type, object? value, PropertiesObject obj);
     }
 }

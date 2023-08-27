@@ -69,11 +69,11 @@ namespace PropertiesDotNet.Serialization.Converters
         }
 
         /// <inheritdoc/>
-        public object? Deserialize(PropertiesSerializer serializer, Type type, PropertiesObject tree)
+        public object? Deserialize(PropertiesSerializer serializer, Type type, PropertiesObject obj)
         {
             object target = serializer.ObjectProvider.Construct(type);
 
-            foreach (var node in tree)
+            foreach (var node in obj)
             {
                 DeserializeMember(serializer, type, target, node);
             }
@@ -100,7 +100,7 @@ namespace PropertiesDotNet.Serialization.Converters
         }
 
         /// <inheritdoc/>
-        public void Serialize(PropertiesSerializer serializer, Type type, object? value, PropertiesObject tree)
+        public void Serialize(PropertiesSerializer serializer, Type type, object? value, PropertiesObject obj)
         {
             var members = GetMembers(type);
 
@@ -111,11 +111,11 @@ namespace PropertiesDotNet.Serialization.Converters
 
             foreach (var member in entryValues)
             {
-                SerializeMember(serializer, value, member, tree);
+                SerializeMember(serializer, value, member, obj);
             }
         }
 
-        private void SerializeMember(PropertiesSerializer serializer, object? container, PropertiesMember member, PropertiesObject @object)
+        private void SerializeMember(PropertiesSerializer serializer, object? container, PropertiesMember member, PropertiesObject obj)
         {
             PropertiesTreeNode node;
 
@@ -124,14 +124,14 @@ namespace PropertiesDotNet.Serialization.Converters
                 // TODO: Handle null members (skip, error, or write as primitive null)
                 string propKey = serializer.SerializePrimitive(typeof(string), member.Name)!;
                 string? propValue = serializer.SerializePrimitive(member.Type, member.GetValue(serializer.ValueProvider, container));
-                node = @object.AddPrimitive(propKey, propValue);
+                node = obj.AddPrimitive(propKey, propValue);
             }
             else
             {
                 node = new PropertiesObject(serializer.SerializePrimitive(typeof(string), member.Name));
                 // TODO: Handle null members (skip, error, or write as primitive null)
                 serializer.SerializeObject(member.Type, member.GetValue(serializer.ValueProvider, container), (PropertiesObject)node);
-                @object.Add(node);
+                obj.Add(node);
             }
 
             if (member.Comments != null)

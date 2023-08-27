@@ -26,20 +26,20 @@ namespace PropertiesDotNet.Serialization.Converters
         }
 
         /// <inheritdoc/>
-        public override object? Deserialize(PropertiesSerializer serializer, Type type, PropertiesObject tree)
+        public override object? Deserialize(PropertiesSerializer serializer, Type type, PropertiesObject obj)
         {
             var itemType = type.GetElementType();
             Array array;
             var arrayList = new ArrayList();
 
-            Deserialize(serializer, itemType, arrayList, tree);
+            Deserialize(serializer, itemType, arrayList, obj);
             arrayList.CopyTo(array = Array.CreateInstance(itemType, arrayList.Count), 0);
 
             return array;
         }
 
         /// <inheritdoc/>
-        public override void Serialize(PropertiesSerializer serializer, Type type, object? value, PropertiesObject tree)
+        public override void Serialize(PropertiesSerializer serializer, Type type, object? value, PropertiesObject obj)
         {
             var array = TypeExtensions.ConvertType<Array>(value, serializer.ObjectProvider);
             var itemType = type.GetElementType()!;
@@ -51,13 +51,13 @@ namespace PropertiesDotNet.Serialization.Converters
 
                 if (serializer.IsPrimitive(item?.GetType() ?? itemType))
                 {
-                    tree.AddPrimitive(index, serializer.SerializePrimitive(item?.GetType() ?? itemType, item));
+                    obj.AddPrimitive(index, serializer.SerializePrimitive(item?.GetType() ?? itemType, item));
                 }
                 else
                 {
                     PropertiesObject itemObj = new PropertiesObject(index);
                     serializer.SerializeObject(item?.GetType() ?? itemType, item, itemObj);
-                    tree.Add(itemObj);
+                    obj.Add(itemObj);
                 }
             }
         }

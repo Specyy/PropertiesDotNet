@@ -31,7 +31,7 @@ namespace PropertiesDotNet.Serialization.Converters
         }
 
         /// <inheritdoc/>
-        public virtual object? Deserialize(PropertiesSerializer serializer, Type type, PropertiesObject tree)
+        public virtual object? Deserialize(PropertiesSerializer serializer, Type type, PropertiesObject obj)
         {
             // TODO: Allow well-formatted collections to be deserialized as HashSets
             if (type.GetGenericTypeDefinition() == typeof(HashSet<>))
@@ -55,21 +55,21 @@ namespace PropertiesDotNet.Serialization.Converters
                 list = rawValue as IList ?? (IList)serializer.ObjectProvider.Construct(typeof(DynamicGenericList<>).MakeGenericType(itemType), new[] { rawValue });
             }
 
-            Deserialize(serializer, itemType, list, tree);
+            Deserialize(serializer, itemType, list, obj);
             return rawValue;
         }
 
         /// <summary>
-        /// Deserializes the <paramref name="list"/> (collection) from the <paramref name="tree"/>.
+        /// Deserializes the <paramref name="list"/> (collection) from the <paramref name="obj"/>.
         /// </summary>
         /// <param name="serializer">The underlying serializer.</param>
         /// <param name="itemType">The list item type.</param>
         /// <param name="list">A new instance of the list.</param>
-        /// <param name="tree">The document tree.</param>
+        /// <param name="obj">The document tree.</param>
         /// <exception cref="PropertiesException">If the list could not be deserialized.</exception>
-        protected void Deserialize(PropertiesSerializer serializer, Type itemType, IList list, PropertiesObject tree)
+        protected void Deserialize(PropertiesSerializer serializer, Type itemType, IList list, PropertiesObject obj)
         {
-            foreach (var node in tree)
+            foreach (var node in obj)
             {
                 int index = serializer.DeserializePrimitive<int>(node.Name);
                 object? value;
