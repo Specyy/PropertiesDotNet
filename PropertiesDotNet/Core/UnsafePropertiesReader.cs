@@ -36,9 +36,9 @@ namespace PropertiesDotNet.Core
 
         /// <summary>
         /// Returns the comment handle for the current token. This handle is either an
-        /// exclamtion mark (!) or a pound symbol (#) or \0 if the current token is not a comment.
+        /// exclamtion mark (!) or a pound symbol (#) or null if the current token is not a comment.
         /// </summary>
-        public char CommentHandle => Token.Type == PropertiesTokenType.Comment ? _commentHandle : default;
+        public char? CommentHandle => Token.Type == PropertiesTokenType.Comment ? _commentHandle : null;
 
         private bool EndOfStream => _index >= _document.Length;
 
@@ -49,7 +49,7 @@ namespace PropertiesDotNet.Core
         private StringBuilder _textPool;
 
         private ReaderState _state;
-        private char _commentHandle;
+        private char? _commentHandle;
         private readonly StreamCursor _cursor;
 
         /// <summary>
