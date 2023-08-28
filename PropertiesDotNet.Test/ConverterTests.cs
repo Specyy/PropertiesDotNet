@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Text;
 
 using NUnit.Framework.Constraints;
 
@@ -82,7 +83,7 @@ namespace PropertiesDotNet.Test
                 Assert.DoesNotThrow(() => converter.Deserialize(serializer, typeof(float), "123f"));
                 Assert.DoesNotThrow(() => converter.Deserialize(serializer, typeof(double), "123d"));
                 Assert.DoesNotThrow(() => converter.Deserialize(serializer, typeof(decimal), "123m"));
-                Assert.DoesNotThrow(() => converter.Deserialize(serializer, typeof(DateTime), "Friday, 29 May 2015 05:50 AM"));
+                Assert.DoesNotThrow(() => converter.Deserialize(serializer, typeof(DateTime), "Sun., 27 Aug. 2023 22:37:31 GMT"));
                 Assert.DoesNotThrow(() => converter.Deserialize(serializer, typeof(Guid), "0f8fad5b-d9cb-469f-a165-70867728950e"));
                 Assert.Throws<PropertiesException>(() => converter.Deserialize(serializer, typeof(object), ""));
             });
@@ -243,7 +244,7 @@ namespace PropertiesDotNet.Test
             string data = @"Hello=World
 123=456
 GUID=5cff0cec-7396-4065-b90c-fca2ec71fd1e
-Time=8/26/2023 12:11:37 PM
+Time=Sun., 27 Aug. 2023 22:37:31 GMT
 Array.0=9
 Array.1=8
 Array.2=7
@@ -274,16 +275,20 @@ List.11=t";
                             if (!DicitonaryEqual((entry.Value as Dictionary<TKey, TValue>)!, dic))
                                 return false;
                         }
-                        else if (!((entry.Value is null && value is null) || (entry.Value!.Equals(value) || entry.Value!.ToString()!.Equals(value!.ToString()))))
+                        if (entry.Value is not null || value is not null)
                         {
-                            Console.WriteLine($"NotEqual: {entry.Key}:{entry.Value} && {entry.Key}:{value}");
-                            return false;
+                            bool equal = (entry.Value is IEquatable<TValue> eq && eq.Equals(value))
+                               || (value is IEquatable<TValue> equate && equate.Equals(entry.Value))
+                               || (entry.Value?.Equals(value) ?? Equals(entry.Value, value))
+                               || (value?.Equals(value) ?? Equals(value, entry.Value));
+
+                            if (!equal)
+                                return false;
                         }
 
                     }
                     else
                     {
-                        Console.WriteLine($"NotEqual: {entry.Key}");
                         return false;
                     }
                 }
@@ -299,7 +304,7 @@ List.11=t";
                 { "Hello", "World" },
                 { "123", "456" },
                 { "GUID", Guid.Parse("5cff0cec-7396-4065-b90c-fca2ec71fd1e") },
-                { "Time", DateTime.Parse("8/26/2023 12:11:37 PM") },
+                { "Time", DateTime.ParseExact("Sun., 27 Aug. 2023 22:37:31 GMT", System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.RFC1123Pattern,null) },
                 { "Array", new Dictionary<string, object>()
                            {
                                 { "0", "9" },
@@ -393,7 +398,119 @@ PrivateFieldData=EditedPrivateFieldData";
             }
         }
 
+        [Theory]
+        public void ObjectConverter_VerifySampleDeserialization()
+        {
+            var serializer = new PropertiesSerializer();
+            var converter = new ObjectConverter();
+            string data = @"
+Name: Abe Lincoln
+Age: 25
+HeightInInches: 6.3333334922790527
+Addresses.Home.Street: 2720 Sundown Lane
+Addresses.Home.City: Kentucketsville
+Addresses.Home.State: Calousiyorkida
+Addresses.Home.Zip: 99978
+Addresses.Work.Street: 1600 Pennsylvania Avenue NW
+Addresses.Work.City: Washington
+Addresses.Work.State: District of Columbia
+Addresses.Work.Zip: 20500
+";
+            using var reader = new PropertiesReader(data);
+            var person = (Person)converter.Deserialize(serializer, typeof(Person), serializer.TreeComposer.ReadObject(reader))!;
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(person.Name, Is.EqualTo("Abe Lincoln"));
+                Assert.That(person.Age, Is.EqualTo(25));
+                Assert.That(person.Height, Is.EqualTo(6.3333334922790527f));
+
+                var homeAddress = person.Addresses["Home"];
+                Assert.That(homeAddress.Street, Is.EqualTo("2720 Sundown Lane"));
+                Assert.That(homeAddress.City, Is.EqualTo("Kentucketsville"));
+                Assert.That(homeAddress.State, Is.EqualTo("Calousiyorkida"));
+                Assert.That(homeAddress.Zip, Is.EqualTo(99978));
+
+                var workAddress = person.Addresses["Work"];
+                Assert.That(workAddress.Street, Is.EqualTo("1600 Pennsylvania Avenue NW"));
+                Assert.That(workAddress.City, Is.EqualTo("Washington"));
+                Assert.That(workAddress.State, Is.EqualTo("District of Columbia"));
+                Assert.That(workAddress.Zip, Is.EqualTo(20500));
+            });
+        }
+
+        [Theory]
+        public void ObjectConverter_VerifySampleSerialization()
+        {
+            var serializer = new PropertiesSerializer();
+            var converter = new ObjectConverter();
+            var person = new Person()
+            {
+                Name = "Abe Lincoln",
+                Age = 25,
+                Height = 6.3333334922790527f,
+                Addresses = new Dictionary<string, Address>()
+                {
+                    { "Home", new Address()
+                        {
+                            Street = "2720 Sundown Lane",
+                            City = "Kentucketsville",
+                            State = "Calousiyorkida",
+                            Zip = 99978,
+                        }
+                    },
+                    { "Work", new Address()
+                        {
+                            Street = "1600 Pennsylvania Avenue NW",
+                            City = "Washington",
+                            State = "District of Columbia",
+                            Zip = 20500,
+                        }
+                    }
+                }
+            };
+            var output = new StringBuilder();
+            string expectedOutput = @"# The person's name
+Name=Abe Lincoln
+# The person's age
+Age=25
+# The person's height in inches
+HeightInInches=6.3333335
+# A list of addresses
+Addresses.Home.Street=2720 Sundown Lane
+# A list of addresses
+Addresses.Home.City=Kentucketsville
+# A list of addresses
+Addresses.Home.State=Calousiyorkida
+# A list of addresses
+# The person's zip
+# Also called zip code
+Addresses.Home.Zip=99978
+# A list of addresses
+Addresses.Work.Street=1600 Pennsylvania Avenue NW
+# A list of addresses
+Addresses.Work.City=Washington
+# A list of addresses
+Addresses.Work.State=District of Columbia
+# A list of addresses
+# The person's zip
+# Also called zip code
+Addresses.Work.Zip=20500".TrimEnd(Environment.NewLine.ToCharArray());
+
+            using (var writer = new PropertiesWriter(output))
+            {
+                var root = serializer.TreeComposer.CreateRoot();
+                converter.Serialize(serializer, typeof(Person), person, root);
+                serializer.TreeComposer.WriteObject(root, writer);
+            }
+
+            Assert.That(output.ToString().TrimEnd(Environment.NewLine.ToCharArray()), Is.EqualTo(expectedOutput));
+            serializer.SerializeObject(person, Console.Out);
+        }
+
+#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
         private class SampleClass : IEquatable<SampleClass>
+#pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
         {
             public string? PublicData { get; set; } = "ExamplePublicData";
             public string? PublicFieldData = "ExamplePublicFieldData";
@@ -421,5 +538,41 @@ PrivateFieldData=EditedPrivateFieldData";
 
             public override bool Equals(object? obj) => Equals(obj as SampleClass);
         }
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        private class Person
+        {
+            [PropertiesComment("The person's name")]
+            public string Name { get; set; }
+
+            [PropertiesComment("The person's age")]
+            public int Age { get; set; }
+
+            [PropertiesComment("The person's height in inches")]
+            [PropertiesMember("HeightInInches")]
+            public float Height { get; set; }
+
+            [PropertiesMember(false)]
+            public int NumberOfSiblings { get; set; }
+
+            [PropertiesComment("A list of addresses")]
+            public Dictionary<string, Address> Addresses { get; set; }
+        }
+
+        private class Address
+        {
+            public string Street { get; set; }
+            public string City { get; set; }
+            public string State { get; set; }
+
+            [PropertiesMember(false)]
+            public int UnitNumber { get; set; }
+
+            [PropertiesComment("The person's zip")]
+            [PropertiesComment("Also called zip code")]
+            [PropertiesMember(typeof(long?))]
+            public int Zip { get; set; }
+        }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.oo
     }
 }

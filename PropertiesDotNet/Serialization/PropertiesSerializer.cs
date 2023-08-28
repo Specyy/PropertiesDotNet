@@ -136,11 +136,16 @@ namespace PropertiesDotNet.Serialization
 
             if (settings is null)
             {
+                var nullableConverter = new NullableTypeConverter();
+
                 Converters.AddLast(new DictionaryConverter());
                 Converters.AddLast(new ArrayConverter());
                 Converters.AddLast(new CollectionConverter());
+                Converters.AddLast(nullableConverter);
                 Converters.AddLast(new ObjectConverter());
+
                 PrimitiveConverters.AddLast(new SystemTypeConverter());
+                PrimitiveConverters.AddLast(nullableConverter);
             }
         }
 
@@ -291,6 +296,45 @@ namespace PropertiesDotNet.Serialization
         }
 
         /// <summary>
+        /// Serializes the .NET object <paramref name="value"/> into a ".properties" object tree.
+        /// </summary>
+        /// <param name="value">The value to serialize.</param>
+        /// <param name="output">The writer to serialize into.</param>
+        /// <returns>The root of the object tree.</returns>
+        /// <exception cref="PropertiesException">If a serialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could serialize the <paramref name="value"/>.</exception>
+        public static void Serialize(object? value, TextWriter output)
+        {
+            new PropertiesSerializer().SerializeObject(value, output);
+        }
+
+        /// <summary>
+        /// Serializes the .NET object <paramref name="value"/> into a ".properties" object tree.
+        /// </summary>
+        /// <param name="value">The value to serialize.</param>
+        /// <param name="output">The writer to serialize into.</param>
+        /// <returns>The root of the object tree.</returns>
+        /// <exception cref="PropertiesException">If a serialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could serialize the <paramref name="value"/>.</exception>
+        public static void Serialize(object? value, Stream output)
+        {
+            new PropertiesSerializer().SerializeObject(value, output);
+        }
+
+        /// <summary>
+        /// Serializes the .NET object <paramref name="value"/> into a ".properties" object tree.
+        /// </summary>
+        /// <param name="value">The value to serialize.</param>
+        /// <param name="path">The path of the file to serialize into.</param>
+        /// <returns>The root of the object tree.</returns>
+        /// <exception cref="PropertiesException">If a serialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could serialize the <paramref name="value"/>.</exception>
+        public static void Serialize(object? value, string path)
+        {
+            new PropertiesSerializer().SerializeObject(value, path);
+        }
+
+        /// <summary>
         /// Serializes the .NET object <paramref name="value"/> as the given <paramref name="type"/> into a ".properties" object tree.
         /// </summary>
         /// <param name="type">The type to serialize the <paramref name="value"/> as.</param>
@@ -301,6 +345,45 @@ namespace PropertiesDotNet.Serialization
         public static void Serialize(Type? type, object? value, IPropertiesWriter output)
         {
             new PropertiesSerializer().SerializeObject(type, value, output);
+        }
+
+        /// <summary>
+        /// Serializes the .NET object <paramref name="value"/> as the given <paramref name="type"/> into a ".properties" object tree.
+        /// </summary>
+        /// <param name="type">The type to serialize the <paramref name="value"/> as.</param>
+        /// <param name="value">The value to serialize.</param>
+        /// <param name="output">The writer to serialize into.</param>
+        /// <exception cref="PropertiesException">If a serialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could serialize the <paramref name="value"/> as the <paramref name="type"/>.</exception>
+        public static void Serialize(Type? type, object? value, TextWriter output)
+        {
+            new PropertiesSerializer().SerializeObject(type, value, output);
+        }
+
+        /// <summary>
+        /// Serializes the .NET object <paramref name="value"/> as the given <paramref name="type"/> into a ".properties" object tree.
+        /// </summary>
+        /// <param name="type">The type to serialize the <paramref name="value"/> as.</param>
+        /// <param name="value">The value to serialize.</param>
+        /// <param name="output">The writer to serialize into.</param>
+        /// <exception cref="PropertiesException">If a serialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could serialize the <paramref name="value"/> as the <paramref name="type"/>.</exception>
+        public static void Serialize(Type? type, object? value, Stream output)
+        {
+            new PropertiesSerializer().SerializeObject(type, value, output);
+        }
+
+        /// <summary>
+        /// Serializes the .NET object <paramref name="value"/> as the given <paramref name="type"/> into a ".properties" object tree.
+        /// </summary>
+        /// <param name="type">The type to serialize the <paramref name="value"/> as.</param>
+        /// <param name="value">The value to serialize.</param>
+        /// <param name="path">The path of the file to serialize into.</param>
+        /// <exception cref="PropertiesException">If a serialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could serialize the <paramref name="value"/> as the <paramref name="type"/>.</exception>
+        public static void Serialize(Type? type, object? value, string path)
+        {
+            new PropertiesSerializer().SerializeObject(type, value, path);
         }
 
         /// <summary>
@@ -461,6 +544,42 @@ namespace PropertiesDotNet.Serialization
         }
 
         /// <summary>
+        /// Serializes the .NET object <paramref name="value"/> into a ".properties" object tree.
+        /// </summary>
+        /// <param name="value">The value to serialize.</param>
+        /// <param name="output">The writer to serialize into.</param>
+        /// <exception cref="PropertiesException">If a serialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could serialize the <paramref name="value"/>.</exception>
+        public void SerializeObject(object? value, TextWriter output)
+        {
+            SerializeObject(null, value, output);
+        }
+
+        /// <summary>
+        /// Serializes the .NET object <paramref name="value"/> into a ".properties" object tree.
+        /// </summary>
+        /// <param name="value">The value to serialize.</param>
+        /// <param name="output">The writer to serialize into.</param>
+        /// <exception cref="PropertiesException">If a serialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could serialize the <paramref name="value"/>.</exception>
+        public void SerializeObject(object? value, Stream output)
+        {
+            SerializeObject(null, value, output);
+        }
+
+        /// <summary>
+        /// Serializes the .NET object <paramref name="value"/> into a ".properties" object tree.
+        /// </summary>
+        /// <param name="value">The value to serialize.</param>
+        /// <param name="path">The path of the file to serialize into.</param>
+        /// <exception cref="PropertiesException">If a serialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could serialize the <paramref name="value"/>.</exception>
+        public void SerializeObject(object? value, string path)
+        {
+            SerializeObject(null, value, path);
+        }
+
+        /// <summary>
         /// Serializes the .NET object <paramref name="value"/> as the given <paramref name="type"/> into a ".properties" object tree.
         /// </summary>
         /// <param name="type">The type to serialize the <paramref name="value"/> as.</param>
@@ -473,6 +592,48 @@ namespace PropertiesDotNet.Serialization
             var root = TreeComposer.CreateRoot();
             SerializeObject(type, value, root);
             TreeComposer.WriteObject(root, output);
+        }
+
+        /// <summary>
+        /// Serializes the .NET object <paramref name="value"/> as the given <paramref name="type"/> into a ".properties" object tree.
+        /// </summary>
+        /// <param name="type">The type to serialize the <paramref name="value"/> as.</param>
+        /// <param name="value">The value to serialize.</param>
+        /// <param name="output">The writer to serialize into.</param>
+        /// <exception cref="PropertiesException">If a serialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could serialize the <paramref name="value"/> as the <paramref name="type"/>.</exception>
+        public void SerializeObject(Type? type, object? value, TextWriter output)
+        {
+            using var writer = new PropertiesWriter(output);
+            SerializeObject(type, value, writer);
+        }
+
+        /// <summary>
+        /// Serializes the .NET object <paramref name="value"/> as the given <paramref name="type"/> into a ".properties" object tree.
+        /// </summary>
+        /// <param name="type">The type to serialize the <paramref name="value"/> as.</param>
+        /// <param name="value">The value to serialize.</param>
+        /// <param name="output">The writer to serialize into.</param>
+        /// <exception cref="PropertiesException">If a serialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could serialize the <paramref name="value"/> as the <paramref name="type"/>.</exception>
+        public void SerializeObject(Type? type, object? value, Stream output)
+        {
+            using var writer = new PropertiesWriter(output);
+            SerializeObject(type, value, writer);
+        }
+
+        /// <summary>
+        /// Serializes the .NET object <paramref name="value"/> as the given <paramref name="type"/> into a ".properties" object tree.
+        /// </summary>
+        /// <param name="type">The type to serialize the <paramref name="value"/> as.</param>
+        /// <param name="value">The value to serialize.</param>
+        /// <param name="path">The path of the file to serialize into.</param>
+        /// <exception cref="PropertiesException">If a serialization exception occurs or if no 
+        /// <see cref="IPropertiesConverter"/> could serialize the <paramref name="value"/> as the <paramref name="type"/>.</exception>
+        public void SerializeObject(Type? type, object? value, string path)
+        {
+            using var writer = new PropertiesWriter(path);
+            SerializeObject(type, value, writer);
         }
 
         /// <summary>
