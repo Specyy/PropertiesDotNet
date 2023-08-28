@@ -7,9 +7,9 @@ A powerful `.properties` document parser for .NET
 Each line in a .properties document normally stores a single property with an assigner delimeting the key and value (e.g. `key=value`). The format also supports comments with the handles `#` and `!` (e.g. `# This is a comment`)
 
 ## Overview
-This powerful and intuitive library is designed to effortlessly parse Java `.properties` documents, providing a seamless integration into your .NET projects. Whether you're dealing with configuration files, localization data, or any other structured key-value pair data, PropertiesDotNet has got you covered. With its simple API and comprehensive and extensive features, you'll be up and running in no time.
+This powerful and intuitive library is designed to effortlessly parse Java .properties documents, providing a seamless integration into your .NET projects. Whether you're dealing with configuration files, localization data, or any other structured key-value pair data, PropertiesDotNet has got you covered. With its simple API and comprehensive and extensive features, you'll be up and running in no time.
 
-The library allows for the configuration of .properties documents in three distinct ways: a low level token parsing and document writing API, a high level object model similar to XmlDocument, and a serialization library that allows for serialization and deserialization of .NET objects to and from .properties documents.
+The library allows for the configuration of .properties documents in three distinct ways: a low-level token-parsing and document writing API, a high level object model similar to XmlDocument, and a serialization library for the serialization and deserialization of .NET objects to and from .properties documents.
 
 The library is currently available in the following .NET frameworks:
  
@@ -25,8 +25,9 @@ The library is currently available in the following .NET frameworks:
 ## Quick Start
 
 1. Install the package from NuGet:
-
+```bash
 Install-Package PropertiesDotNet
+```
 
 2. Use the `PropertiesDocument` class to load a .properties file:
 
@@ -150,3 +151,4 @@ Console.WriteLine(player);
 You can install the PropertiesDotNet library via NuGet Package Manager or by using the following NuGet CLI command:
 ```bash
 nuget install PropertiesDotNet
+```
