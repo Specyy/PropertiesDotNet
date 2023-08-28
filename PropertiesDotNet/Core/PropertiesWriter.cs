@@ -60,11 +60,11 @@ namespace PropertiesDotNet.Core
         }
 
         /// <summary>
-        /// Creates a new <see cref="PropertiesWriter"/> that writes to the <paramref name="filePath"/>.
+        /// Creates a new <see cref="PropertiesWriter"/> that writes to the <paramref name="path"/>.
         /// </summary>
-        /// <param name="filePath">The path to the .properties file.</param>
+        /// <param name="path">The path to the .properties file.</param>
         /// <param name="settings">The settings for this writer.</param>
-        public PropertiesWriter(string filePath, PropertiesWriterSettings? settings = null) : this(File.OpenWrite(filePath), settings)
+        public PropertiesWriter(string path, PropertiesWriterSettings? settings = null) : this(File.OpenWrite(path), settings)
         {
 
         }

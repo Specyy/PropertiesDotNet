@@ -78,9 +78,9 @@ namespace PropertiesDotNet.Serialization.Converters
                 {
                     value = serializer.DeserializePrimitive(itemType, prop.Value);
                 }
-                else if (node is PropertiesObject obj)
+                else if (node is PropertiesObject innerObj)
                 {
-                    value = serializer.DeserializeObject(itemType, obj);
+                    value = serializer.DeserializeObject(itemType, innerObj);
                 }
                 else throw new PropertiesException($"Cannot deserialize tree node of type \"{node.GetType().FullName}\"!");
 
