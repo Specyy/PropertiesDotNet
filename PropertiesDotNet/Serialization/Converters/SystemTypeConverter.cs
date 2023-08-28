@@ -69,7 +69,7 @@ namespace PropertiesDotNet.Serialization.Converters
                 TypeCode.Double => double.Parse(char.ToUpperInvariant(input[input.Length - 1]) == 'D' ? input.Substring(0, input.Length - 1) : input, NumberStyles.Float),
                 TypeCode.Decimal => decimal.Parse(char.ToUpperInvariant(input[input.Length - 1]) == 'M' ? input.Substring(0, input.Length - 1) : input, NumberStyles.Float | NumberStyles.AllowCurrencySymbol),
                 TypeCode.String => input,
-                TypeCode.DateTime => DateTime.ParseExact(input, CultureInfo.CurrentCulture.DateTimeFormat.RFC1123Pattern, null),
+                TypeCode.DateTime => DateTime.ParseExact(input, CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern, null),
                 _ when type == typeof(Guid) =>
 #if NET35
                 new Guid(input),
@@ -99,7 +99,7 @@ namespace PropertiesDotNet.Serialization.Converters
                 TypeCode.Double => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<double>(input.ToString()).ToString() : Convert.ToDouble(input).ToString(),
                 TypeCode.Decimal => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<decimal>(input.ToString()).ToString() : Convert.ToDecimal(input).ToString(),
                 TypeCode.String => input?.ToString(),
-                TypeCode.DateTime => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<DateTime>(input.ToString()).ToString(CultureInfo.CurrentCulture.DateTimeFormat.RFC1123Pattern) : Convert.ToDateTime(input).ToString(CultureInfo.CurrentCulture.DateTimeFormat.RFC1123Pattern),
+                TypeCode.DateTime => input?.GetType() == typeof(string) ? serializer.DeserializePrimitive<DateTime>(input.ToString()).ToString(CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern) : Convert.ToDateTime(input).ToString(CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern),
                 _ when type == typeof(Guid) => input is null ? Guid.Empty.ToString() : ((Guid)input).ToString(),
                 _ => throw new PropertiesException($"Cannot serialize primitive type: {type.FullName}"),
             };
