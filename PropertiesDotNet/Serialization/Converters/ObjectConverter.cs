@@ -90,11 +90,11 @@ namespace PropertiesDotNet.Serialization.Converters
 
             if (memberNode is PropertiesPrimitive primitive)
             {
-                member.SetValue(serializer.ValueProvider, container, serializer.DeserializePrimitive(member.Type, primitive.Value));
+                member.SetValue(serializer.ValueProvider, serializer.ObjectProvider, container, serializer.DeserializePrimitive(member.Type, primitive.Value));
             }
             else if (memberNode is PropertiesObject obj)
             {
-                member.SetValue(serializer.ValueProvider, container, serializer.DeserializeObject(member.Type, obj));
+                member.SetValue(serializer.ValueProvider, serializer.ObjectProvider, container, serializer.DeserializeObject(member.Type, obj));
             }
             else throw new PropertiesException($"Cannot deserialize tree node of type \"{memberNode.GetType().FullName}\"!");
         }
@@ -297,15 +297,15 @@ namespace PropertiesDotNet.Serialization.Converters
                 else throw new ArgumentException($"Invalid member: \"{Info.GetType().FullName}\"!");
             }
 
-            public void SetValue(IValueProvider valueProvider, object? target, object? value)
+            public void SetValue(IValueProvider valueProvider, IObjectProvider conversionProvider, object? target, object? value)
             {
                 if (Info is PropertyInfo prop)
                 {
-                    valueProvider.SetValue(target, prop, value);
+                    valueProvider.SetValue(target, prop, Utils.TypeExtensions.ConvertType(value, prop.PropertyType, conversionProvider));
                 }
                 else if (Info is FieldInfo field)
                 {
-                    valueProvider.SetValue(target, field, value);
+                    valueProvider.SetValue(target, field, Utils.TypeExtensions.ConvertType(value, field.FieldType, conversionProvider));
                 }
                 else throw new ArgumentException($"Invalid member: \"{Info.GetType().FullName}\"!");
             }
