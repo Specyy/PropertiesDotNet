@@ -20,9 +20,9 @@ namespace PropertiesDotNet.Core
 #endif
     {
         /// <summary>
-        /// Returns the absolute character offset in the stream, starting at 0.
+        /// Returns the absolute character offset in the stream, starting at 0 or null if this mark does not support character offsets.
         /// </summary>
-        public readonly ulong AbsoluteOffset { get; }
+        public readonly ulong? AbsoluteOffset { get; }
 
         /// <summary>
         /// Returns the line number, starting at 1.
@@ -50,7 +50,7 @@ namespace PropertiesDotNet.Core
         /// <param name="line">The line number.</param>
         /// <param name="column">The column number.</param>
         /// <param name="absoluteOffset">The absolute offset.</param>
-        public StreamMark(ulong line, uint column, ulong absoluteOffset)
+        public StreamMark(ulong line, uint column, ulong? absoluteOffset)
         {
             if (line < 1)
                 throw new ArgumentException("Line number must be greater than 0!");
@@ -93,8 +93,22 @@ namespace PropertiesDotNet.Core
         /// <param name="other">The <see cref="StreamMark"/> to compare.</param>
         /// <returns>-1, 0, or 1 if this <see cref="StreamMark"/> is less than,
         /// equal to, or greater than the <paramref name="other"/>.</returns>
-        public int CompareTo(in StreamMark other) => AbsoluteOffset == other.AbsoluteOffset ? 0 :
+        public int CompareTo(in StreamMark other)
+        {
+            if (AbsoluteOffset is null || other.AbsoluteOffset is null)
+            {
+                if (Line < other.Line) return -1;
+                if (Line > other.Line) return 1;
+
+                if (Column < other.Line) return -1;
+                if (Line > other.Line) return 1;
+
+                return 0;
+            }
+
+            return AbsoluteOffset == other.AbsoluteOffset ? 0 :
                 (AbsoluteOffset > other.AbsoluteOffset ? 1 : -1);
+        }
 
         /// <summary>
         /// Checks if these <see cref="StreamMark"/>s are equal.
@@ -118,7 +132,7 @@ namespace PropertiesDotNet.Core
         /// </summary>
         /// <param name="other">The <see cref="StreamMark"/> to check.</param>
         /// <returns>true if they are equal; false otherwise.</returns>
-        public bool Equals(in StreamMark other) => Line == other.Line && Column == other.Column;
+        public bool Equals(in StreamMark other) => AbsoluteOffset == other.AbsoluteOffset && Line == other.Line && Column == other.Column;
 
         /// <summary>
         /// Checks if these <see cref="StreamMark"/>s are equal.
@@ -208,7 +222,7 @@ namespace PropertiesDotNet.Core
         /// <returns>The current position as a string.</returns>
         public override string ToString()
         {
-            return $"Line: {Line}, Column: {Column}, AbsoluteOffset: {AbsoluteOffset}";
+            return $"Line: {Line}, Column: {Column}{(AbsoluteOffset is null ? string.Empty : $", AbsoluteOffset: {AbsoluteOffset}")}";
         }
 
         /// <summary>

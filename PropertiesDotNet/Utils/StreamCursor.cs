@@ -89,7 +89,7 @@ namespace PropertiesDotNet.Utils
         {
             Line = mark.Line;
             Column = mark.Column;
-            AbsoluteOffset = mark.AbsoluteOffset;
+            AbsoluteOffset = mark.AbsoluteOffset!.Value;
         }
 
         /// <summary>
