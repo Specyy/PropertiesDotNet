@@ -35,8 +35,8 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
 
                 foreach (var child in Children)
                 {
-                    if (child is PropertiesObject @object)
-                        count += @object.DeepChildCount;
+                    if (child is PropertiesObject obj)
+                        count += obj.DeepChildCount;
                 }
 
                 return count;

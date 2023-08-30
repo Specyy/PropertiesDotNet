@@ -8,12 +8,12 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
     /// <summary>
     /// Represents a leaf element of a ".properties" object tree.
     /// </summary>
-    public sealed class PropertiesPrimitive : PropertiesTreeNode, IEquatable<PropertiesPrimitive>
+    public class PropertiesPrimitive : PropertiesTreeNode, IEquatable<PropertiesPrimitive>
     {
         /// <summary>
         /// The value of this primitive property node. The <see cref="PropertiesTreeNode.Name"/> acts as the key.
         /// </summary>
-        public string? Value { get; set; }
+        public virtual string? Value { get; set; }
 
         /// <summary>
         /// Creates a new primitive property node.
@@ -26,7 +26,7 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
         }
 
         /// <inheritdoc/>
-        public bool Equals(PropertiesPrimitive? other) => !(other is null) && other.Name == Name && other.Value == Value;
+        public virtual bool Equals(PropertiesPrimitive? other) => !(other is null) && other.Name == Name && other.Value == Value;
 
         /// <inheritdoc/>
         public override bool Equals(object? obj) => Equals(obj as PropertiesPrimitive);

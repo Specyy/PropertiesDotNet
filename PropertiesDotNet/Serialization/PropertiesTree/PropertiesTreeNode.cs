@@ -61,7 +61,7 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
         public override string ToString() => Name;
 
         /// <summary>
-        /// Returns the hash code for this tree node
+        /// Returns the hash code for this tree node.
         /// </summary>
         /// <returns>The hash of this tree node.</returns>
         public override int GetHashCode() => HashCodeHelper.GenerateHashCode(GetHashCode(), HashCodeHelper.GenerateHashCode<string>(Comments));
