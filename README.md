@@ -7,7 +7,7 @@ A powerful, fully-featured `.properties` document parser for .NET
 ## Overview
 PropertiesDotNet is a helpful tool tailored for developers who are transitioning from Java to .NET. It addresses the challenge of working with Java's `.properties` files within the .NET environment. This tool fills the gap by offering a user-friendly API that simplifies the interaction with `.properties` documents.
 
-The API provided by this library serves a variety of functions. It facilitates efficient reading and writing of `.properties` documents using token-based identification, and it comes with built-in error handling and validation capabilities. Notably, this API's performance surpasses that of other libraries, including even the Java standard library.
+The API provided by this library serves a variety of functions. It facilitates efficient reading and writing of `.properties` documents using token-based identification, and it comes with built-in error handling and validation capabilities, yielding performance that surpasses that of other libraries, including even the Java standard library.
 
 It also supports the creation of a document object model through the `PropertiesDocument` implementation. This model resembles Java's `Properties` class and the familiar `XmlDocument`. This enables developers to work with `.properties` files in a structured and intuitive manner.
 
@@ -148,6 +148,12 @@ Console.WriteLine(player);
 //     - Age: 22
 //
 ```
+
+# Pending features
+The following features could potentially be implemented in future versions of the library:
+* Circular references during (de)serialization
+* Property referencing for readers and (de)serialization (`person.fullName = ${person.firstName} ${person.lastName}`)
+
 
 ## Installation
 You can install the PropertiesDotNet library via NuGet Package Manager or by using the following NuGet CLI command:
