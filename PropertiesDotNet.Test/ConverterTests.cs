@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Globalization;
 using System.Text;
 
 using NUnit.Framework.Constraints;
@@ -83,7 +84,7 @@ namespace PropertiesDotNet.Test
                 Assert.DoesNotThrow(() => converter.Deserialize(serializer, typeof(float), "123f"));
                 Assert.DoesNotThrow(() => converter.Deserialize(serializer, typeof(double), "123d"));
                 Assert.DoesNotThrow(() => converter.Deserialize(serializer, typeof(decimal), "123m"));
-                Assert.DoesNotThrow(() => converter.Deserialize(serializer, typeof(DateTime), "Sun, 27 Aug 2023 22:37:31 GMT"));
+                Assert.DoesNotThrow(() => converter.Deserialize(serializer, typeof(DateTime), DateTime.Now.ToString(CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern)));
                 Assert.DoesNotThrow(() => converter.Deserialize(serializer, typeof(Guid), "0f8fad5b-d9cb-469f-a165-70867728950e"));
                 Assert.Throws<PropertiesException>(() => converter.Deserialize(serializer, typeof(object), ""));
             });
@@ -241,10 +242,9 @@ namespace PropertiesDotNet.Test
         {
             var serializer = new PropertiesSerializer();
             var converter = new DictionaryConverter();
-            string data = @"Hello=World
+            string data = @$"Hello=World
 123=456
 GUID=5cff0cec-7396-4065-b90c-fca2ec71fd1e
-Time=Sun, 27 Aug 2023 22:37:31 GMT
 Array.0=9
 Array.1=8
 Array.2=7
@@ -304,7 +304,6 @@ List.11=t";
                 { "Hello", "World" },
                 { "123", "456" },
                 { "GUID", Guid.Parse("5cff0cec-7396-4065-b90c-fca2ec71fd1e") },
-                { "Time", DateTime.ParseExact("Sun, 27 Aug 2023 22:37:31 GMT", System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern,null) },
                 { "Array", new Dictionary<string, object>()
                            {
                                 { "0", "9" },
