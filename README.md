@@ -13,7 +13,7 @@ It also supports the creation of a document object model through the `Properties
 
 Furthermore, PropertiesDotNet empowers developers with the ability to serialize and deserialize .NET objects (trees) to and from `.properties` documents. This functionality streamlines the process of converting complex data structures into a format that can be easily stored in `.properties` files and vice versa.
 
-The library is currently available in the following .NET frameworks:
+The library is currently available in the following .NET runtimes:
  
 * .NET 6.0 
 * .NET Core 3.0
