@@ -40,14 +40,15 @@ namespace PropertiesDotNet.ObjectModel
                         _assigner = value;
                         break;
 
-                    case null:
-                        _assigner = Value is null ? value : throw new ArgumentException("Assigner must be '=', ':' or any type of white-space");
-                        break;
-
                     default:
-                        _assigner = (value == default && Value is null) ?
-                            (char)default : throw new ArgumentException("Assigner must be '=', ':' or any type of white-space");
-                        break;
+                    case null:
+                        if (Value is null)
+                        {
+                            _assigner = null;
+                            break;
+                        }
+
+                        throw new ArgumentException("Assigner must be '=', ':' or any type of white-space");
                 }
             }
         }
@@ -87,10 +88,9 @@ namespace PropertiesDotNet.ObjectModel
         /// <param name="key">The key for this property.</param>
         /// <param name="value">The value for this property.</param>
         /// <exception cref="ArgumentException">If the key is <see langword="null"/> empty.</exception>
-        public PropertiesProperty(string key, string? value) : this(key, '=', value)
+        public PropertiesProperty(string key, string? value) : this(key, value is null ? null : (char?)'=', value)
         {
-            if (value is null)
-                _assigner = null;
+            
         }
 
         /// <summary>
@@ -100,8 +100,8 @@ namespace PropertiesDotNet.ObjectModel
         /// <param name="assigner">The assigner for this property.</param>
         /// <param name="value">The value for this property.</param>
         /// <exception cref="ArgumentException">If the key is <see langword="null"/> empty, or 
-        /// if the assigner is not '=', ':' or any type of white-space. </exception>
-        public PropertiesProperty(string key, char assigner, string? value)
+        /// if the assigner is not '=', ':' or any type of white-space and the value is not null. </exception>
+        public PropertiesProperty(string key, char? assigner, string? value)
         {
             if (string.IsNullOrEmpty(key))
                 throw new ArgumentException("Key cannot be null or empty", nameof(key));
@@ -141,6 +141,7 @@ namespace PropertiesDotNet.ObjectModel
         {
             if (Comments?.Count > 0)
             {
+                // TODO: Perhaps cache?
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < Comments.Count; i++)
                     sb.Append('#').Append(' ').AppendLine(Comments[i]);
@@ -156,7 +157,7 @@ namespace PropertiesDotNet.ObjectModel
         public override int GetHashCode() => ToString().GetHashCode();
 
         /// <summary>
-        /// Whether this property is equal to the specified property.
+        /// Returns whether this property is equal to the specified property.
         /// </summary>
         /// <param name="other">The other </param>
         /// <returns>true if this property is equal to the specified property; false otherwise.</returns>
@@ -181,7 +182,7 @@ namespace PropertiesDotNet.ObjectModel
         }
 
         /// <summary>
-        /// Whether this property has the same key and value as specified.
+        /// Returns whether this property has the same key and value as specified.
         /// </summary>
         /// <param name="key">The key to check.</param>
         /// <param name="value">The value to check.</param>
@@ -199,6 +200,28 @@ namespace PropertiesDotNet.ObjectModel
 
         /// <inheritdoc/>
         public virtual bool Equals(KeyValuePair<string, string?> other) => Equals(other.Key, other.Value);
+
+        /// <summary>
+        /// Returns whether the specified properties are equal.
+        /// </summary>
+        /// <param name="left">The first property.</param>
+        /// <param name="right">The second property.</param>
+        /// <returns>true if these properties are equal; false otherwise.</returns>
+        public static bool operator ==(PropertiesProperty? left, PropertiesProperty? right)
+        {
+            if (left is null && right is null) return true;
+            if (left is null || right is null) return false;
+
+            return left.Equals(right);
+        }
+
+        /// <summary>
+        /// Returns whether the specified properties are not equal.
+        /// </summary>
+        /// <param name="left">The first property.</param>
+        /// <param name="right">The second property.</param>
+        /// <returns>true if these properties are equal; false otherwise.</returns>
+        public static bool operator !=(PropertiesProperty? left, PropertiesProperty? right) => !(left == right);
 
         /// <summary>
         /// Returns this property as it would be written within a ".properties" document.

@@ -108,6 +108,7 @@ propWithComments:valueForPropWithComments"));
 key3 value3", sw.ToString());
         }
 
+        // For a predictable output
         private string ToString(PropertiesProperty property) => $"{property.Key}{property.Assigner}{property.Value}";
     }
 }
