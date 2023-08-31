@@ -56,7 +56,7 @@ namespace PropertiesDotNet.Serialization.Converters
                 dictionary.Add(key, value);
             }
 
-            return dictionary;
+            return rawValue;
         }
 
         private void GetDictionaryTypes(PropertiesSerializer serializer, Type type, out Type keyType, out Type valueType)

@@ -725,6 +725,9 @@ namespace PropertiesDotNet.Serialization
         /// <returns>true if an <see cref="IPropertiesPrimitiveConverter"/> is registered for the given type; false otherwise.</returns>
         public virtual bool IsPrimitive(Type type)
         {
+            if (type is null || type == typeof(object))
+                type = DefaultPrimitiveType;
+
             foreach (var primitiveConverter in Settings.PrimitiveConverters)
                 if (primitiveConverter.Accepts(type))
                     return true;
