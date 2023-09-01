@@ -282,6 +282,28 @@ namespace PropertiesDotNet.Utils
 
         public static T ConvertType<T>(object? value, IObjectProvider objectProvider) => (T)ConvertType(value, typeof(T), objectProvider);
 
+        // Taken from https://github.com/aaubry/YamlDotNet/blob/0bf02fd092a97f49069945177ac8bd16efac84ce/YamlDotNet/Serialization/Utilities/TypeConverter.cs#L129
+        //
+        // This file is part of YamlDotNet - A .NET library for YAML.
+        // Copyright (c) Antoine Aubry and contributors
+        //
+        // Permission is hereby granted, free of charge, to any person obtaining a copy of
+        // this software and associated documentation files (the "Software"), to deal in
+        // the Software without restriction, including without limitation the rights to
+        // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+        // of the Software, and to permit persons to whom the Software is furnished to do
+        // so, subject to the following conditions:
+        //
+        // The above copyright notice and this permission notice shall be included in all
+        // copies or substantial portions of the Software.
+        //
+        // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        // SOFTWARE.
         public static object? ConvertType(object? value, Type type, IObjectProvider objectProvider)
         {
             // Handle null and DBNull
@@ -344,11 +366,15 @@ namespace PropertiesDotNet.Utils
 
             // Try to find a casting operator in the source or destination type
             Type[] types = new[] { sourceType, type };
-            foreach (Type currentType in types)
+            for(int i = 0; i < types.Length; i++)
             {
+                var currentType = types[i];
                 MethodInfo[] publicStaticMethods = currentType.GetMethods(BindingFlags.Public | BindingFlags.Static);
-                foreach (MethodInfo method in publicStaticMethods)
+
+                for(int j = 0; j < publicStaticMethods.Length; j++)
                 {
+                    var method = publicStaticMethods[j];
+
                     if (method.IsSpecialName &&
                         (method.Name == "op_Implicit" || method.Name == "op_Explicit") &&
                         type.IsAssignableFrom(method.ReturnParameter.ParameterType))
