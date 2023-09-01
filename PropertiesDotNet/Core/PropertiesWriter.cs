@@ -1,428 +1,568 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 
-using PropertiesDotNet.Core.Events;
+using PropertiesDotNet.Utils;
 
 namespace PropertiesDotNet.Core
 {
-	/// <summary>
-	/// Represents a class that writes <see cref="PropertiesEvent"/>s into a stream as text.
-	/// </summary>
-	public sealed class PropertiesWriter : IPropertiesWriter
-	{
-		/// <inheritdoc/>
-		public PropertiesWriterSettings Settings { get; }
+    enum WriterState : byte
+    {
+        CommentOrKey,
+        ValueOrAssigner,
+        Value
+    }
 
-		/// <inheritdoc/>
-		public event EventWritten? EventWritten;
+    /// <summary>
+    /// Represents a class that writes <see cref="PropertiesToken"/>s into a stream as text.
+    /// </summary>
+    public sealed class PropertiesWriter : IPropertiesWriter
+    {
+        /// <inheritdoc/>
+        public PropertiesWriterSettings Settings
+        {
+            get => _settings;
+            set => _settings = value ?? PropertiesWriterSettings.Default;
+        }
 
-		private PropertiesEvent? _lastEvent;
+        /// <inheritdoc/>
+        public event TokenWritten? TokenWritten;
 
-		private bool _propertyStarted;
+        private PropertiesWriterSettings _settings;
+        private bool _disposed;
+        private uint _flushCounter;
 
-		private readonly StringBuilder _textPool;
-		private readonly StreamCursor _cursor;
-		private readonly TextWriter _stream;
+        private WriterState _state;
+        private readonly StringBuilder _textPool;
+        private readonly StreamCursor _cursor;
+        private readonly TextWriter _stream;
 
-		/// <summary>
-		/// Creates a new <see cref="PropertiesWriter"/>.
-		/// </summary>
-		/// <param name="output">The output stream.</param>
-		/// <param name="settings">The settings for this writer.</param>
-		public PropertiesWriter(StringBuilder output, PropertiesWriterSettings? settings = null) : this(new StringWriter(output), settings)
-		{
-			
-		}
+        /// <summary>
+        /// Creates a new <see cref="PropertiesWriter"/>.
+        /// </summary>
+        /// <param name="output">The output stream.</param>
+        /// <param name="settings">The settings for this writer.</param>
+        public PropertiesWriter(StringBuilder output, PropertiesWriterSettings? settings = null) : this(new StringWriter(output), settings)
+        {
 
-		/// <summary>
-		/// Creates a new <see cref="PropertiesWriter"/>.
-		/// </summary>
-		/// <param name="output">The output stream.</param>
-		/// <param name="settings">The settings for this writer.</param>
-		public PropertiesWriter(Stream output, PropertiesWriterSettings? settings = null) : this(new StreamWriter(output), settings)
-		{
+        }
 
-		}
+        /// <summary>
+        /// Creates a new <see cref="PropertiesWriter"/>.
+        /// </summary>
+        /// <param name="output">The output stream.</param>
+        /// <param name="settings">The settings for this writer.</param>
+        public PropertiesWriter(Stream output, PropertiesWriterSettings? settings = null) : this(new StreamWriter(output), settings)
+        {
 
-		/// <summary>
-		/// Creates a new <see cref="PropertiesWriter"/>.
-		/// </summary>
-		/// <param name="output">The output stream.</param>
-		/// <param name="settings">The settings for this writer.</param>
-		public PropertiesWriter(TextWriter output, PropertiesWriterSettings? settings = null)
-		{
-			Settings = settings ?? PropertiesWriterSettings.Default;
-			_stream = output ?? throw new ArgumentNullException(nameof(output));
-			_textPool = new StringBuilder();
-			_cursor = new StreamCursor();
-		}
+        }
 
-		/// <inheritdoc/>
-		public void Write(PropertiesEvent @event)
-		{
-			WriteEvent(@event);
-			EventWritten?.Invoke(this, @event);
-		}
+        /// <summary>
+        /// Creates a new <see cref="PropertiesWriter"/> that writes to the <paramref name="path"/>.
+        /// </summary>
+        /// <param name="path">The path to the .properties file.</param>
+        /// <param name="settings">The settings for this writer.</param>
+        public PropertiesWriter(string path, PropertiesWriterSettings? settings = null) : this(File.OpenWrite(path), settings)
+        {
 
-		private void WriteEvent(PropertiesEvent @event)
-		{
-			if (_propertyStarted)
-			{
-				// Expect key/text
-				if (_lastEvent is PropertyStart)
-				{
-					if (!(@event is Value) && @event is Text text)
-					{
-						WriteText(text, true);
-					}
-					else
-					{
-						throw new PropertiesStreamException(_cursor.CurrentPosition, _cursor.CurrentPosition, $"Expected {nameof(Key)} after {nameof(PropertyStart)}, got {@event?.GetType().FullName ?? "null"}");
-					}
-				}
+        }
 
-				// Check if last event is key
-				// Expect assigner/(value/text)/property end
-				else if (!(_lastEvent is Value) && _lastEvent is Text)
-				{
-					if (@event is ValueAssigner assigner)
-					{
-						WriteAssigner(assigner);
-					}
-					else if (!(@event is Key) && @event is Text text)
-					{
-						// Assigner
-						Write(' ');
-						WriteText(text, false);
-					}
-					else if (@event is PropertyEnd)
-					{
-						_propertyStarted = false;
-					}
-					else
-					{
-						throw new PropertiesStreamException(_cursor.CurrentPosition, _cursor.CurrentPosition, $"Expected {nameof(ValueAssigner)}, {nameof(Value)}, or {nameof(PropertyEnd)} after {nameof(Key)}, got {@event?.GetType().FullName ?? "null"}");
-					}
-				}
+        /// <summary>
+        /// Creates a new <see cref="PropertiesWriter"/>.
+        /// </summary>
+        /// <param name="output">The output stream.</param>
+        /// <param name="settings">The settings for this writer.</param>
+        public PropertiesWriter(TextWriter output, PropertiesWriterSettings? settings = null)
+        {
+            _settings = settings ?? PropertiesWriterSettings.Default;
+            _stream = output ?? throw new ArgumentNullException(nameof(output));
+            _textPool = new StringBuilder();
+            _cursor = new StreamCursor();
+        }
 
-				// Expect (value/text) or property end
-				else if (_lastEvent is ValueAssigner)
-				{
-					if (!(@event is Key) && @event is Text text)
-					{
-						WriteText(text, false);
-					}
-					else if (@event is PropertyEnd)
-					{
-						_propertyStarted = false;
-					}
-					else
-					{
-						throw new PropertiesStreamException(_cursor.CurrentPosition, _cursor.CurrentPosition, $"Expected {nameof(Value)} or {nameof(PropertyEnd)} after {nameof(ValueAssigner)}, got \"{@event?.GetType().FullName ?? "null"}\"");
-					}
-				}
+        /// <inheritdoc/>
+        public bool Write(PropertiesToken token) => token.Type switch
+        {
+            PropertiesTokenType.Comment => WriteComment(token.Text),
+            PropertiesTokenType.Key => WriteKey(token.Text),
+            PropertiesTokenType.Assigner => token.Text.Length > 1 ?
+                                    (Settings.ThrowOnError ? throw new PropertiesException("Assigner must be '=', ':' or any type of white-space!") : false)
+                                    : WriteAssigner(token.Text[0]),
+            PropertiesTokenType.Value => WriteValue(token.Text),
+            PropertiesTokenType.Error => Settings.ThrowOnError ? throw new PropertiesException("Cannot emit error into properties stream!") : false,
+            PropertiesTokenType.None => Settings.ThrowOnError ? throw new PropertiesException("Cannot emit null token into properties stream!") : false,
+            // Should never happen
+            _ => Settings.ThrowOnError ? throw new PropertiesException($"Unknown token type: {token.Type}!") : false,
+        };
 
-				// Check if last event is value
-				else if (!(_lastEvent is Key) && _lastEvent is Text)
-				{
-					if (@event is PropertyEnd)
-						_propertyStarted = false;
-					else
-						throw new PropertiesStreamException(_cursor.CurrentPosition, _cursor.CurrentPosition, $"Expected {nameof(PropertyEnd)} after {nameof(Value)}, got \"{@event?.GetType().FullName ?? "null"}\"");
-				}
+        /// <summary>
+        /// Writes a document comment.
+        /// </summary>
+        /// <param name="value">The text content of the comment.</param>
+        /// <returns>true if the comment could be written; false otherwise.</returns>
+        /// <exception cref="PropertiesException">If the comment could not be written and errors are configured to be
+        /// thrown.</exception>
+        public bool WriteComment(string? value) => WriteComment('#', value);
 
-				else
-				{
-					// We should never be here
-					throw new InvalidOperationException($"Unknown event \"{@event?.GetType().FullName ?? "null"}\"");
-				}
-			}
-			else
-			{
-				// Check for document end
-				if (_lastEvent is DocumentEnd)
-				{
-					throw new PropertiesStreamException(_cursor.CurrentPosition, _cursor.CurrentPosition, $"No event can proceed {nameof(DocumentEnd)}!");
-				}
+        /// <summary>
+        /// Writes a document comment.
+        /// </summary>
+        /// <param name="handle">The comment handle. This must be either a '#' or '!'.</param>
+        /// <param name="value">The text content of the comment.</param>
+        /// <returns>true if the comment could be written; false otherwise.</returns>
+        /// <exception cref="PropertiesException">If the comment could not be written and errors are configured to be
+        /// thrown.</exception>
+        public bool WriteComment(char handle, string? value)
+        {
+            if (handle != '#' && handle != '!')
+                return Settings.ThrowOnError ? throw new PropertiesException("Command handle must be '#' or '!'") : false;
 
-				// Expect document start as first
+            if (Settings.IgnoreComments)
+                return false;
 
-				if (_lastEvent is null)
-				{
-					if (!(@event is DocumentStart))
-						throw new PropertiesStreamException(_cursor.CurrentPosition, _cursor.CurrentPosition, $"Expected {nameof(DocumentStart)}, got {@event?.GetType().FullName ?? "null"}");
-				}
+            if (_state != WriterState.CommentOrKey)
+                return Settings.ThrowOnError ? throw new PropertiesException($"Expected {StateToString(_state)} got {nameof(ReaderState.Comment)}!") : false;
 
-				else if (@event is Comment comment)
-				{
-					if (Settings.IgnoreComments)
-						return;
+            int fallbackStartIndex = _textPool.Length - 1;
+            StreamMark fallbackMark = _cursor.Position;
+            WriteInternal(handle);
+            WriteInternal(' ');
 
-					WriteComment(comment);
-				}
+            if (!WriteCommentInternal(value, fallbackStartIndex, in fallbackMark))
+                return false;
 
-				else if (@event is PropertyStart)
-				{
-					WriteLine();
-					_propertyStarted = true;
-				}
+            WriteLineInternal();
 
-				else if (@event is DocumentEnd)
-				{
-					if (Settings.CloseStreamOnEnd)
-						_stream.Dispose();
-				}
-				else
-				{
-					throw new PropertiesStreamException(_cursor.CurrentPosition, _cursor.CurrentPosition, $"Expected {nameof(PropertyStart)}, {nameof(Comment)} or {nameof(DocumentEnd)}, got {@event?.GetType().FullName ?? "null"}");
-				}
-			}
+            _state = WriterState.CommentOrKey;
+            CheckFlush();
+            return true;
+        }
 
-			_lastEvent = @event;
-		}
+        private bool WriteCommentInternal(string? value, int fallbackStartIndex, in StreamMark fallbackMark)
+        {
+            for (int i = 0; i < value?.Length; i++)
+            {
+                char ch = value[i];
+                switch (ch)
+                {
+                    case '\r':
+                        WriteInternal('\\').WriteInternal('r');
+                        break;
+                    case '\n':
+                        WriteInternal('\\').WriteInternal('n');
+                        break;
+                    case '\t':
+                        WriteInternal('\\').WriteInternal('t');
+                        break;
+                    case '\f':
+                        WriteInternal('\\').WriteInternal('f');
+                        break;
+                    case '\a':
+                        WriteInternal('\\').WriteInternal('a');
+                        break;
+                    case '\v':
+                        WriteInternal('\\').WriteInternal('v');
+                        break;
+                    case '\0':
+                        WriteInternal('\\').WriteInternal('0');
+                        break;
+                    default:
+                        WriteCharacter(ch, value, ref i, in fallbackMark, fallbackStartIndex);
+                        break;
+                }
+            }
 
-		/// <summary>
-		/// Flushes the buffered events into the underlying stream.
-		/// </summary>
-		public void Flush()
-		{
-			_stream.Flush();
-		}
+            if (!(TokenWritten is null))
+            {
+                // 2 = handle and white-space
+                int index = fallbackStartIndex + 1 + 2;
+                char[] chars = new char[_textPool.Length - index];
 
-		private void WriteAssigner(ValueAssigner assigner)
-		{
-			Write(assigner.Value);
-		}
+                for (int i = 0; i < chars.Length; i++)
+                    chars[i] = _textPool[index + i];
 
-		private void WriteText(Text value, bool isKey)
-		{
-			_textPool.Length = 0;
+                TokenWritten(this, new PropertiesToken(PropertiesTokenType.Comment, new string(chars)));
+            }
 
-			string stringValue;
+            return true;
+        }
 
-			if ((stringValue = value.Value) is null)
-			{
-				stringValue = isKey ?
-					throw new ArgumentNullException(nameof(value.Value), "Dynamic key value cannot be null!") :
-					string.Empty;
-			}
+        /// <summary>
+        /// Writes a new key.
+        /// </summary>
+        /// <param name="key">The value of the key. This cannot be <see langword="null"/>.</param>
+        /// <param name="logicalLines">Whether to emit line escapes as logical lines.</param>
+        /// <returns>true if the key could be written; false otherwise.</returns>
+        public bool WriteKey(string key, bool logicalLines = false)
+        {
+            if (key is null)
+                return Settings.ThrowOnError ? throw new ArgumentNullException(nameof(key)) : false;
 
-			var newLine = _cursor.Column == 1;
+            if (_state != WriterState.CommentOrKey)
+                return Settings.ThrowOnError ? throw new PropertiesException($"Expected {StateToString(_state)} got Key!") : false;
 
-			for (var i = 0; i < value.Value.Length; i++)
-			{
-				var current = stringValue[i];
+            if (WriteText(true, key, logicalLines))
+            {
+                _state = WriterState.ValueOrAssigner;
+                CheckFlush();
+                return true;
+            }
 
-				switch (current)
-				{
-					case '#':
-					case '!':
-					{
-						if (newLine)
-							Append('\\');
+            return false;
+        }
 
-						Append(current);
-						break;
-					}
+        /// <summary>
+        /// Writes a new assigner.
+        /// </summary>
+        /// <param name="assigner">The assigner value.</param>
+        /// <returns>true if the assigner could be written; false otherwise.</returns>
+        /// <exception cref="PropertiesException">If the assigner could not be written and errors are configured to be
+        /// thrown.</exception>
+        public bool WriteAssigner(char assigner = '=')
+        {
+            if (_state != WriterState.ValueOrAssigner)
+                return Settings.ThrowOnError ? throw new PropertiesException($"Expected {StateToString(_state)} got Assigner!") : false;
 
-					case '\r':
-					case '\n':
-					{
-						WriteNewLine(value, stringValue, current, ref i);
-						newLine = true;
-						continue;
-					}
+            if (assigner != '=' && assigner != ':' && assigner != ' ' && assigner != '\t' && assigner != '\f')
+                return Settings.ThrowOnError ? throw new PropertiesException($"Assigner must be '=', ':' or a white-space!") : false;
 
-					case ' ':
-					case '\t':
-					case '\f':
-					{
-						WriteWhiteSpace(isKey, newLine, current);
-						break;
-					}
+            WriteInternal(assigner);
+            TokenWritten?.Invoke(this, new PropertiesToken(PropertiesTokenType.Assigner, assigner.ToString()));
+            _state = WriterState.Value;
+            CheckFlush();
+            return true;
+        }
 
-					case '=':
-					case ':':
-					{
-						if (isKey)
-							AppendEscaped(current);
-						else
-							Append(current);
+        /// <summary>
+        /// Writes a new value.
+        /// </summary>
+        /// <param name="value">The content of the value.</param>
+        /// <param name="logicalLines">Whether to emit line escapes as logical lines.</param>
+        /// <returns>true if the value could be written; false otherwise.</returns>
+        public bool WriteValue(string? value, bool logicalLines = false)
+        {
+            if (_state != WriterState.ValueOrAssigner && _state != WriterState.Value)
+                return Settings.ThrowOnError ? throw new PropertiesException($"Expected {StateToString(_state)} got Value!") : false;
 
-						break;
-					}
+            // Fast path & for empty properties
+            if (string.IsNullOrEmpty(value))
+            {
+                _state = WriterState.CommentOrKey;
+                CheckFlush();
+                return true;
+            }
 
-					case '\\':
-					{
-						AppendEscaped(current);
-						break;
-					}
+            if (WriteText(false, value, logicalLines))
+            {
+                WriteLineInternal();
+                _state = WriterState.CommentOrKey;
+                CheckFlush();
+                return true;
+            }
 
-					default:
-					{
-						WriteTextCharacter(stringValue, current, ref i);
-						break;
-					}
-				}
+            return false;
+        }
 
-				if (newLine)
-					newLine = false;
-			}
+        /// <summary>
+        /// Writes a new property.
+        /// </summary>
+        /// <param name="key">The key for the property</param>
+        /// <param name="value">The value of the property.</param>
+        /// <returns>true if the property could be written; false otherwise.</returns>
+        public bool WriteProperty(string key, string value) => WriteProperty(key, '=', value);
 
-			// Manually write
-			_stream.Write(_textPool.ToString());
-		}
+        /// <summary>
+        /// Writes a new property.
+        /// </summary>
+        /// <param name="key">The key for the property</param>
+        /// <param name="assigner">The assignement character used for this property.</param>
+        /// <param name="value">The value of the property.</param>
+        /// <returns>true if the property could be written; false otherwise.</returns>
+        public bool WriteProperty(string key, char assigner, string value)
+        {
+            if (!WriteKey(key))
+                return false;
 
-		private void WriteNewLine(Text value, string stringValue, char current, ref int currentIndex)
-		{
-			// Write logical line
-			if (value.LogicalLines)
-			{
-				if (current == '\r' && currentIndex < stringValue.Length - 1 && stringValue[currentIndex + 1] == '\n')
-					currentIndex++;
+            if (!WriteAssigner(assigner))
+            {
+                WriteValue(value);
+                return false;
+            }
 
-				AppendEscaped(_stream.NewLine);
+            return WriteValue(value);
+        }
 
-				// Start writing one character before the '\\'
-				var returnColumn = _cursor.Column - (uint)_stream.NewLine.Length; // TODO: ^ (-1)
-				_cursor.AdvanceLine();
+        private bool WriteText(bool key, string text, bool logicalLines)
+        {
+            bool newLine = key;
+            int fallbackStartIndex = _textPool.Length - 1;
+            StreamMark fallbackMark = _cursor.Position;
+            uint startColumn = fallbackMark.Column;
 
-				while(_cursor.Column < returnColumn)
-					Append(' ');
-			}
+            if (!key && _state == WriterState.ValueOrAssigner)
+            {
+                WriteAssigner();
+                startColumn++;
+            }
 
-			// Escape new line
-			else
-			{
-				AppendEscaped(current == '\r' ? 'r' : 'n');
-			}
-		}
+            for (int i = 0; i < text.Length; i++)
+            {
+                char ch = text[i];
 
-		private void WriteWhiteSpace(bool isKey, bool newLine, char current)
-		{
-			if (isKey || newLine || _textPool.Length == 0)
-			{
-				Append('\\');
-			}
+                switch (ch)
+                {
+                    case '\r':
+                    case '\n':
+                        if (WriteNewLine(logicalLines, startColumn, text, ref i, ref newLine))
+                            continue;
+                        break;
 
-			if (Settings.AllCharacters)
-			{
-				Append(current);
-			}
-			else
-			{
-				switch(current)
-				{
-					case '\t':
-						AppendEscaped('t');
-						break;
+                    case '\t':
+                    case ' ':
+                    case '\f':
+                        WriteWhiteSpace(key || newLine || i == 0, ch);
+                        break;
 
-					case '\f':
-						AppendEscaped('f');
-						break;
+                    case '\a':
+                        WriteInternal('\\').WriteInternal('a');
+                        break;
+                    case '\v':
+                        WriteInternal('\\').WriteInternal('v');
+                        break;
+                    case '\0':
+                        WriteInternal('\\').WriteInternal('0');
+                        break;
 
-					default:
-						AppendEscaped(' ');
-						break;
-				}
-			}
-		}
+                    case '#':
+                    case '!':
+                        WriteCommentHandle(key && i == 0, ch);
+                        break;
 
-		private void WriteTextCharacter(string stringValue, char current, ref int currentIndex)
-		{
-			// Normal character
-			if (Settings.AllCharacters || IsLatin1Printable(current))
-			{
-				Append(current);
-			}
+                    case '=':
+                    case ':':
+                        // TODO: Check if should not need on logical - change parser if case
+                        if (key)
+                            WriteInternal('\\');
 
-			// Non-ISO-8859-1 character
-			else
-			{
-				// 8-number escape
-				if (char.IsHighSurrogate(current))
-				{
-					if (!Settings.AllUnicodeEscapes)
-						throw new PropertiesStreamException(null, null, $"Cannot create long unicode escape for character ({char.ConvertToUtf32(current, stringValue[currentIndex + 1])})");
-					
-					if (currentIndex < stringValue.Length - 1 && char.IsLowSurrogate(stringValue[currentIndex + 1]))
-						AppendEscaped('U').Append(char.ConvertToUtf32(current, stringValue[++currentIndex]).ToString("X8", CultureInfo.InvariantCulture));
-					else
-						throw new PropertiesStreamException(null, null, "Missing low surrogate for UTF-16 character!");
-				}
+                        WriteInternal(ch);
+                        break;
 
-				// 4-number escape
-				else
-				{
-					AppendEscaped('u').Append(((ushort)current).ToString("X4", CultureInfo.InvariantCulture));
-				}
-			}
-		}
+                    case '\\':
+                        WriteInternal('\\').WriteInternal('\\');
+                        break;
 
-		private PropertiesWriter Append(char toAppend)
-		{
-			_textPool.Append(toAppend);
-			_cursor.AdvanceColumn();
-			return this;
-		}
+                    default:
+                        WriteCharacter(ch, text, ref i, in fallbackMark, fallbackStartIndex);
+                        break;
+                }
 
-		private PropertiesWriter Append(string toAppend)
-		{
-			_textPool.Append(toAppend);
-			_cursor.AdvanceColumn(toAppend.Length);
-			return this;
-		}
+                newLine = false;
+            }
 
-		private PropertiesWriter AppendEscaped(char toAppend)
-		{
-			Append('\\');
-			Append(toAppend);
-			return this;
-		}
+            if (!(TokenWritten is null))
+            {
+                int index = fallbackStartIndex + (!key && _state == WriterState.ValueOrAssigner ? 2 : 1);
+                char[] chars = new char[_textPool.Length - index];
 
-		private PropertiesWriter AppendEscaped(string toAppend)
-		{
-			Append('\\');
-			Append(toAppend);
-			return this;
-		}
+                for (int i = 0; i < chars.Length; i++)
+                    chars[i] = _textPool[index + i];
 
-		private void WriteComment(Comment comment)
-		{
-			if (!(_lastEvent is DocumentStart))
-				WriteLine();
+                TokenWritten(this, new PropertiesToken(key ? PropertiesTokenType.Key : PropertiesTokenType.Value, new string(chars)));
+            }
+            return true;
+        }
 
-			Write(comment.HandleCharacter);
-			Write(' ');
-			Write(comment.Value);
-		}
+        private bool WriteNewLine(bool logicalLines, uint startColumn, string text, ref int index, ref bool newLine)
+        {
+            if (logicalLines)
+            {
+                WriteInternal('\\');
+                WriteLineInternal();
 
-		private void Write(char ch)
-		{
-			_stream.Write(ch);
-			_cursor.AdvanceColumn();
-		}
+                while (_cursor.Column < startColumn)
+                    WriteInternal(' ');
 
-		private void Write(string chars)
-		{
-			_stream.Write(chars);
-			_cursor.AdvanceColumn(chars.Length);
-		}
+                if (text[index] == '\r' && index + 1 < text.Length && text[index + 1] == '\n')
+                    index++;
 
-		private void WriteLine()
-		{
-			_stream.WriteLine();
-			_cursor.AdvanceLine();
-			// Method above advances 1 for us
-			_cursor.AbsoluteOffset += (uint)(_stream.NewLine.Length == 0 ? 0 : _stream.NewLine.Length - 1);
-		}
+                return newLine = true;
+            }
 
-		private bool IsLatin1Printable(char item)
-		{
-			return (item >= '\x20' && item <= '\x7E') ||
-				(item >= '\xA0' && item <= '\xFF');
-		}
-	}
+            WriteInternal('\\').WriteInternal(text[index] == '\n' ? 'n' : 'r');
+            return newLine = false;
+        }
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void WriteWhiteSpace(bool firstOnKey, char whitespace)
+        {
+            if (firstOnKey)
+                WriteInternal('\\').WriteInternal(whitespace == ' ' ? whitespace : (whitespace == '\t' ? 't' : 'f'));
+            else
+                WriteInternal(whitespace);
+        }
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void WriteCommentHandle(bool firstOnKey, char handle)
+        {
+            if (firstOnKey)
+                WriteInternal('\\');
+
+            WriteInternal(handle);
+        }
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private bool WriteCharacter(char character, string text, ref int index, in StreamMark fallbackMark, int fallbackStartIndex)
+        {
+            if (IsLatin1Printable(character) || Settings.AllCharacters)
+            {
+                WriteInternal(character);
+            }
+            else if (!WriteEscaped(text, ref index))
+            {
+                if (_textPool.Length > 0)
+                {
+                    _textPool.Remove(fallbackStartIndex, index);
+                    _cursor.CopyFrom(in fallbackMark);
+                }
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool WriteEscaped(string text, ref int index)
+        {
+            // 8-number escape
+            //if (char.IsHighSurrogate(text[index]))
+            //{
+            //    if (!Settings.AllUnicodeEscapes)
+            //    {
+            //        int unicode = char.ConvertToUtf32(text[index], text[index + 1]);
+            //        return Settings.ThrowOnError ?
+            //            throw new PropertiesException($"Cannot create long unicode escape for character \"{char.ConvertFromUtf32(unicode)}\" ({unicode})!")
+            //            : false;
+            //    }
+            //    else if (index + 1 < text.Length && char.IsLowSurrogate(text[index + 1]))
+            //    {
+            //        WriteInternal('\\').WriteInternal('U');
+            //        // TODO: Test perf
+            //        WriteInternal(char.ConvertToUtf32(text[index], text[++index]).ToString("X8", CultureInfo.InvariantCulture));
+            //    }
+            //    else
+            //    {
+            //        return Settings.ThrowOnError ?
+            //            throw new PropertiesException("Missing low surrogate for UTF-16 character!") : false;
+            //    }
+            //}
+            //
+            //else
+            //{
+
+            // 4-number escape
+            WriteInternal('\\').WriteInternal('u');
+            // TODO: Test perf
+            WriteInternal(((ushort)text[index]).ToString("X4", CultureInfo.InvariantCulture));
+
+            //}
+
+            return true;
+        }
+
+        /// <inheritdoc/>
+        public void Flush()
+        {
+            _flushCounter = 0;
+
+            if (_textPool?.Length > 0)
+            {
+                _stream.Write(_textPool.ToString());
+                _textPool.Length = 0;
+                _stream.Flush();
+            }
+        }
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private PropertiesWriter WriteInternal(char value)
+        {
+            _textPool.Append(value);
+            _cursor.AdvanceColumn(value == '\t' ? 4 : 1);
+            return this;
+        }
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private PropertiesWriter WriteInternal(string? value)
+        {
+            for (int i = 0; i < value?.Length; i++)
+                WriteInternal(value[i]);
+
+            return this;
+        }
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private void WriteLineInternal()
+        {
+            _textPool.Append(Environment.NewLine);
+
+            // 2 skips on CRLF
+            if (Environment.NewLine.Length > 1)
+                _cursor.AdvanceColumn(Environment.NewLine.Length - 1);
+
+            _cursor.AdvanceLine();
+        }
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private bool CheckFlush()
+        {
+            if ((_flushCounter = Settings.AutoFlush ? _flushCounter + 1 : 0) == Settings.FlushInterval)
+            {
+                Flush();
+                return true;
+            }
+
+            return false;
+        }
+
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
+        private bool IsLatin1Printable(char ch) => (ch >= '\x20' && ch <= '\x7E') || (ch >= '\xA0' && ch <= '\xFF');
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+
+            Flush();
+
+            if (Settings.CloseOnEnd)
+                _stream.Dispose();
+
+            _textPool.Length = 0;
+            _disposed = true;
+        }
+
+        private string StateToString(WriterState state) => state switch
+        {
+            WriterState.CommentOrKey => "Comment or Key",
+            WriterState.ValueOrAssigner => "Value or Assigner",
+            _ => state.ToString(),
+        };
+    }
 }

@@ -20,29 +20,29 @@ namespace PropertiesDotNet.Core
 #endif
     {
         /// <summary>
-        /// Returns the absolute offset, or character offset in the stream, starting at 0.
+        /// Returns the absolute character offset in the stream, starting at 0 or null if this mark does not support character offsets.
         /// </summary>
-        public ulong AbsoluteOffset { get; }
+        public readonly ulong? AbsoluteOffset { get; }
 
         /// <summary>
         /// Returns the line number, starting at 1.
         /// </summary>
-        public uint Line { get; }
+        public readonly ulong Line { get; }
 
         /// <summary>
         /// Returns column number, starting at 1.
         /// </summary>
-        public uint Column { get; }
+        public readonly uint Column { get; }
 
         /// <summary>
         /// Returns column number, starting at 0.
         /// </summary>
-        public uint XOffset => Column - 1;
+        public readonly uint XOffset => Column - 1;
 
         /// <summary>
         /// Returns the line number, starting at 0.
         /// </summary>
-        public uint YOffset => Line - 1;
+        public readonly ulong YOffset => Line - 1;
 
         /// <summary>
         /// Creates a <see cref="StreamMark"/>.
@@ -50,13 +50,13 @@ namespace PropertiesDotNet.Core
         /// <param name="line">The line number.</param>
         /// <param name="column">The column number.</param>
         /// <param name="absoluteOffset">The absolute offset.</param>
-        public StreamMark(uint line, uint column, ulong absoluteOffset)
+        public StreamMark(ulong line, uint column, ulong? absoluteOffset)
         {
             if (line < 1)
-                throw new ArgumentException("Line number must be greater than 0");
+                throw new ArgumentException("Line number must be greater than 0!");
 
             if (column < 1)
-                throw new ArgumentException("Column number must be greater than 0");
+                throw new ArgumentException("Column number must be greater than 0!");
 
             Line = line;
             Column = column;
@@ -71,30 +71,20 @@ namespace PropertiesDotNet.Core
         /// <param name="context">The context.</param>
         public StreamMark(SerializationInfo info, StreamingContext context)
         {
-            Line = info.GetUInt32(nameof(Line));
+            Line = info.GetUInt64(nameof(Line));
             Column = info.GetUInt32(nameof(Column));
             AbsoluteOffset = info.GetUInt64(nameof(AbsoluteOffset));
         }
 #endif
 
         /// <summary>
-        /// Increments this mark by the specified amount.
+        /// Respectively returns -1, 0, or 1 if this <see cref="StreamMark"/> is less than,
+        /// equal to, or greater than the <paramref name="other"/>.
         /// </summary>
-        /// <param name="lineCount">The amount to increment the <see cref="Line"/> by.</param>
-        /// <param name="columnCount">The amount to increment the <see cref="Column"/> by.</param>
-        /// <param name="absoluteOffsetCount">The amount to increment the <see cref="AbsoluteOffset"/> by.</param>
-        /// <returns>A new <see cref="StreamMark"/>, containing the information.</returns>
-        public StreamMark Add(int lineCount = 0, int columnCount = 0, long absoluteOffsetCount = 0)
-        {
-            var absOffset = AbsoluteOffset;
-
-            if (absoluteOffsetCount < 0)
-                absOffset -= (ulong)-absoluteOffsetCount;
-            else
-                absOffset += (ulong)absoluteOffsetCount;
-
-            return new StreamMark((uint)(Line + lineCount), (uint)(Column + columnCount), absOffset);
-        }
+        /// <param name="other">The <see cref="StreamMark"/> to compare.</param>
+        /// <returns>-1, 0, or 1 if this <see cref="StreamMark"/> is less than,
+        /// equal to, or greater than the <paramref name="other"/>.</returns>
+        public int CompareTo(StreamMark other) => CompareTo(in other);
 
         /// <summary>
         /// Respectively returns -1, 0, or 1 if this <see cref="StreamMark"/> is less than,
@@ -103,27 +93,21 @@ namespace PropertiesDotNet.Core
         /// <param name="other">The <see cref="StreamMark"/> to compare.</param>
         /// <returns>-1, 0, or 1 if this <see cref="StreamMark"/> is less than,
         /// equal to, or greater than the <paramref name="other"/>.</returns>
-        public int CompareTo(StreamMark other)
+        public int CompareTo(in StreamMark other)
         {
-            return CompareTo(ref other);
-        }
+            if (AbsoluteOffset is null || other.AbsoluteOffset is null)
+            {
+                if (Line < other.Line) return -1;
+                if (Line > other.Line) return 1;
 
-        /// <summary>
-        /// Respectively returns -1, 0, or 1 if this <see cref="StreamMark"/> is less than,
-        /// equal to, or greater than the <paramref name="other"/>.
-        /// </summary>
-        /// <param name="other">The <see cref="StreamMark"/> to compare.</param>
-        /// <returns>-1, 0, or 1 if this <see cref="StreamMark"/> is less than,
-        /// equal to, or greater than the <paramref name="other"/>.</returns>
-        public int CompareTo(ref StreamMark other)
-        {
-            if (Line > other.Line || Column > other.Column)
-                return 1;
+                if (Column < other.Line) return -1;
+                if (Line > other.Line) return 1;
 
-            if (Line == other.Line && Column == other.Column)
                 return 0;
+            }
 
-            return -1;
+            return AbsoluteOffset == other.AbsoluteOffset ? 0 :
+                (AbsoluteOffset > other.AbsoluteOffset ? 1 : -1);
         }
 
         /// <summary>
@@ -131,10 +115,7 @@ namespace PropertiesDotNet.Core
         /// </summary>
         /// <param name="other">The <see cref="StreamMark"/> to check.</param>
         /// <returns>true if they are equal; false otherwise.</returns>
-        public bool Equals(StreamMark other)
-        {
-            return Equals(ref other);
-        }
+        public bool Equals(StreamMark other) => Equals(in other);
 
         /// <summary>
         /// Checks if these <see cref="StreamMark"/>s are equal.
@@ -143,7 +124,7 @@ namespace PropertiesDotNet.Core
         /// <returns>true if they are equal; false otherwise.</returns>
         public bool Equals(StreamMark? other)
         {
-            return !(other is null) && Line == other.Value.Line && Column == other.Value.Column;
+            return other.HasValue && Line == other.Value.Line && Column == other.Value.Column;
         }
 
         /// <summary>
@@ -151,10 +132,7 @@ namespace PropertiesDotNet.Core
         /// </summary>
         /// <param name="other">The <see cref="StreamMark"/> to check.</param>
         /// <returns>true if they are equal; false otherwise.</returns>
-        public bool Equals(ref StreamMark other)
-        {
-            return Line == other.Line && Column == other.Column;
-        }
+        public bool Equals(in StreamMark other) => AbsoluteOffset == other.AbsoluteOffset && Line == other.Line && Column == other.Column;
 
         /// <summary>
         /// Checks if these <see cref="StreamMark"/>s are equal.
@@ -164,13 +142,61 @@ namespace PropertiesDotNet.Core
         /// <returns>true if they are equal; false otherwise.</returns>
         public static bool operator ==(StreamMark? mark, StreamMark? other)
         {
-            if (mark is null && other is null)
+            if (!mark.HasValue && !other.HasValue)
                 return true;
 
-            if (mark is null || other is null)
-                return true;
+            if (!mark.HasValue || !other.HasValue)
+                return false;
 
-            return mark.Value.Equals(other!);
+            return mark!.Value.Equals(other!);
+        }
+
+        /// <summary>
+        /// Adds these <see cref="StreamMark"/>s.
+        /// </summary>
+        /// <param name="mark">The first mark.</param>
+        /// <param name="other">The <see cref="StreamMark"/> to add.</param>
+        /// <returns>A new <see cref="StreamMark"/> with the added value.</returns>
+        public static StreamMark operator +(StreamMark mark, StreamMark other)
+        {
+            return new StreamMark(mark.Line + other.Line,
+                mark.Column + other.Column,
+                mark.AbsoluteOffset + other.AbsoluteOffset);
+        }
+
+        /// <summary>
+        /// Adds these <see cref="StreamMark"/>s.
+        /// </summary>
+        /// <param name="mark">The first mark.</param>
+        /// <param name="other">The <see cref="StreamMark"/> to add.</param>
+        /// <returns>A new <see cref="StreamMark"/> with the added value.</returns>
+        public static StreamMark operator +(StreamMark? mark, StreamMark? other)
+        {
+            return mark.GetValueOrDefault() + other.GetValueOrDefault();
+        }
+
+        /// <summary>
+        /// Subtracts these <see cref="StreamMark"/>s.
+        /// </summary>
+        /// <param name="mark">The first mark.</param>
+        /// <param name="other">The <see cref="StreamMark"/> to subtract.</param>
+        /// <returns>A new <see cref="StreamMark"/> with the subtracted value.</returns>
+        public static StreamMark operator -(StreamMark mark, StreamMark other)
+        {
+            return new StreamMark(mark.Line - other.Line,
+                mark.Column - other.Column,
+                mark.AbsoluteOffset - other.AbsoluteOffset);
+        }
+
+        /// <summary>
+        /// Subtracts these <see cref="StreamMark"/>s.
+        /// </summary>
+        /// <param name="mark">The first mark.</param>
+        /// <param name="other">The <see cref="StreamMark"/> to subtract.</param>
+        /// <returns>A new <see cref="StreamMark"/> with the subtracted value.</returns>
+        public static StreamMark operator -(StreamMark? mark, StreamMark? other)
+        {
+            return mark.GetValueOrDefault() - other.GetValueOrDefault();
         }
 
         /// <summary>
@@ -179,18 +205,15 @@ namespace PropertiesDotNet.Core
         /// <param name="mark">The first mark.</param>
         /// <param name="other">The <see cref="StreamMark"/> to check.</param>
         /// <returns>true if they are not equal; false otherwise.</returns>
-        public static bool operator !=(StreamMark? mark, StreamMark? other)
-        {
-            return !(mark == other);
-        }
+        public static bool operator !=(StreamMark? mark, StreamMark? other) => !(mark == other);
 
 #if !NETSTANDARD1_3
         /// <inheritdoc/>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue(nameof(Line), Line, Line.GetType());
-            info.AddValue(nameof(Column), Column, Column.GetType());
-            info.AddValue(nameof(AbsoluteOffset), AbsoluteOffset, AbsoluteOffset.GetType());
+            info.AddValue(nameof(Line), Line);
+            info.AddValue(nameof(Column), Column);
+            info.AddValue(nameof(AbsoluteOffset), AbsoluteOffset);
         }
 #endif
         /// <summary>
@@ -199,14 +222,14 @@ namespace PropertiesDotNet.Core
         /// <returns>The current position as a string.</returns>
         public override string ToString()
         {
-            return $"Line: {Line}, Column: {Column}, AbsoluteOffset: {AbsoluteOffset}";
+            return $"Line: {Line}, Column: {Column}{(AbsoluteOffset is null ? string.Empty : $", AbsoluteOffset: {AbsoluteOffset}")}";
         }
 
         /// <summary>
         /// Returns the hash code for this mark.
         /// </summary>
         /// <returns>The hash code for this mark.</returns>
-        public override int GetHashCode() => HashCodeHelper.GenerateHashCode(Line, Column);
+        public override int GetHashCode() => HashCodeHelper.GenerateHashCode(AbsoluteOffset, Line, Column);
 
         /// <inheritdoc/>
         public override bool Equals(object? obj) => obj is StreamMark mark && Equals(mark);

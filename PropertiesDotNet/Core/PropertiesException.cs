@@ -1,5 +1,4 @@
 ﻿using System;
-
 #if !NETSTANDARD1_3
 using System.Runtime.Serialization;
 #endif
@@ -7,12 +6,12 @@ using System.Runtime.Serialization;
 namespace PropertiesDotNet.Core
 {
     /// <summary>
-    /// Represents an exception thrown by the <i>PropertiesDotNet</i> library.
+    /// Represents an exception thrown by the PropertiesDotNet library.
     /// </summary>
-    public class PropertiesException : Exception
 #if !NETSTANDARD1_3
-, ISerializable
+    [Serializable]
 #endif
+    public sealed class PropertiesException : Exception
     {
         /// <summary>
         /// Creates a new <see cref="PropertiesException"/>.
@@ -27,7 +26,7 @@ namespace PropertiesDotNet.Core
         /// <param name="message">The exception message.</param>
         public PropertiesException(string? message) : base(message)
         {
-            
+
         }
 
         /// <summary>
@@ -40,14 +39,8 @@ namespace PropertiesDotNet.Core
         }
 
 #if !NETSTANDARD1_3
-        /// <summary>
-        /// Creates a new <see cref="PropertiesException"/>.
-        /// </summary>
-        /// <param name="info">The serialization information.</param>
-        /// <param name="context">The serialization context.</param>
-        public PropertiesException(SerializationInfo info, StreamingContext context) : base(info, context)
+        private PropertiesException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-
         }
 #endif
     }

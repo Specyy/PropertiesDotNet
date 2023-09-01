@@ -5,34 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Globalization;
-
-//
-// hello.example.world = 5
-// second."example.world" = 5
-// hello.example.world" = zook
-
-// type, reader
-// key = reader.Read();
-// reader.Skip();
-// value = reader.Read();
-//
-// 
-// type, key, value
-// if(!(type is dictionary))
-//      return;
-//
-// if(key.contains('.') && type.value is dictionary){
-//      Dictionary<type> t();
-//      t.Add(primitive_parser(type.key, key.substring('first .')), nested(type.value, key.substring()));
-//      return t;
-//  } else {
-//      Dictionary<type> t(); // retrieve already made dictionary
-//      t.Add(primitive_parser(type.key, key), primitive_parser(type.value, value));
-//  }
-//
-// primitive_parser(type, text)
-//
-
+using PropertiesDotNet.Serialization.ObjectProviders;
 
 namespace PropertiesDotNet.Utils
 {
@@ -46,7 +19,7 @@ namespace PropertiesDotNet.Utils
 #if NETSTANDARD1_3
             ConstructorInfo[] ctors = type.GetConstructors(flags);
 
-            for(var i = 0; i < ctors.Length; i++)
+            for (var i = 0; i < ctors.Length; i++)
             {
                 ConstructorInfo ctor = ctors[i];
                 ParameterInfo[] ctorParams = ctor.GetParameters();
@@ -68,6 +41,18 @@ namespace PropertiesDotNet.Utils
 #else
             return type.GetConstructor(flags, null, args, null);
 #endif
+        }
+
+        public static Type? GetGenericInterface(Type type, Type genericInterfaceType)
+        {
+            foreach (var interfacetype in type.GetInterfaces())
+            {
+                if (interfacetype.IsGenericType() && interfacetype.GetGenericTypeDefinition() == genericInterfaceType)
+                {
+                    return interfacetype;
+                }
+            }
+            return null;
         }
 
         public static bool IsPrimitive(this Type type)
@@ -94,6 +79,23 @@ namespace PropertiesDotNet.Utils
             return type.GetTypeInfo().GenericTypeArguments;
 #else
             return type.GetGenericArguments();
+#endif
+        }
+
+        public static IEnumerable<T> GetCustomAttributes<T>(MemberInfo member) where T : Attribute
+        {
+            var atts = member.GetCustomAttributes(typeof(T), true);
+
+            foreach (var att in atts)
+                yield return (T)att;
+        }
+
+        public static T? GetCustomAttribute<T>(MemberInfo member) where T : Attribute
+        {
+#if NETSTANDARD1_3
+            return (T?)member.GetCustomAttribute(typeof(T));
+#else
+            return (T?)Attribute.GetCustomAttribute(member, typeof(T));
 #endif
         }
 
@@ -164,6 +166,7 @@ namespace PropertiesDotNet.Utils
         public static TypeCode GetTypeCode(Type? type)
         {
 #if !NETSTANDARD1_3
+
             return Type.GetTypeCode(type);
 #else
             if (type.IsEnum())
@@ -250,135 +253,146 @@ namespace PropertiesDotNet.Utils
 #endif
         }
 
-        //public static object? ConvertType(object? value, Type type, IObjectProvider objectProvider)
-        //{
-        //    // Handle null and DBNull
-        //    if (value == null || value.IsDbNull())
-        //    {
-        //        return type.IsValueType() ? Activator.CreateInstance(type) : null;
-        //    }
+        public static MethodInfo? GetMethod(this Type type, string name, BindingFlags flags, Type[] argTypes)
+        {
+#if NETSTANDARD1_3
+            var method = type.GetMethod(name, flags);
 
-        //    Type sourceType = value.GetType();
+            if (method != null)
+            {
+                var methodParams = method.GetParameters();
 
-        //    // If the source type is compatible with the destination type, no conversion is needed
-        //    if (type == sourceType || type.IsAssignableFrom(sourceType))
-        //    {
-        //        return value;
-        //    }
+                if (methodParams.Length == argTypes.Length)
+                {
+                    for (int i = 0; i < argTypes.Length; i++)
+                    {
+                        if (!methodParams[i].ParameterType.Equals(argTypes[i]))
+                            return null;
+                    }
 
-        //    // Nullable types get a special treatment
-        //    if (type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-        //    {
-        //        Type innerType = type.GetGenericArguments()[0];
-        //        Type convertedValue = ConvertType(value, innerType, objectProvider);
-        //        return objectProvider.Construct(type, new object?[] { convertedValue });
-        //    }
+                    return method;
+                }
+            }
 
-        //    // Enums also require special handling
-        //    if (type.IsEnum())
-        //    {
-        //        return Enum.Parse(type, value.ToString(), true);
-        //    }
+            return null;
+#else
+            return type.GetMethod(name, flags, null, argTypes, null);
+#endif
+        }
 
-        //    // Special case for booleans to support parsing "1" and "0". This is
-        //    // necessary for compatibility with XML Schema.
-        //    if (type == typeof(bool))
-        //    {
-        //        if ("0".Equals(value))
-        //        {
-        //            return false;
-        //        }
+        public static T ConvertType<T>(object? value, IObjectProvider objectProvider) => (T)ConvertType(value, typeof(T), objectProvider);
 
-        //        if ("1".Equals(value))
-        //        {
-        //            return true;
-        //        }
-        //    }
+        public static object? ConvertType(object? value, Type type, IObjectProvider objectProvider)
+        {
+            // Handle null and DBNull
+            if (value is null || value?.GetType()?.FullName == "System.DBNull")
+            {
+                return type.IsValueType() ? objectProvider.Construct(type) : null;
+            }
 
-        //    // Try with the source type's converter
-        //    TypeConverter sourceConverter = TypeDescriptor.GetConverter(sourceType);
-        //    if (!(sourceConverter is null) && sourceConverter.CanConvertTo(type))
-        //    {
-        //        return sourceConverter.ConvertTo(null, CultureInfo.InvariantCulture, value, type);
-        //    }
+            Type sourceType = value.GetType();
 
-        //    // Try with the destination type's converter
-        //    TypeConverter destinationConverter = TypeDescriptor.GetConverter(type);
-        //    if (!(destinationConverter is null) && destinationConverter.CanConvertFrom(sourceType))
-        //    {
-        //        return destinationConverter.ConvertFrom(null, CultureInfo.InvariantCulture, value);
-        //    }
+            // If the source type is compatible with the destination type, no conversion is needed
+            if (type == sourceType || type.IsAssignableFrom(sourceType))
+            {
+                return value;
+            }
 
-        //    // Try to find a casting operator in the source or destination type
-        //    Type[] types = new[] { sourceType, type };
-        //    foreach (Type currentType in types)
-        //    {
-        //        MethodInfo[] publicStaticMethods = currentType.GetPublicStaticMethods();
-        //        foreach (MethodInfo method in publicStaticMethods)
-        //        {
-        //            bool isCastingOperator = method.IsSpecialName &&
-        //                (method.Name == "op_Implicit" || method.Name == "op_Explicit") &&
-        //                type.IsAssignableFrom(method.ReturnParameter.ParameterType);
+            // Nullable types get a special treatment
+            if (type.IsGenericType() && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                Type innerType = type.GetGenericArguments()[0];
+                object convertedValue = ConvertType(value, innerType, objectProvider);
+                return objectProvider.Construct(type, new object?[] { convertedValue });
+            }
 
-        //            if (isCastingOperator)
-        //            {
-        //                ParameterInfo[] parameters = method.GetParameters();
+            // Enums also require special handling
+            if (type.IsEnum())
+            {
+                return Enum.Parse(type, value.ToString(), true);
+            }
 
-        //                bool isCompatible =
-        //                    parameters.Length == 1 &&
-        //                    parameters[0].ParameterType.IsAssignableFrom(sourceType);
+            // Special case for booleans to support parsing "1" and "0".
+            if (type == typeof(bool))
+            {
+                if ("0".Equals(value))
+                {
+                    return false;
+                }
 
-        //                if (isCompatible)
-        //                {
-        //                    try
-        //                    {
-        //                        return method.Invoke(null, new[] { value });
-        //                    }
-        //                    catch (TargetInvocationException ex)
-        //                    {
-        //                        throw ex.Unwrap();
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
+                if ("1".Equals(value))
+                {
+                    return true;
+                }
+            }
 
-        //    // If source type is string, try to find a Parse or TryParse method
-        //    if (sourceType == typeof(string))
-        //    {
-        //        try
-        //        {
-        //            // Try with - public static T Parse(string, IFormatProvider)
-        //            var parseMethod = type.GetPublicStaticMethod("Parse", typeof(string), typeof(IFormatProvider));
-        //            if (parseMethod != null)
-        //            {
-        //                return parseMethod.Invoke(null, new object[] { value, culture });
-        //            }
+#if !NETSTANDARD1_3
+            // Try with the source type's converter
+            TypeConverter sourceConverter = TypeDescriptor.GetConverter(sourceType);
+            if (!(sourceConverter is null) && sourceConverter.CanConvertTo(type))
+            {
+                return sourceConverter.ConvertTo(null, CultureInfo.InvariantCulture, value, type);
+            }
 
-        //            // Try with - public static T Parse(string)
-        //            parseMethod = type.GetPublicStaticMethod("Parse", typeof(string));
-        //            if (parseMethod != null)
-        //            {
-        //                return parseMethod.Invoke(null, new object[] { value });
-        //            }
-        //        }
-        //        catch (TargetInvocationException ex)
-        //        {
-        //            throw ex.Unwrap();
-        //        }
-        //    }
+            // Try with the destination type's converter
+            TypeConverter destinationConverter = TypeDescriptor.GetConverter(type);
+            if (!(destinationConverter is null) && destinationConverter.CanConvertFrom(sourceType))
+            {
+                return destinationConverter.ConvertFrom(null, CultureInfo.InvariantCulture, value);
+            }
+#endif
 
-        //    // Handle TimeSpan
-        //    if (type == typeof(TimeSpan))
-        //    {
-        //        return TimeSpan.Parse((string)ConvertType(value, typeof(string), objectProvider)!);
-        //    }
+            // Try to find a casting operator in the source or destination type
+            Type[] types = new[] { sourceType, type };
+            foreach (Type currentType in types)
+            {
+                MethodInfo[] publicStaticMethods = currentType.GetMethods(BindingFlags.Public | BindingFlags.Static);
+                foreach (MethodInfo method in publicStaticMethods)
+                {
+                    if (method.IsSpecialName &&
+                        (method.Name == "op_Implicit" || method.Name == "op_Explicit") &&
+                        type.IsAssignableFrom(method.ReturnParameter.ParameterType))
+                    {
+                        ParameterInfo[] parameters = method.GetParameters();
 
-        //    // Default to the Convert class
-        //    return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+                        bool isCompatible =
+                            parameters.Length == 1 &&
+                            parameters[0].ParameterType.IsAssignableFrom(sourceType);
 
+                        if (isCompatible)
+                        {
+                            return method.Invoke(null, new[] { value });
+                        }
+                    }
+                }
+            }
 
-        //    // https://github.com/aaubry/YamlDotNet/blob/0bf02fd092a97f49069945177ac8bd16efac84ce/YamlDotNet/Serialization/Utilities/TypeConverter.cs#L129
-        //}
+            // If source type is string, try to find a Parse or TryParse method
+            if (sourceType == typeof(string))
+            {
+                // Try with - public static T Parse(string, IFormatProvider)
+                var parseFunction = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, new[] { typeof(string), typeof(IFormatProvider) });
+                if (parseFunction != null)
+                {
+                    return parseFunction.Invoke(null, new object[] { value, CultureInfo.InvariantCulture });
+                }
+
+                // Try with - public static T Parse(string)
+                parseFunction = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, new[] { typeof(string) });
+                if (parseFunction != null)
+                {
+                    return parseFunction.Invoke(null, new object[] { value });
+                }
+            }
+
+            // Handle TimeSpan
+            if (type == typeof(TimeSpan))
+            {
+                return TimeSpan.Parse(ConvertType<string>(value, objectProvider)!);
+            }
+
+            // Default to the Convert class
+            return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
+        }
     }
 }

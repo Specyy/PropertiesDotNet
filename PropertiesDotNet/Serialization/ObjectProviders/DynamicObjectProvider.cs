@@ -17,18 +17,22 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
         private readonly IEqualityComparer<Type[]> _equalityComparer = new TypeCacheEqualityComparer();
         private readonly Dictionary<Type, Dictionary<Type[], ObjectConstructor>> _ctorCache;
 
+        /// <inheritdoc/>
+        public BindingFlags ConstructorFlags { get; set; }
+
         /// <summary>
         /// Creates a new <see cref="DynamicObjectProvider"/>.
         /// </summary>
         public DynamicObjectProvider()
         {
+            ConstructorFlags = BindingFlags.Instance | BindingFlags.Public;
             _ctorCache = new Dictionary<Type, Dictionary<Type[], ObjectConstructor>>((IEqualityComparer<Type>)_equalityComparer);
         }
 
         /// <inheritdoc/>
         public object Construct(Type type, Type[]? argTypes, object?[]? args)
         {
-            if (type.IsAbstract())
+            if (type.IsAbstract() || type.IsInterface())
                 throw new ArgumentException($"Cannot create instance of type: {type?.FullName ?? "null"}");
 
             if ((argTypes?.Length ?? 0) != (args?.Length ?? 0))
@@ -62,9 +66,8 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
                 _ctorCache.Add(type, available = new Dictionary<Type[], ObjectConstructor>(_equalityComparer));
 
             DynamicMethod method = new DynamicMethod(CONSTRUCTOR_NAME, typeof(object), new[] { typeof(object?[]) });
-            ILGenerator ilGen = method.GetILGenerator();
 
-            EmitConstructorInstructions(ilGen, type, argTypes);
+            EmitConstructorInstructions(method.GetILGenerator(), type, argTypes);
 
             ObjectConstructor ctor = (ObjectConstructor)method.CreateDelegate(typeof(ObjectConstructor));
             available.Add(argTypes, ctor);
@@ -75,7 +78,7 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
         {
             // --- Method Structure ---
             //
-            // T = Constructed/Wanted object
+            // T = Constructed/Desired object
             // P1_T = Type of parameter 1
             // P2_T = Type of parameter 2
             // P{n}_T = Type of parameter n
@@ -96,15 +99,13 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
             }
             else
             {
-                const BindingFlags visibilityFlags = BindingFlags.Public | BindingFlags.Instance;
-
-                ConstructorInfo info = type.GetConstructor(visibilityFlags, argTypes) ??
-                    throw new PropertiesException("Could not find constructor with the given argument types!");
+                ConstructorInfo info = type.GetConstructor(ConstructorFlags, argTypes) ??
+                    throw new PropertiesException($"Could not find constructor for type {type.FullName} with the given argument types!");
 
                 ParameterInfo[] paramInfo = info.GetParameters();
 
                 // Load params
-                for (var i = 0; i < argTypes.Length; i++)
+                for (int i = 0; i < argTypes.Length; i++)
                 {
                     // Ldarg_0 = object?[]? args
                     ilGen.Emit(OpCodes.Ldarg_0);

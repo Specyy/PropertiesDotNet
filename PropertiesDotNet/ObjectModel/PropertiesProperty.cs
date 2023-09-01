@@ -1,140 +1,244 @@
-﻿using PropertiesDotNet.Core;
-using PropertiesDotNet.Core.Events;
-using PropertiesDotNet.Utils;
-
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace PropertiesDotNet.ObjectModel
 {
     /// <summary>
-    /// Represents a property node inside a ".properties" document.
+    /// Represents a property within a ".properties" document.
     /// </summary>
-    public sealed class PropertiesProperty : PropertiesNode, IEquatable<PropertiesProperty>
+    public class PropertiesProperty : IEquatable<PropertiesProperty>, IEquatable<KeyValuePair<string, string?>>
     {
-        /// <inheritdoc/>
-        public override PropertiesNodeType NodeType => PropertiesNodeType.Property;
+        /// <summary>
+        /// The key for this property. This cannot be <see langword="null"/> or empty.
+        /// </summary>
+        public virtual string Key { get; protected set; }
 
         /// <summary>
-        /// The key of this property.
+        /// A list of the comments that will be emitted above this property when it is saved within a stream.
+        /// This is <see cref="Nullable{T}"/> in order to save memory.
         /// </summary>
-        public PropertiesKey Key { get; }
+        public virtual List<string>? Comments { get; set; }
 
         /// <summary>
-        /// The assigner of this property.
+        /// The value assigner for this property. This must be '=', ':' or any type of white-space.
         /// </summary>
-        public PropertiesAssigner? Assigner
+        /// <remarks>The value may be \0 on a property with an empty value.</remarks>
+        /// <exception cref="ArgumentException">If the value is not '=', ':' or any type of white-space.</exception>
+        public virtual char? Assigner
         {
             get => _assigner;
             set
             {
-                // Must have assigner on non-null value
-                // Can only sometimes be omitted
-                if (!(_value is null) && value is null)
-                    throw new ArgumentNullException(nameof(Assigner));
+                switch (value)
+                {
+                    case '=':
+                    case ':':
+                    case ' ':
+                    case '\t':
+                    case '\f':
+                        _assigner = value;
+                        break;
 
-                _assigner = value;
+                    default:
+                    case null:
+                        if (Value is null)
+                        {
+                            _assigner = null;
+                            break;
+                        }
+
+                        throw new ArgumentException("Assigner must be '=', ':' or any type of white-space");
+                }
             }
         }
 
-        private PropertiesAssigner? _assigner;
+        private char? _assigner;
 
         /// <summary>
-        /// The value of this property.
+        /// The value of this property. This can be <see langword="null"/>.
         /// </summary>
-        public PropertiesValue? Value
+        public virtual string? Value
         {
             get => _value;
             set
             {
-                // If empty value and changed to text value, create assigner
-                // if not yet created
-                if (_assigner is null && !string.IsNullOrEmpty(value.Value))
-                    _assigner = ValueAssignerType.Equals;
+                if (Assigner is null && value != null)
+                    Assigner = '=';
 
-                _value = value ?? new PropertiesValue((string)null);
+                _value = value;
             }
         }
 
-        private PropertiesValue? _value;
+        private string? _value;
 
         /// <summary>
-        /// Creates a new <see cref="PropertiesProperty"/>.
+        /// Creates a new properties document property.
         /// </summary>
-        /// <param name="reader">The reader to deserialize from.</param>
-        public PropertiesProperty(IPropertiesReader reader) : base(reader)
+        /// <param name="value">The key-value pair for this property.</param>
+        /// <exception cref="ArgumentException">If the key is <see langword="null"/> empty.</exception>
+        public PropertiesProperty(KeyValuePair<string, string?> value) : this(value.Key, value.Value)
         {
-            // Ensure start
-            Start = reader.ReadSerialized<PropertyStart>()!.Start;
 
-            Key = new PropertiesKey(reader);
-
-            // Assigner is optional on empty value
-			// This may also be useful when reading XML documents
-            if (reader.Peek() is ValueAssigner)
-                Assigner = new PropertiesAssigner(reader);
-
-            _value = new PropertiesValue(reader);
-
-            // Ensure End
-            End = reader.ReadSerialized<PropertyEnd>()!.End;
         }
 
         /// <summary>
-        /// Creates a new <see cref="PropertiesProperty"/>.
+        /// Creates a new properties document property.
         /// </summary>
         /// <param name="key">The key for this property.</param>
         /// <param name="value">The value for this property.</param>
-        public PropertiesProperty(PropertiesKey key, PropertiesValue? value) : base(null, null)
+        /// <exception cref="ArgumentException">If the key is <see langword="null"/> empty.</exception>
+        public PropertiesProperty(string key, string? value) : this(key, value is null ? null : (char?)'=', value)
         {
-            Key = key ?? throw new ArgumentNullException(nameof(key));
-            _value = value ?? new PropertiesValue((string)null);
+            
         }
 
         /// <summary>
-        /// Creates a new <see cref="PropertiesProperty"/>.
+        /// Creates a new properties document property.
         /// </summary>
         /// <param name="key">The key for this property.</param>
         /// <param name="assigner">The assigner for this property.</param>
         /// <param name="value">The value for this property.</param>
-        public PropertiesProperty(PropertiesKey key, PropertiesAssigner? assigner, PropertiesValue? value) : this(key, value)
+        /// <exception cref="ArgumentException">If the key is <see langword="null"/> empty, or 
+        /// if the assigner is not '=', ':' or any type of white-space and the value is not null. </exception>
+        public PropertiesProperty(string key, char? assigner, string? value)
         {
-            if (!(value is null) && assigner is null)
-                throw new ArgumentNullException(nameof(assigner));
+            if (string.IsNullOrEmpty(key))
+                throw new ArgumentException("Key cannot be null or empty", nameof(key));
 
+            Key = key;
+            Value = value;
             Assigner = assigner;
         }
 
-        /// <inheritdoc/>
-        public override bool Equals(PropertiesNode? node) =>
-            node is PropertiesProperty prop && Equals(prop);
-
-        /// <inheritdoc/>
-        public bool Equals(PropertiesProperty? other)
+        /// <summary>
+        /// Creates a duplicate properties document property.
+        /// </summary>
+        /// <param name="property">The property to copy.</param>
+        public PropertiesProperty(PropertiesProperty property)
         {
-            return Key.Equals(other?.Key) && Assigner.Equals(other?.Assigner) && Value.Equals(other?.Value);
+            Comments = property.Comments;
+            Key = property.Key;
+            Value = property.Value;
+            Assigner = property.Assigner;
         }
 
-        /// <inheritdoc/>
-        public override IEventStream ToEventStream()
+        /// <summary>
+        /// Adds a comment to this property.
+        /// </summary>
+        /// <param name="comment">The text value of the comment.</param>
+        public virtual void AddComment(string comment)
         {
-            PropertiesEvent[] events = {
-                new PropertyStart(),
-                Key,
-                Assigner,
-                Value,
-                new PropertyEnd(),
-            };
-
-            return new ReadOnlyEventStream(events);
+            Comments ??= new List<string>();
+            Comments.Add(comment);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Returns this property as it would be written within a ".properties" document.
+        /// </summary>
+        /// <returns>This property as it would be written within a ".properties" document</returns>
         public override string ToString()
         {
+            if (Comments?.Count > 0)
+            {
+                // TODO: Perhaps cache?
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < Comments.Count; i++)
+                    sb.Append('#').Append(' ').AppendLine(Comments[i]);
+
+                sb.Append($"{Key}{Assigner}{Value}");
+                return sb.ToString();
+            }
+
             return $"{Key}{Assigner}{Value}";
         }
 
         /// <inheritdoc/>
-        public override int GetHashCode() => HashCodeHelper.GenerateHashCode(Key.GetHashCode(), Assigner?.GetHashCode() ?? ' ', Value.GetHashCode());
+        public override int GetHashCode() => ToString().GetHashCode();
+
+        /// <summary>
+        /// Returns whether this property is equal to the specified property.
+        /// </summary>
+        /// <param name="other">The other </param>
+        /// <returns>true if this property is equal to the specified property; false otherwise.</returns>
+        public virtual bool Equals(PropertiesProperty? other)
+        {
+            if (!Equals(other?.Key, other?.Value))
+                return false;
+
+            if (Assigner != other?.Assigner)
+                return false;
+
+            if (Comments?.Count != other?.Comments?.Count)
+                return false;
+
+            for (int i = 0; i < Comments?.Count; i++)
+            {
+                if (!Comments[i].Equals(other!.Comments[i]))
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Returns whether this property has the same key and value as specified.
+        /// </summary>
+        /// <param name="key">The key to check.</param>
+        /// <param name="value">The value to check.</param>
+        /// <returns>true if this property has the same key and value as specified; false otherwise.</returns>
+        public virtual bool Equals(string key, string? value) => Key == key && Value == value;
+
+        /// <inheritdoc/>
+        public override bool Equals(object? obj)
+        {
+            if (obj is string str)
+                return ToString().Equals(str);
+
+            return Equals(obj as PropertiesProperty);
+        }
+
+        /// <inheritdoc/>
+        public virtual bool Equals(KeyValuePair<string, string?> other) => Equals(other.Key, other.Value);
+
+        /// <summary>
+        /// Returns whether the specified properties are equal.
+        /// </summary>
+        /// <param name="left">The first property.</param>
+        /// <param name="right">The second property.</param>
+        /// <returns>true if these properties are equal; false otherwise.</returns>
+        public static bool operator ==(PropertiesProperty? left, PropertiesProperty? right)
+        {
+            if (left is null && right is null) return true;
+            if (left is null || right is null) return false;
+
+            return left.Equals(right);
+        }
+
+        /// <summary>
+        /// Returns whether the specified properties are not equal.
+        /// </summary>
+        /// <param name="left">The first property.</param>
+        /// <param name="right">The second property.</param>
+        /// <returns>true if these properties are equal; false otherwise.</returns>
+        public static bool operator !=(PropertiesProperty? left, PropertiesProperty? right) => !(left == right);
+
+        /// <summary>
+        /// Returns this property as it would be written within a ".properties" document.
+        /// </summary>
+        /// <param name="property">The property.</param>
+        public static explicit operator string(PropertiesProperty property) => property.ToString();
+
+        /// <summary>
+        /// Returns this property as a key-value pair.
+        /// </summary>
+        /// <param name="property">The property.</param>
+        public static implicit operator KeyValuePair<string, string?>(PropertiesProperty property) => new KeyValuePair<string, string?>(property.Key, property.Value);
+
+        /// <summary>
+        /// Transforms this key-value pair into a property.
+        /// </summary>
+        /// <param name="pair">The key-value pair.</param>
+        public static implicit operator PropertiesProperty(KeyValuePair<string, string?> pair) => new PropertiesProperty(pair.Key, pair.Value);
     }
 }

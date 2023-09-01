@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<!-- <TargetFrameworks>netcoreapp3.0;netstandard2.1;netstandard2.0;netstandard1.3;net461;net40;net35</TargetFrameworks> -->
-		<TargetFrameworks>netcoreapp3.0;netstandard2.1;netstandard2.0;netstandard1.3;net461</TargetFrameworks>
+		 <TargetFrameworks>net7.0;net6.0;netcoreapp3.0;netstandard2.1;netstandard2.0;netstandard1.3;net461;net40;net35</TargetFrameworks> 
+		<!--<TargetFrameworks>netcoreapp3.0;netstandard2.1;netstandard2.0;netstandard1.3;net461</TargetFrameworks>-->
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<LangVersion>8.0</LangVersion>
 		<Nullable>enable</Nullable>
-		<AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 	</PropertyGroup>
@@ -21,6 +21,10 @@
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<Optimize>true</Optimize>
 		<DefineConstants>TRACE;$(FrameworkSymbols)</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
 	</PropertyGroup>
 
 	<!-- Disable uncaught nullable warnings from BCL when not compiling .NET Standard 2.1/.NET Core 3.0 -->

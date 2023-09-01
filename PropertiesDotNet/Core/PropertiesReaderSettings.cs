@@ -1,9 +1,12 @@
 ﻿using System;
 
+using PropertiesDotNet.Utils;
+
 namespace PropertiesDotNet.Core
 {
     /// <summary>
-    /// Provides settings for an <see cref="IPropertiesReader"/>.
+    /// Provides settings for an <see cref="IPropertiesReader"/>. Inheriting this class allows for
+    /// additional custom settings on top of the defaults.
     /// </summary>
     public class PropertiesReaderSettings : IEquatable<PropertiesReaderSettings>
     {
@@ -13,8 +16,7 @@ namespace PropertiesDotNet.Core
         public virtual bool IgnoreComments { get; set; } = false;
 
         /// <summary>
-        /// Whether an <see cref="IPropertiesReader"/> should error on invalid character escapes. The specification mandates
-        /// this setting be true; only change if you wish to deal with the errors manually.
+        /// Whether an <see cref="IPropertiesReader"/> should error on invalid character escapes.
         /// </summary>
         public virtual bool InvalidEscapes { get; set; } = true;
 
@@ -31,21 +33,32 @@ namespace PropertiesDotNet.Core
         public virtual bool AllCharacters { get; set; } = false;
 
         /// <summary>
-        /// Whether a <see cref="PropertiesException"/> should thrown whenever a <see cref="IPropertiesReader"/> encounters
-        /// an error in a ".properties" document, or if an <see cref="Events.Error"/> should be created.
+        /// Whether a <see cref="PropertiesException"/> should be thrown whenever an <see cref="IPropertiesReader"/> encounters
+        /// an error in a ".properties" document, or if an <see cref="PropertiesTokenType.Error"/> should be produced.
         /// </summary>
         public virtual bool ThrowOnError { get; set; } = true;
 
         /// <summary>
-        /// Whether an <see cref="IPropertiesReader"/> should close the underlying stream when a <see cref="Events.DocumentEnd"/>
-        /// is produced.
+        /// Whether an <see cref="IPropertiesReader"/> should close the underlying stream when a <see cref="PropertiesTokenType.Error"/>
+        /// is produced or the end of the document is reached.
         /// </summary>
-        public virtual bool CloseStreamOnEnd { get; set; } = true;
+        public virtual bool CloseOnEnd { get; set; } = true;
 
         /// <summary>
         /// Returns a <see cref="PropertiesReaderSettings"/> with the default settings.
         /// </summary>
         public static PropertiesReaderSettings Default => new PropertiesReaderSettings();
+
+        /// <summary>
+        /// Returns a <see cref="PropertiesReaderSettings"/> with settings optimized for performance.
+        /// </summary>
+        public static PropertiesReaderSettings Optimized => new PropertiesReaderSettings()
+        {
+            IgnoreComments = true,
+            ThrowOnError = false,
+            InvalidEscapes = true,
+            AllUnicodeEscapes = false
+        };
 
         /// <summary>
         /// Creates a new <see cref="PropertiesReaderSettings"/> with the given settings.
@@ -57,53 +70,60 @@ namespace PropertiesDotNet.Core
         /// including '\x' and '\U', rather than only '\u'.</param>
         /// <param name="allCharacters">Whether an <see cref="IPropertiesReader"/> should allow all characters, or only characters from the
         /// "ISO-8859-1" character set.</param>
-        /// <param name="throwOnError">Whether a <see cref="PropertiesException"/> should thrown whenever a <see cref="IPropertiesReader"/> encounters
-        /// an error in a ".properties" document, or if an <see cref="Events.Error"/> should be created.</param>
-        /// <param name="closeStreamOnEnd">Whether an <see cref="IPropertiesReader"/> should close the underlying stream when a <see cref="Events.DocumentEnd"/>
-        /// is produced.</param>
+        /// <param name="throwOnError">Whether a <see cref="PropertiesException"/> should be thrown whenever a <see cref="IPropertiesReader"/> encounters
+        /// an error in a ".properties" document, or if an <see cref="PropertiesTokenType.Error"/> should be produced.</param>
+        /// <param name="closeOnEnd">Whether an <see cref="IPropertiesReader"/> should close the underlying stream when a <see cref="PropertiesTokenType.Error"/>
+        /// is produced or the end of the document is reached.</param>
         public PropertiesReaderSettings(bool ignoreComments = false,
                                         bool invalidEscapes = true,
                                         bool allUnicodeEscapes = false,
                                         bool allCharacters = false,
                                         bool throwOnError = true,
-                                        bool closeStreamOnEnd = true)
+                                        bool closeOnEnd = true)
         {
             IgnoreComments = ignoreComments;
             InvalidEscapes = invalidEscapes;
             AllUnicodeEscapes = allUnicodeEscapes;
             AllCharacters = allCharacters;
             ThrowOnError = throwOnError;
-            CloseStreamOnEnd = closeStreamOnEnd;
+            CloseOnEnd = closeOnEnd;
         }
 
-        internal PropertiesReaderSettings()
+        private PropertiesReaderSettings()
         {
         }
-        
+
         /// <summary>
         /// Copies the configuration of the <paramref name="settings"/> into this instance.
         /// </summary>
         /// <param name="settings">The settings to copy.</param>
-        internal void CopyFrom(PropertiesReaderSettings settings)
+        public virtual void CopyFrom(PropertiesReaderSettings settings)
         {
             IgnoreComments = settings.IgnoreComments;
             InvalidEscapes = settings.InvalidEscapes;
             AllUnicodeEscapes = settings.AllUnicodeEscapes;
             AllCharacters = settings.AllCharacters;
             ThrowOnError = settings.ThrowOnError;
-            CloseStreamOnEnd = settings.CloseStreamOnEnd;
+            CloseOnEnd = settings.CloseOnEnd;
         }
 
         /// <inheritdoc/>
-        public bool Equals(PropertiesReaderSettings? other)
+        public virtual bool Equals(PropertiesReaderSettings? other)
         {
-            return 
+            return
                 IgnoreComments == other?.IgnoreComments &&
                 InvalidEscapes == other?.InvalidEscapes &&
                 AllUnicodeEscapes == other?.AllUnicodeEscapes &&
                 AllCharacters == other?.AllCharacters &&
                 ThrowOnError == other?.ThrowOnError &&
-                CloseStreamOnEnd == other?.CloseStreamOnEnd;
+                CloseOnEnd == other?.CloseOnEnd;
         }
+
+        /// <inheritdoc/>
+        public override bool Equals(object? obj) => Equals(obj as PropertiesReaderSettings);
+
+        /// <inheritdoc/>
+        public override int GetHashCode() => HashCodeHelper.GenerateHashCode(IgnoreComments,
+            AllCharacters, AllUnicodeEscapes, ThrowOnError, CloseOnEnd);
     }
 }

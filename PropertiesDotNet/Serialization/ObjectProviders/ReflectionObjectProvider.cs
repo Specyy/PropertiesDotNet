@@ -15,18 +15,22 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
         private readonly IEqualityComparer<Type[]> _equalityComparer = new TypeCacheEqualityComparer();
         private readonly Dictionary<Type, Dictionary<Type[], ObjectConstructor>> _ctorCache;
 
+        /// <inheritdoc/>
+        public BindingFlags ConstructorFlags { get; set; }
+
         /// <summary>
         /// Creates a new <see cref="ReflectionObjectProvider"/>.
         /// </summary>
         public ReflectionObjectProvider()
         {
+            ConstructorFlags = BindingFlags.Instance | BindingFlags.Public;
             _ctorCache = new Dictionary<Type, Dictionary<Type[], ObjectConstructor>>((IEqualityComparer<Type>)_equalityComparer);
         }
 
         /// <inheritdoc/>
         public object Construct(Type type, Type[]? argTypes, object?[]? args)
         {
-            if (type.IsAbstract())
+            if (type.IsAbstract() || type.IsInterface())
                 throw new ArgumentException($"Cannot create instance of type: {type?.FullName ?? "null"}");
 
             if (argTypes is null || argTypes.Length == 0)
@@ -68,10 +72,8 @@ namespace PropertiesDotNet.Serialization.ObjectProviders
             }
             else
             {
-                const BindingFlags visibilityFlags = BindingFlags.Public | BindingFlags.Instance;
-
-                ConstructorInfo info = type.GetConstructor(visibilityFlags, argTypes) ??
-                    throw new PropertiesException("Could not find constructor with the given argument types!");
+                ConstructorInfo info = type.GetConstructor(ConstructorFlags, argTypes) ??
+                    throw new PropertiesException($"Could not find constructor for type {type.FullName} with the given argument types!");
 
                 ctor = (args) => info.Invoke(args);
             }
