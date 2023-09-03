@@ -6,15 +6,11 @@ A powerful, fully-featured `.properties` document parser for .NET
 `.properties` is an informal configuration format mainly used in Java-related technologies to store collections of application properties. It is a simple (yet much more involved than is commonly thought) storage format that is only defined within the [Javadoc documentation](https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html#load-java.io.Reader-) for the `java.util.Properties` class.
 
 ## Overview
-PropertiesDotNet is a helpful tool tailored for developers who are transitioning from Java to .NET. It addresses the challenge of working with Java's `.properties` files within the .NET environment. This tool fills the gap by offering a user-friendly API that simplifies the interaction with `.properties` documents.
+PropertiesDotNet is a helpful tool tailored for developers who are transitioning from Java to .NET. It addresses the challenge of working with Java's `.properties` files within the .NET environment. This library is designed to effortlessly parse Java `.properties` documents, providing a seamless integration into your .NET projects.
 
-The API provided by this library serves a variety of functions. It facilitates efficient reading and writing of `.properties` documents using token-based identification, and it comes with built-in error handling and validation capabilities, yielding performance that surpasses that of other libraries, including even the Java standard library.
+We do this by allowing for the configuration of .properties documents in three distinct ways: a low-level token-parsing and document writing API, a high level object model similar to XmlDocument, and a serialization library for the serialization and deserialization of .NET objects to and from .properties documents.
 
-It also supports the creation of a document object model through the `PropertiesDocument` implementation. This model resembles Java's `Properties` class and the familiar `XmlDocument`. This enables developers to work with `.properties` files in a structured and intuitive manner.
-
-Furthermore, PropertiesDotNet empowers developers with the ability to serialize and deserialize .NET objects (trees) to and from `.properties` documents. This functionality streamlines the process of converting complex data structures into a format that can be easily stored in `.properties` files and vice versa.
-
-The library is currently available in the following .NET runtimes:
+PropertiesDotNet is currently available in the following .NET runtimes:
  
 * .NET 6.0 
 * .NET Core 3.0
