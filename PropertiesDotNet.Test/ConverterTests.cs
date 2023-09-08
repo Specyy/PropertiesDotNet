@@ -357,13 +357,6 @@ List.11=t";
             };
             var data = new SampleClass();
 
-            using (var writer = new PropertiesWriter(Console.Out))
-            {
-                var root = serializer.TreeComposer.CreateRoot();
-                converter.Serialize(serializer, data.GetType(), data, root);
-                serializer.TreeComposer.WriteObject(root, writer);
-            }
-
             Assert.DoesNotThrow(() => converter.Serialize(serializer, data.GetType(), data, serializer.TreeComposer.CreateRoot()));
         }
 
@@ -504,7 +497,6 @@ Addresses.Work.Zip=20500".TrimEnd(Environment.NewLine.ToCharArray());
             }
 
             Assert.That(output.ToString().TrimEnd(Environment.NewLine.ToCharArray()), Is.EqualTo(expectedOutput));
-            serializer.SerializeObject(person, Console.Out);
         }
 
 #pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()

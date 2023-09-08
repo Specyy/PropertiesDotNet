@@ -155,12 +155,18 @@ namespace PropertiesDotNet.Serialization.Converters
             _memberCache?.Clear();
         }
 
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private PropertiesMember? GetMember(Type type, string name)
         {
             var members = GetMembers(type);
             return members is null ? null : (members.TryGetValue(name, out var member) ? member : null);
         }
 
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private Dictionary<string, PropertiesMember>? GetMembers(Type type) => _memberCache.TryGetValue(type, out var members) ? members : ReadMembers(type);
 
         private Dictionary<string, PropertiesMember>? ReadMembers(Type type)
@@ -193,6 +199,9 @@ namespace PropertiesDotNet.Serialization.Converters
             return memberCache is null ? null : _memberCache[type] = memberCache;
         }
 
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private void UpdateCache(ref Dictionary<string, PropertiesMember> typeCache, PropertiesMember member)
         {
             typeCache ??= new Dictionary<string, PropertiesMember>();
@@ -204,7 +213,15 @@ namespace PropertiesDotNet.Serialization.Converters
             PropertiesMember member;
 
             var memberAtt = Utils.TypeExtensions.GetCustomAttribute<PropertiesMemberAttribute>(prop);
-            if (memberAtt is null)
+            if (memberAtt != null)
+            {
+                if (!memberAtt.Serialize)
+                    return null;
+
+                member = new PropertiesMember(string.IsNullOrEmpty(memberAtt.Name) ? prop.Name : memberAtt.Name,
+                   memberAtt.SerializeAs ?? prop.PropertyType, null, prop);
+            }
+            else
             {
                 //if (!prop.CanRead || !prop.CanWrite)
                 //    return null;
@@ -214,14 +231,6 @@ namespace PropertiesDotNet.Serialization.Converters
                     return null;
 
                 member = new PropertiesMember(prop.Name, prop.PropertyType, null, prop);
-            }
-            else
-            {
-                if (!memberAtt.Serialize)
-                    return null;
-
-                member = new PropertiesMember(string.IsNullOrEmpty(memberAtt.Name) ? prop.Name : memberAtt.Name,
-                   memberAtt.SerializeAs ?? prop.PropertyType, null, prop);
             }
 
             ReadComments(member);
@@ -233,21 +242,21 @@ namespace PropertiesDotNet.Serialization.Converters
             PropertiesMember member;
 
             var memberAtt = Utils.TypeExtensions.GetCustomAttribute<PropertiesMemberAttribute>(field);
-            if (memberAtt is null)
-            {
-                // Remove k__BackingField for auto-properties
-                if (Utils.TypeExtensions.GetCustomAttribute<CompilerGeneratedAttribute>(field) != null)
-                    return null;
-
-                member = new PropertiesMember(field.Name, field.FieldType, null, field);
-            }
-            else
+            if (memberAtt != null)
             {
                 if (!memberAtt.Serialize)
                     return null;
 
                 member = new PropertiesMember(string.IsNullOrEmpty(memberAtt.Name) ? field.Name : memberAtt.Name,
                    memberAtt.SerializeAs ?? field.FieldType, null, field);
+            }
+            else
+            {
+                // Remove k__BackingField for auto-properties
+                if (Utils.TypeExtensions.GetCustomAttribute<CompilerGeneratedAttribute>(field) != null)
+                    return null;
+
+                member = new PropertiesMember(field.Name, field.FieldType, null, field);
             }
 
             ReadComments(member);

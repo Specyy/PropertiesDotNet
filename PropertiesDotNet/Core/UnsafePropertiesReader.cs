@@ -392,6 +392,9 @@ namespace PropertiesDotNet.Core
             return true;
         }
 
+#if !NET35 && !NET40
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         private bool CreateUnicodeError(in StreamMark errEscapeStart)
         {
             TokenStart = errEscapeStart;

@@ -137,6 +137,7 @@ namespace PropertiesDotNet.Core
                 {
                     token = reader.Token;
 
+                    // TODO: Inspect this part
                     if (token.Type == PropertiesTokenType.Assigner)
                     {
                         reader.MoveNext();
