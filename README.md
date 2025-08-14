@@ -12,6 +12,7 @@ We do this by allowing for the configuration of .properties documents in three d
 
 PropertiesDotNet is currently available in the following .NET runtimes:
  
+* .NET 8.0 
 * .NET 6.0 
 * .NET Core 3.0
 * .NET Standard 2.1
