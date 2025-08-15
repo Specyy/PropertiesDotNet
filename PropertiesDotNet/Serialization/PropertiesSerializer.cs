@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-
 using PropertiesDotNet.Core;
-using PropertiesDotNet.Serialization.Converters;
 using PropertiesDotNet.Serialization.ObjectProviders;
 using PropertiesDotNet.Serialization.PropertiesTree;
 using PropertiesDotNet.Serialization.ValueProviders;
@@ -48,7 +46,7 @@ namespace PropertiesDotNet.Serialization
         public event TypeSerialized? TypeDeserialized;
 
         /// <summary>
-        /// A short-hand to the <see cref="PropertiesSerializerSettings.ObjectProvider"/> for this serializer.
+        /// A shorthand to the <see cref="PropertiesSerializerSettings.ObjectProvider"/> for this serializer.
         /// </summary>
         public IObjectProvider ObjectProvider
         {
@@ -57,7 +55,7 @@ namespace PropertiesDotNet.Serialization
         }
 
         /// <summary>
-        /// A short-hand to the <see cref="PropertiesSerializerSettings.ValueProvider"/> for this serializer.
+        /// A shorthand to the <see cref="PropertiesSerializerSettings.ValueProvider"/> for this serializer.
         /// </summary>
         public IValueProvider ValueProvider
         {
@@ -66,7 +64,7 @@ namespace PropertiesDotNet.Serialization
         }
 
         /// <summary>
-        /// A short-hand to the <see cref="PropertiesSerializerSettings.TreeComposer"/> for this serializer.
+        /// A shorthand to the <see cref="PropertiesSerializerSettings.TreeComposer"/> for this serializer.
         /// </summary>
         public IPropertiesTreeComposer TreeComposer
         {
@@ -75,7 +73,7 @@ namespace PropertiesDotNet.Serialization
         }
 
         /// <summary>
-        /// A short-hand to the <see cref="PropertiesSerializerSettings.Converters"/> for this serializer.
+        /// A shorthand to the <see cref="PropertiesSerializerSettings.Converters"/> for this serializer.
         /// </summary>
         public LinkedList<IPropertiesConverter> Converters
         {
@@ -93,7 +91,7 @@ namespace PropertiesDotNet.Serialization
         }
 
         /// <summary>
-        /// A short-hand to the <see cref="PropertiesSerializerSettings.DefaultObjectType"/> for this serializer.
+        /// A shorthand to the <see cref="PropertiesSerializerSettings.DefaultObjectType"/> for this serializer.
         /// </summary>
         public Type DefaultObjectType
         {
@@ -102,7 +100,7 @@ namespace PropertiesDotNet.Serialization
         }
 
         /// <summary>
-        /// A short-hand to the <see cref="PropertiesSerializerSettings.DefaultPrimitiveType"/> for this serializer.
+        /// A shorthand to the <see cref="PropertiesSerializerSettings.DefaultPrimitiveType"/> for this serializer.
         /// </summary>
         public Type DefaultPrimitiveType
         {
@@ -115,7 +113,6 @@ namespace PropertiesDotNet.Serialization
         /// </summary>
         public PropertiesSerializer() : this(null)
         {
-
         }
 
         /// <summary>
@@ -124,29 +121,7 @@ namespace PropertiesDotNet.Serialization
         /// <param name="settings">The settings for this serializer, or the default settings if left null.</param>
         public PropertiesSerializer(PropertiesSerializerSettings? settings)
         {
-            _settings = settings ?? new PropertiesSerializerSettings()
-            {
-                ObjectProvider = new ReflectionObjectProvider(),
-                ValueProvider = new ReflectionValueProvider(),
-                TreeComposer = new PropertiesTreeComposer(),
-
-                Converters = new LinkedList<IPropertiesConverter>(),
-                PrimitiveConverters = new LinkedList<IPropertiesPrimitiveConverter>()
-            };
-
-            if (settings is null)
-            {
-                var nullableConverter = new NullableTypeConverter();
-
-                Converters.AddLast(new DictionaryConverter());
-                Converters.AddLast(new ArrayConverter());
-                Converters.AddLast(new CollectionConverter());
-                Converters.AddLast(nullableConverter);
-                Converters.AddLast(new ObjectConverter());
-
-                PrimitiveConverters.AddLast(new SystemTypeConverter());
-                PrimitiveConverters.AddLast(nullableConverter);
-            }
+            _settings = settings ?? PropertiesSerializerSettings.Default;
         }
 
         /// <summary>

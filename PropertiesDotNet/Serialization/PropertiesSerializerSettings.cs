@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using PropertiesDotNet.Serialization.Converters;
 using PropertiesDotNet.Serialization.ObjectProviders;
 using PropertiesDotNet.Serialization.PropertiesTree;
@@ -13,6 +12,11 @@ namespace PropertiesDotNet.Serialization
     /// </summary>
     public class PropertiesSerializerSettings
     {
+        /// <summary>
+        /// Returns a <see cref="PropertiesSerializerSettings"/> configured with the default settings.
+        /// </summary>
+        public static PropertiesSerializerSettings Default => GetDefaultSettings();
+
         private IObjectProvider _objectProvider;
 
         /// <summary>
@@ -104,6 +108,34 @@ namespace PropertiesDotNet.Serialization
         public PropertiesSerializerSettings()
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
+        }
+
+        private static PropertiesSerializerSettings GetDefaultSettings()
+        {
+            var settings = new PropertiesSerializerSettings
+            {
+                ObjectProvider = new ReflectionObjectProvider(),
+                ValueProvider = new ReflectionValueProvider(),
+                TreeComposer = new PropertiesTreeComposer(),
+
+                Converters = new LinkedList<IPropertiesConverter>(),
+                PrimitiveConverters = new LinkedList<IPropertiesPrimitiveConverter>()
+            };
+
+            var nullableConverter = new NullableTypeConverter();
+
+            settings.Converters.AddLast(new DictionaryConverter());
+            settings.Converters.AddLast(new ArrayConverter());
+            settings.Converters.AddLast(new CollectionConverter());
+            settings.Converters.AddLast(nullableConverter);
+            settings.Converters.AddLast(new ObjectConverter());
+
+            settings.PrimitiveConverters.AddLast(new DateTimeOffsetConverter());
+            settings.PrimitiveConverters.AddLast(new TimeSpanConverter());
+            settings.PrimitiveConverters.AddLast(new SystemTypeConverter());
+            settings.PrimitiveConverters.AddLast(nullableConverter);
+
+            return settings;
         }
     }
 }
