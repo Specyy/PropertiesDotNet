@@ -47,7 +47,7 @@ namespace PropertiesDotNet.Core
 
         /// <summary>
         /// Returns the comment handle for the current token. This handle is either an
-        /// exclamtion mark (!) or a pound symbol (#) or null if the current token is not a comment.
+        /// exclamation mark (!) or a pound symbol (#) or null if the current token is not a comment.
         /// </summary>
         public char? CommentHandle => Token.Type == PropertiesTokenType.Comment ? _commentHandle : null;
 

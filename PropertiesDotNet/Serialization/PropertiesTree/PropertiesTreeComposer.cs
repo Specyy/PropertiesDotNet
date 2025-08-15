@@ -13,16 +13,16 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
     public sealed class PropertiesTreeComposer : IPropertiesTreeComposer
     {
         /// <summary>
-        /// The default node delimeter.
+        /// The default node delimiter.
         /// </summary>
-        public const char DEFFAULT_DELIMETER = '.';
+        public const char DEFAULT_DELIMITER = '.';
 
         /// <summary>
-        /// The delimeter used to differentiate the nodes.
+        /// The delimiter used to differentiate the nodes.
         /// </summary>
-        public char Delimeter { get; set; } = DEFFAULT_DELIMETER;
+        public char Delimiter { get; set; } = DEFAULT_DELIMITER;
 
-        private StringBuilder _keyBuilder;
+        private StringBuilder? _keyBuilder;
 
         /// <summary>
         /// A default implementation of an <see cref="IPropertiesTreeComposer"/>.
@@ -34,7 +34,7 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
         }
 
         /// <summary>
-        /// Reads the input document and constructs a browsable object tree, with nodes separated by the <see cref="Delimeter"/>.
+        /// Reads the input document and constructs a browsable object tree, with nodes separated by the <see cref="Delimiter"/>.
         /// </summary>
         /// <param name="input">The input document.</param>
         /// <returns>The root of the object tree. In a standard ".properties" document this is not contained
@@ -45,7 +45,7 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
             var rootNode = CreateRoot();
 
             foreach (var prop in input)
-                ReadObject(prop, rootNode, prop.Key.Split(Delimeter));
+                ReadObject(prop, rootNode, prop.Key.Split(Delimiter));
 
             return rootNode;
         }
@@ -62,7 +62,7 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
 
             if (parent.Contains(nodeNames[depth]))
             {
-                obj = parent[nodeNames[depth]] as PropertiesObject ?? throw new PropertiesException($"Cannot compose a predefined primitive property (\"{string.Join(Delimeter.ToString(), nodeNames, 0, depth + 1)}\")");
+                obj = parent[nodeNames[depth]] as PropertiesObject ?? throw new PropertiesException($"Cannot compose a predefined primitive property (\"{string.Join(Delimiter.ToString(), nodeNames, 0, depth + 1)}\")");
             }
             else
             {
@@ -92,10 +92,10 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
                     case PropertiesTokenType.Error:
                         throw new PropertiesException(token.Text);
                     case PropertiesTokenType.Key:
-                        ReadObject(input, rootNode, token.Text.Split(Delimeter));
+                        ReadObject(input, rootNode, token.Text.Split(Delimiter));
                         break;
                     default:
-                        throw new PropertiesException($"Cannot intepret token: {token.Type}!");
+                        throw new PropertiesException($"Cannot interpret token: {token.Type}!");
                 }
             }
 
@@ -120,7 +120,7 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
 
             if (parent.Contains(nodeNames[depth]))
             {
-                obj = parent[nodeNames[depth]] as PropertiesObject ?? throw new PropertiesException($"Cannot compose a predefined primitive property (\"{string.Join(Delimeter.ToString(), nodeNames, 0, depth + 1)}\") (Line: {input.TokenStart?.Line} Column: {input.TokenStart?.Column})");
+                obj = parent[nodeNames[depth]] as PropertiesObject ?? throw new PropertiesException($"Cannot compose a predefined primitive property (\"{string.Join(Delimiter.ToString(), nodeNames, 0, depth + 1)}\") (Line: {input.TokenStart?.Line} Column: {input.TokenStart?.Column})");
             }
             else
             {
@@ -168,7 +168,7 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
                 else if (node is PropertiesObject objNode)
                 {
                     _keyBuilder ??= new StringBuilder();
-                    _keyBuilder.Append(objNode.Name).Append(Delimeter);
+                    _keyBuilder.Append(objNode.Name).Append(Delimiter);
 
                     parents ??= new List<PropertiesObject>();
                     int index = parents.Count;
@@ -176,7 +176,7 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
                     parents.Add(objNode);
                     WriteObject(objNode, parents, output);
                     parents.RemoveAt(index);
-                    // 1 = delimeter
+                    // 1 = delimiter
                     _keyBuilder.Length -= objNode.Name.Length + 1;
                 }
                 else throw new ArgumentException($"Cannot write tree node of type: {node.GetType()}");
@@ -233,7 +233,7 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
                 else if (node is PropertiesObject objNode)
                 {
                     _keyBuilder ??= new StringBuilder();
-                    _keyBuilder.Append(objNode.Name).Append(Delimeter);
+                    _keyBuilder.Append(objNode.Name).Append(Delimiter);
 
                     parents ??= new List<PropertiesObject>();
                     int index = parents.Count;
@@ -241,7 +241,7 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
                     parents.Add(objNode);
                     WriteObject(objNode, parents, doc);
                     parents.RemoveAt(index);
-                    // 1 = delimeter
+                    // 1 = delimiter
                     _keyBuilder.Length -= objNode.Name.Length + 1;
                 }
                 else throw new ArgumentException($"Cannot write tree node of type: {node.GetType()}");
@@ -250,8 +250,7 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
 
         private void AddComments(PropertiesProperty prop, PropertiesTreeNode node)
         {
-            if (prop.Comments is null)
-                prop.Comments ??= new List<string>();
+            prop.Comments ??= new List<string>();
 
             for (int i = 0; i < node.Comments?.Count; i++)
                 prop.Comments.Add(node.Comments[i]);
