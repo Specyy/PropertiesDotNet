@@ -50,8 +50,8 @@ namespace PropertiesDotNet.Serialization.PropertiesTree
 
             foreach (var node in root)
             {
-                string key = root.Name;
-                string? value = node is PropertiesPrimitive primitive ? primitive.Value : null;
+                string key = node.Name;
+                string? value = node is PropertiesPrimitive primitive ? primitive.Value : node.ToString();
 
                 WriteComments(node, output);
                 output.WriteProperty(key, value);
